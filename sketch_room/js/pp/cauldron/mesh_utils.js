@@ -33,5 +33,9 @@ PP.MeshUtils = {
         });
 
         return mesh;
+    },
+
+    createCubeMesh: function () {
+        return new WL.Mesh(1);
     }
 };
