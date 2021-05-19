@@ -266,6 +266,12 @@
             "components": [
                 {
                     "type": "gamepads-manager"
+                },
+                {
+                    "type": "sketch-room-component",
+                    "sketch-room-component": {
+                        "_myMaterial": "71"
+                    }
                 }
             ]
         },
@@ -308,6 +314,9 @@
                         "_myPlaneMaterial": "66",
                         "_myTextMaterial": "DefaultFontMaterial"
                     }
+                },
+                {
+                    "type": "sync-hand-position"
                 }
             ],
             "name": "Hand Left"
@@ -411,6 +420,12 @@
                         "_myCursorMaterial": "66",
                         "_myShowFingerCursor": false
                     }
+                },
+                {
+                    "type": "sync-hand-position",
+                    "sync-hand-position": {
+                        "_myHandedness": "right"
+                    }
                 }
             ],
             "name": "Hand Right"
@@ -474,6 +489,98 @@
                         "material": "66"
                     }
                 }
+            ],
+            "deleted": true
+        },
+        "68": {
+            "name": "Mesh",
+            "parent": "50",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "8",
+                        "material": "22"
+                    }
+                }
+            ],
+            "transformation": [
+                0.07500000298023224,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.07500000298023224,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.07500000298023224,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "deleted": true
+        },
+        "70": {
+            "name": "Mesh.000",
+            "parent": "32",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "material": "71",
+                        "mesh": "8"
+                    }
+                }
+            ],
+            "deleted": true
+        },
+        "72": {
+            "name": "Mesh.000",
+            "parent": "32",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "material": "71",
+                        "mesh": "8"
+                    }
+                }
+            ],
+            "deleted": true
+        },
+        "73": {
+            "name": "Mesh.000",
+            "parent": "32",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "material": "71",
+                        "mesh": "8"
+                    }
+                }
+            ],
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                -3.391993284225464,
+                0.0,
+                0.0,
+                1.0
             ],
             "deleted": true
         }
@@ -722,6 +829,33 @@
         "66": {
             "name": "Flat",
             "shader": "Flat"
+        },
+        "71": {
+            "link": {
+                "name": "Lambert_Body",
+                "file": "assets\\models\\quest_controllers_credits_Jezza3D.glb"
+            },
+            "name": "SketchObject",
+            "Phong": {
+                "ambientColor": [
+                    0.4627450704574585,
+                    0.4627404510974884,
+                    0.4627404510974884,
+                    1.0
+                ],
+                "diffuseColor": [
+                    0.2901931405067444,
+                    0.2901960611343384,
+                    0.2901957035064697,
+                    1.0
+                ],
+                "specularColor": [
+                    1.0,
+                    0.9999899864196777,
+                    0.9999899864196777,
+                    0.4472135901451111
+                ]
+            }
         }
     },
     "shaders": {
@@ -809,7 +943,11 @@
                 "js/pp/tool/easy-tune",
                 "js/pp/gameplay/grab_throw",
                 "js/pp/input/cauldron",
-                "js/pp/input/gamepad"
+                "js/pp/input/gamepad",
+                "js/sketch_room",
+                "js/sketch_room/tool",
+                "js/sketch_room/widget",
+                "js/sketch_room/cauldron"
             ]
         },
         "editor": {

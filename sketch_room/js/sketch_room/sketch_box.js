@@ -17,11 +17,11 @@ class SketchBox {
     setScale(value) {
         this._myObject.resetScaling();
         this._myObject.scale(value);
-        this.myNextButtonCollisionComponent.extents = [value];
+        this._myCollision.extents = value;
     }
 
     setColor(value) {
-        this._myMesh.material.color = value;
+        this._myMesh.material.ambientColor = value;
     }
 
     getData() {

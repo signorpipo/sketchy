@@ -1,22 +1,33 @@
 
 class ToolManager {
-    constructor() {
-        _createTools();
+    constructor(sceneObject) {
+        this._mySceneObject = sceneObject;
+
+        this._createTools();
     }
 
     selectTool(type) {
+        for (let tool of this._myTools) {
+            if (tool) {
+                tool.setEnabled(false);
+            }
+        }
 
-    }
-
-    start() {
-
+        this._myTools[type].setEnabled(true);
     }
 
     update(dt) {
-
+        for (let tool of this._myTools) {
+            if (tool) {
+                tool.update(dt);
+            }
+        }
     }
 
-    _createTools() { }
+    _createTools() {
+        this._myTools = [];
+        this._myTools[ToolType.CREATE] = new CreateTool(this._mySceneObject);
+    }
 }
 
 var ToolType = {
@@ -24,5 +35,6 @@ var ToolType = {
     MOVE: 1,
     ROTATE: 2,
     SCALE: 3,
-    SELECT: 4
+    SELECT: 4,
+    CREATE: 5
 };
