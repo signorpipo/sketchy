@@ -46,10 +46,13 @@ class SketchBox {
         //export string version to put in url 
     }
 
+    delete() {
+        this._myObject.destroy();
+    }
+
     update(dt) {
         if (this._mySelected) {
             this._selectedUpdate(dt);
-
         }
     }
 

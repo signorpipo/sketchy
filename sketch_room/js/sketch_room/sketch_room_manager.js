@@ -24,11 +24,23 @@ class SketchRoomManager {
     _registerToolsEventListeners() {
         let createTool = this._myToolManager.getTool(ToolType.CREATE);
         createTool.registerObjectCreatedChangedEventListener(this, this._objectCreated.bind(this));
+        createTool.registerObjectDeletedChangedEventListener(this, this._objectDeleted.bind(this));
     }
 
     _objectCreated(object) {
         this._myObjects.push(object);
         this._selectObject(object);
+    }
+
+    _objectDeleted(object) {
+        if (this._mySelectedObject == object) {
+            this._selectObject(null);
+        }
+
+        var index = this._myObjects.indexOf(object);
+        if (index > -1) {
+            this._myObjects.splice(index, 1);
+        }
     }
 
     _selectObject(object) {
@@ -39,6 +51,9 @@ class SketchRoomManager {
         if (object) {
             this._mySelectedObject = object;
             this._mySelectedObject.setSelected(true);
+            this._myToolManager.setSelectedObject(this._mySelectedObject);
+        } else {
+            this._myToolManager.setSelectedObject(null);
         }
     }
 

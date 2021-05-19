@@ -20,6 +20,14 @@ class ToolManager {
         this._myTools[type].setEnabled(true);
     }
 
+    setSelectedObject(object) {
+        for (let tool of this._myTools) {
+            if (tool) {
+                tool.setSelectedObject(object);
+            }
+        }
+    }
+
     update(dt) {
         for (let tool of this._myTools) {
             if (tool) {
