@@ -6,6 +6,10 @@ class ToolManager {
         this._createTools();
     }
 
+    getTool(type) {
+        return this._myTools[type];
+    }
+
     selectTool(type) {
         for (let tool of this._myTools) {
             if (tool) {
