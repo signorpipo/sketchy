@@ -5,32 +5,23 @@ class SketchBox {
         this._buildObject();
     }
 
-    translate(amount) {
-        //get string version to put in url 
-    }
-
-    rotate(amount) {
-        //get string version to put in url 
-    }
-
-    scale(amount) {
-        //scale collision too
-    }
-
     setPosition(value) {
-
+        this._myObject.setTranslationLocal(value);
     }
 
     setRotation(value) {
-
+        this._myObject.resetRotation();
+        this._myObject.rotateObject(value);
     }
 
     setScale(value) {
-
+        this._myObject.resetScaling();
+        this._myObject.scale(value);
+        this.myNextButtonCollisionComponent.extents = [value];
     }
 
     setColor(value) {
-
+        this._myMesh.material.color = value;
     }
 
     getData() {
@@ -46,8 +37,8 @@ class SketchBox {
 
         this._myCursorTarget = this._myObject.addComponent('cursor-target');
         this._myCollision = this._myObject.addComponent('collision');
-        this.myNextButtonCollisionComponent.collider = WL.Collider.Box;
-        this.myNextButtonCollisionComponent.group = 1 << SketchObjectData.myCollisionGroup;
-        this.myNextButtonCollisionComponent.extents = [1, 1, 1];
+        this._myCollision.collider = WL.Collider.Box;
+        this._myCollision.group = 1 << SketchObjectData.myCollisionGroup;
+        this._myCollision.extents = [1, 1, 1];
     }
 }
