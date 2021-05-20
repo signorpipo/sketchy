@@ -3,58 +3,68 @@ class SketchRoomManager {
         this._mySceneObject = sceneObject;
         this._myToolManager = new ToolManager(this._mySceneObject);
 
-        this._myObjects = [];
-        this._mySelectedObject = null;
+        this._myShapes = [];
+        this._mySelectedShape = null;
     }
 
     start() {
         this._registerToolsEventListeners();
 
+        this._myToolManager.start();
         this._myToolManager.selectTool(ToolType.CREATE);
     }
 
     update(dt) {
         this._myToolManager.update(dt);
 
-        for (let object of this._myObjects) {
-            object.update(dt);
+        for (let shape of this._myShapes) {
+            shape.update(dt);
         }
     }
 
     _registerToolsEventListeners() {
         let createTool = this._myToolManager.getTool(ToolType.CREATE);
-        createTool.registerObjectCreatedChangedEventListener(this, this._objectCreated.bind(this));
-        createTool.registerObjectDeletedChangedEventListener(this, this._objectDeleted.bind(this));
+        createTool.registerShapeCreatedChangedEventListener(this, this._shapeCreated.bind(this));
+        createTool.registerShapeDeletedChangedEventListener(this, this._shapeDeleted.bind(this));
+
+        let selectTool = this._myToolManager.getTool(ToolType.SELECT);
+        selectTool.registerShapeSelectedChangedEventListener(this, this._shapeSelected.bind(this));
     }
 
-    _objectCreated(object) {
-        this._myObjects.push(object);
-        this._selectObject(object);
+    _shapeCreated(shape) {
+        this._myShapes.push(shape);
+        this._selectShape(shape);
     }
 
-    _objectDeleted(object) {
-        if (this._mySelectedObject == object) {
-            this._selectObject(null);
+    _shapeDeleted(shape) {
+        if (this._mySelectedShape == shape) {
+            this._selectShape(null);
         }
 
-        var index = this._myObjects.indexOf(object);
+        var index = this._myShapes.indexOf(shape);
         if (index > -1) {
-            this._myObjects.splice(index, 1);
+            this._myShapes.splice(index, 1);
         }
     }
 
-    _selectObject(object) {
-        if (this._mySelectedObject) {
-            this._mySelectedObject.setSelected(false);
+    _shapeSelected(shape) {
+        this._selectShape(shape);
+    }
+
+    _selectShape(shape) {
+        if (this._mySelectedShape == shape) {
+            return;
         }
 
-        if (object) {
-            this._mySelectedObject = object;
-            this._mySelectedObject.setSelected(true);
-            this._myToolManager.setSelectedObject(this._mySelectedObject);
-        } else {
-            this._myToolManager.setSelectedObject(null);
+        if (this._mySelectedShape) {
+            this._mySelectedShape.setSelected(false);
         }
+
+        this._mySelectedShape = shape;
+        if (this._mySelectedShape) {
+            this._mySelectedShape.setSelected(true);
+        }
+        this._myToolManager.setSelectedShape(this._mySelectedShape);
     }
 
 }

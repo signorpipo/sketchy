@@ -18,12 +18,21 @@ class ToolManager {
         }
 
         this._myTools[type].setEnabled(true);
+        this._myTools[ToolType.SELECT].setEnabled(true);
     }
 
-    setSelectedObject(object) {
+    setSelectedShape(shape) {
         for (let tool of this._myTools) {
             if (tool) {
-                tool.setSelectedObject(object);
+                tool.setSelectedShape(shape);
+            }
+        }
+    }
+
+    start() {
+        for (let tool of this._myTools) {
+            if (tool) {
+                tool.start();
             }
         }
     }
@@ -39,6 +48,7 @@ class ToolManager {
     _createTools() {
         this._myTools = [];
         this._myTools[ToolType.CREATE] = new CreateTool(this._mySceneObject);
+        this._myTools[ToolType.SELECT] = new SelectTool();
     }
 }
 

@@ -1,4 +1,4 @@
-WL.registerComponent('sync-hand-position', {
+WL.registerComponent('set-global-hand-pose', {
     _myHandedness: { type: WL.Type.Enum, values: ['left', 'right'], default: 'left' },
 }, {
     init: function () {

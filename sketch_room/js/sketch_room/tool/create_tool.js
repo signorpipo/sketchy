@@ -3,20 +3,20 @@ class CreateTool {
         this._mySceneObject = sceneObject;
         this._myIsEnabled = false;
 
-        this._myObjectScale = [0.075, 0.075, 0.075];
-        this._myObjectColor = [140 / 255, 55 / 255, 230 / 255, 1];
+        this._myShapeScale = [0.075, 0.075, 0.075];
+        this._myShapeColor = [140 / 255, 55 / 255, 230 / 255, 1];
 
-        this._myObjectCreatedCallbacks = new Map();
-        this._myObjectDeletedCallbacks = new Map();
+        this._myShapeCreatedCallbacks = new Map();
+        this._myShapeDeletedCallbacks = new Map();
 
         this._myLeftTimer = 0;
         this._myRightTimer = 0;
 
-        this._mySelectedObject = null;
+        this._mySelectedShape = null;
     }
 
-    setSelectedObject(object) {
-        this._mySelectedObject = object;
+    setSelectedShape(object) {
+        this._mySelectedShape = object;
     }
 
     isEnabled() {
@@ -27,20 +27,24 @@ class CreateTool {
         this._myIsEnabled = enabled;
     }
 
-    registerObjectCreatedChangedEventListener(id, callback) {
-        this._myObjectCreatedCallbacks.set(id, callback);
+    registerShapeCreatedChangedEventListener(id, callback) {
+        this._myShapeCreatedCallbacks.set(id, callback);
     }
 
-    unregisterObjectCreatedChangedEventListener(id) {
-        this._myObjectCreatedCallbacks.delete(id);
+    unregisterShapeCreatedChangedEventListener(id) {
+        this._myShapeCreatedCallbacks.delete(id);
     }
 
-    registerObjectDeletedChangedEventListener(id, callback) {
-        this._myObjectDeletedCallbacks.set(id, callback);
+    registerShapeDeletedChangedEventListener(id, callback) {
+        this._myShapeDeletedCallbacks.set(id, callback);
     }
 
-    unregisterObjectDeletedChangedEventListener(id) {
-        this._myObjectDeletedCallbacks.delete(id);
+    unregisterShapeDeletedChangedEventListener(id) {
+        this._myShapeDeletedCallbacks.delete(id);
+    }
+
+    start() {
+
     }
 
     update(dt) {
@@ -53,6 +57,7 @@ class CreateTool {
         }
         if (PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressStart()) {
             this._myRightTimer = 0;
+            console.log(0);
         }
 
         if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed) {
@@ -64,36 +69,36 @@ class CreateTool {
 
         if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressEnd()) {
             if (this._myLeftTimer < 1) {
-                this._createObject(PlayerPose.myLeftHandPosition);
+                this._createShape(PlayerPose.myLeftHandPosition);
             } else {
-                this._deleteSelectedObject();
+                this._deleteSelectedShape();
             }
         }
         if (PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressEnd()) {
             if (this._myRightTimer < 1) {
-                this._createObject(PlayerPose.myRightHandPosition);
+                this._createShape(PlayerPose.myRightHandPosition);
             } else {
-                this._deleteSelectedObject();
+                this._deleteSelectedShape();
             }
         }
     }
 
-    _createObject(position) {
+    _createShape(position) {
         let object = new SketchBox(this._mySceneObject);
         object.setPosition(position);
-        object.setScale(this._myObjectScale);
-        object.setColor(this._myObjectColor);
+        object.setScale(this._myShapeScale);
+        object.setColor(this._myShapeColor);
 
-        for (let value of this._myObjectCreatedCallbacks.values()) {
+        for (let value of this._myShapeCreatedCallbacks.values()) {
             value(object);
         }
     }
 
-    _deleteSelectedObject() {
-        if (this._mySelectedObject) {
-            this._mySelectedObject.delete();
-            for (let value of this._myObjectDeletedCallbacks.values()) {
-                value(this._mySelectedObject);
+    _deleteSelectedShape() {
+        if (this._mySelectedShape) {
+            this._mySelectedShape.delete();
+            for (let value of this._myShapeDeletedCallbacks.values()) {
+                value(this._mySelectedShape);
             }
         }
     }

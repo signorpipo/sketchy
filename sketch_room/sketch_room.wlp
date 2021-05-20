@@ -316,7 +316,7 @@
                     }
                 },
                 {
-                    "type": "sync-hand-position"
+                    "type": "set-global-hand-pose"
                 }
             ],
             "name": "Hand Left"
@@ -422,8 +422,8 @@
                     }
                 },
                 {
-                    "type": "sync-hand-position",
-                    "sync-hand-position": {
+                    "type": "set-global-hand-pose",
+                    "set-global-hand-pose": {
                         "_myHandedness": "right"
                     }
                 }
@@ -583,6 +583,103 @@
                 1.0
             ],
             "deleted": true
+        },
+        "74": {
+            "name": "Left Cursor",
+            "parent": "50",
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.7071067094802856,
+                -0.7071068286895752,
+                0.0,
+                0.0,
+                0.7071068286895752,
+                0.7071067094802856,
+                0.0,
+                -0.009961061179637909,
+                -0.024026628583669664,
+                -0.05007817968726158,
+                1.0
+            ],
+            "components": [
+                {
+                    "type": "cursor",
+                    "cursor": {
+                        "cursorObject": "76",
+                        "handedness": "left"
+                    }
+                },
+                {
+                    "type": "set-global-hand-cursor"
+                }
+            ]
+        },
+        "75": {
+            "name": "Right Cursor",
+            "parent": "58",
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.7071067094802856,
+                -0.7071068286895752,
+                0.0,
+                0.0,
+                0.7071068286895752,
+                0.7071067094802856,
+                0.0,
+                0.009961042553186417,
+                -0.02402663417160511,
+                -0.050078198313713077,
+                1.0
+            ],
+            "components": [
+                {
+                    "type": "cursor",
+                    "cursor": {
+                        "cursorObject": "78",
+                        "handedness": "right"
+                    }
+                },
+                {
+                    "type": "set-global-hand-cursor",
+                    "set-global-hand-cursor": {
+                        "_myHandedness": "right"
+                    }
+                }
+            ]
+        },
+        "76": {
+            "name": "Left Cursor Mesh",
+            "parent": "74",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "9",
+                        "material": "77"
+                    }
+                }
+            ]
+        },
+        "78": {
+            "name": "Right Cursor Mesh",
+            "parent": "75",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "9",
+                        "material": "77"
+                    }
+                }
+            ]
         }
     },
     "meshes": {
@@ -851,9 +948,21 @@
                 ],
                 "specularColor": [
                     1.0,
-                    0.9999899864196777,
-                    0.9999899864196777,
+                    0.9999899864196776,
+                    0.9999899864196776,
                     0.4472135901451111
+                ]
+            }
+        },
+        "77": {
+            "name": "Cursor",
+            "shader": "Flat",
+            "Flat": {
+                "color": [
+                    0.10388311743736267,
+                    0.4265260398387909,
+                    0.7568627595901489,
+                    1.0
                 ]
             }
         }
@@ -947,7 +1056,8 @@
                 "js/sketch_room",
                 "js/sketch_room/tool",
                 "js/sketch_room/widget",
-                "js/sketch_room/cauldron"
+                "js/sketch_room/cauldron",
+                "js/sketch_room/shape"
             ]
         },
         "editor": {
