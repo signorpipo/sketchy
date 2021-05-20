@@ -19,6 +19,8 @@ class ToolManager {
 
         this._myTools[type].setEnabled(true);
         this._myTools[ToolType.SELECT].setEnabled(true);
+
+        CurrentToolType = type;
     }
 
     setSelectedShape(shape) {
@@ -47,16 +49,18 @@ class ToolManager {
 
     _createTools() {
         this._myTools = [];
+        this._myTools[ToolType.GRAB] = new GrabTool();
         this._myTools[ToolType.CREATE] = new CreateTool(this._mySceneObject);
         this._myTools[ToolType.SELECT] = new SelectTool();
     }
 }
 
 var ToolType = {
-    GRAB: 0,
-    MOVE: 1,
-    ROTATE: 2,
-    SCALE: 3,
-    SELECT: 4,
-    CREATE: 5
+    NONE: 0,
+    GRAB: 1,
+    MOVE: 2,
+    ROTATE: 3,
+    SCALE: 4,
+    CREATE: 5,
+    SELECT: 6
 };

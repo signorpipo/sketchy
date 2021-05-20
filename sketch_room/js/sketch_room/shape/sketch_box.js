@@ -20,7 +20,7 @@ class SketchBox {
 
         this._mySelected = selected;
         if (!this._mySelected) {
-            this._myMesh.material.ambientColor = this._myColor;
+            this.setColor(this._myColor);
         } else {
             this._mySelectedTimer = 0;
         }
@@ -43,7 +43,10 @@ class SketchBox {
 
     setColor(value) {
         this._myColor = value;
-        this._myMesh.material.ambientColor = value;
+        this._myMesh.material.diffuseColor = value;
+        let ambientColor = this._myColor.slice(0);
+        glMatrix.vec3.scale(ambientColor, ambientColor, 0.5);
+        this._myMesh.material.ambientColor = ambientColor;
     }
 
     getData() {
@@ -72,10 +75,13 @@ class SketchBox {
         } else {
             //Lighter
             for (let i = 0; i < 3; ++i) {
-                selectedColor[i] = Math.min(1, this._myColor[i] + (1 - this._myColor[i]) * (-currentShadeFactor / 2));
+                selectedColor[i] = Math.min(1, this._myColor[i] + (1 - this._myColor[i]) * (-currentShadeFactor));
             }
         }
-        this._myMesh.material.ambientColor = selectedColor;
+        this._myMesh.material.diffuseColor = selectedColor;
+        let ambientColor = selectedColor.slice(0);
+        glMatrix.vec3.scale(ambientColor, ambientColor, 0.5);
+        this._myMesh.material.ambientColor = ambientColor;
     }
 
     _buildObject() {

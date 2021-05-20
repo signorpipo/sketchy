@@ -57,7 +57,6 @@ class CreateTool {
         }
         if (PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressStart()) {
             this._myRightTimer = 0;
-            console.log(0);
         }
 
         if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed) {

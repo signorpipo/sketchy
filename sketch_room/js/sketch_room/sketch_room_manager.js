@@ -2,6 +2,7 @@ class SketchRoomManager {
     constructor(sceneObject) {
         this._mySceneObject = sceneObject;
         this._myToolManager = new ToolManager(this._mySceneObject);
+        this._mySketchRoomWidget = new SketchRoomWidget();
 
         this._myShapes = [];
         this._mySelectedShape = null;
@@ -9,13 +10,17 @@ class SketchRoomManager {
 
     start() {
         this._registerToolsEventListeners();
+        this._registerWidgetEventListeners();
 
         this._myToolManager.start();
-        this._myToolManager.selectTool(ToolType.CREATE);
+        this._mySketchRoomWidget.start();
+
+        this._toolSelected(ToolType.CREATE);
     }
 
     update(dt) {
         this._myToolManager.update(dt);
+        this._mySketchRoomWidget.update(dt);
 
         for (let shape of this._myShapes) {
             shape.update(dt);
@@ -31,6 +36,11 @@ class SketchRoomManager {
         selectTool.registerShapeSelectedChangedEventListener(this, this._shapeSelected.bind(this));
     }
 
+    _registerWidgetEventListeners() {
+        this._mySketchRoomWidget.registerToolSelectedChangedEventListener(this, this._toolSelected.bind(this));
+    }
+
+    //Tool Event Related
     _shapeCreated(shape) {
         this._myShapes.push(shape);
         this._selectShape(shape);
@@ -65,6 +75,12 @@ class SketchRoomManager {
             this._mySelectedShape.setSelected(true);
         }
         this._myToolManager.setSelectedShape(this._mySelectedShape);
+    }
+
+    //Widget Event Related
+    _toolSelected(toolType) {
+        this._mySketchRoomWidget.selectTool(toolType);
+        this._myToolManager.selectTool(toolType);
     }
 
 }

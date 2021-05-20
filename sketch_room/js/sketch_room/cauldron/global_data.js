@@ -15,3 +15,5 @@ var HandCursor = {
     myLeftCursor: null,
     myRightCursor: null
 };
+
+var CurrentToolType = null;
