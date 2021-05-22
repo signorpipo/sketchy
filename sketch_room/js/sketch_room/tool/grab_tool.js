@@ -1,5 +1,6 @@
 class GrabTool {
-    constructor() {
+    constructor(toolSettings) {
+        this._myToolSettings = toolSettings;
         this._myIsEnabled = false;
 
         this._mySelectedShape = null;
@@ -99,6 +100,8 @@ class GrabTool {
 
     _stopWork() {
         this._myIsWorking = false;
+        this._mySelectedShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
+        this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
         //finalize snap
     }
 

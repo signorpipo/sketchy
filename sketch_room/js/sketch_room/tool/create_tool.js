@@ -1,5 +1,6 @@
 class CreateTool {
-    constructor(sceneObject) {
+    constructor(toolSettings, sceneObject) {
+        this._myToolSettings = toolSettings;
         this._mySceneObject = sceneObject;
         this._myIsEnabled = false;
 
@@ -87,6 +88,10 @@ class CreateTool {
         object.setPosition(position);
         object.setScale(this._myShapeScale);
         object.setColor(this._myShapeColor);
+
+        object.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
+        object.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
+        object.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
 
         for (let value of this._myShapeCreatedCallbacks.values()) {
             value(object);
