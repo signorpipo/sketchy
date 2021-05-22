@@ -35,7 +35,7 @@ class SketchRoomWidget {
             this._toolSelected(ToolType.GRAB);
         }
 
-        if (PP.RightGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).isPressEnd()) {
+        if (PP.RightGamepad.getButtonInfo(PP.ButtonType.THUMBSTICK).isPressEnd()) {
             this._toolSelected(ToolType.CREATE);
         }
     }

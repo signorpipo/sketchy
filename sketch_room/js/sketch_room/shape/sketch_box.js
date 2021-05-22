@@ -26,8 +26,34 @@ class SketchBox {
         }
     }
 
+    getTransform() {
+        return this._myObject.transformWorld.slice(0);
+    }
+
+    getPosition() {
+        let tempVector = [];
+        this._myObject.getTranslationWorld(tempVector);
+
+        return tempVector;
+    }
+
+    getRotation() {
+        return this._myObject.transformWorld.slice(0, 4);
+    }
+
+    getScale() {
+        return this._myObject.scalingWorld.slice(0);
+    }
+
+    setTransform(value) {
+        let position = [];
+        glMatrix.quat2.getTranslation(position, value);
+        this.setPosition(position);
+        this.setRotation(value);
+    }
+
     setPosition(value) {
-        this._myObject.setTranslationLocal(value);
+        this._myObject.setTranslationWorld(value);
     }
 
     setRotation(value) {

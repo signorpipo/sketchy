@@ -95,10 +95,13 @@ class CreateTool {
 
     _deleteSelectedShape() {
         if (this._mySelectedShape) {
-            this._mySelectedShape.delete();
+            let selected = this._mySelectedShape; //keep it after delete deselecting occurs
+
             for (let value of this._myShapeDeletedCallbacks.values()) {
                 value(this._mySelectedShape);
             }
+
+            selected.delete(); //delay delete after notify to let tools do finalize stuff without having to worry if the object is deleted
         }
     }
 }

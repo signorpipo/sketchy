@@ -7,11 +7,13 @@ WL.registerComponent('set-global-hand-pose', {
     },
     update: function (dt) {
         if (this._myHandedness == 0) {
-            this.object.getTranslationLocal(PlayerPose.myLeftHandPosition);
-            PlayerPose.myLeftHandRotation = this.object.transformLocal.slice(0, 4);
+            PlayerPose.myLeftHandTransform = this.object.transformWorld.slice(0);
+            this.object.getTranslationWorld(PlayerPose.myLeftHandPosition);
+            PlayerPose.myLeftHandRotation = this.object.transformWorld.slice(0, 4);
         } else {
-            this.object.getTranslationLocal(PlayerPose.myRightHandPosition);
-            PlayerPose.myRightHandRotation = this.object.transformLocal.slice(0, 4);
+            PlayerPose.myRightHandTransform = this.object.transformWorld.slice(0);
+            this.object.getTranslationWorld(PlayerPose.myRightHandPosition);
+            PlayerPose.myRightHandRotation = this.object.transformWorld.slice(0, 4);
         }
     },
 });
