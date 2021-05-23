@@ -18,6 +18,9 @@ WL.registerComponent('sketch-tool-type-gui', {
                 case ToolType.GRAB:
                     color = [55 / 255, 210 / 255, 205 / 255, 1];
                     break;
+                case ToolType.TRANSLATE:
+                    color = [230 / 255, 150 / 255, 25 / 255, 1];
+                    break;
                 case ToolType.CREATE:
                     color = [140 / 255, 55 / 255, 230 / 255, 1];
                     break;

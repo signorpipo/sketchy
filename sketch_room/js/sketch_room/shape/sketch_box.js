@@ -56,6 +56,10 @@ class SketchBox {
         }
     }
 
+    getObject() {
+        return this._myObject;
+    }
+
     getTransform() {
         return this._myObject.transformWorld.slice(0);
     }

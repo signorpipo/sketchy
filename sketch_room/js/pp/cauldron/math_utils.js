@@ -35,5 +35,30 @@ PP.MathUtils = {
         }
 
         return euler;
+    },
+    getComponentAlongAxis(value, axis) {
+        let angle = glMatrix.vec3.angle(value, axis);
+        let length = Math.cos(angle) * glMatrix.vec3.length(value);
+
+        let component = axis.slice(0);
+        glMatrix.vec3.normalize(component, component);
+        glMatrix.vec3.scale(component, component, length);
+
+        return component;
+    },
+    getLocalAxes(transform) {
+        let rotationMatrix = [];
+        glMatrix.mat3.fromQuat(rotationMatrix, transform);
+
+        let localAxes = [];
+        localAxes[0] = rotationMatrix.slice(0, 3);
+        localAxes[1] = rotationMatrix.slice(3, 6);
+        localAxes[2] = rotationMatrix.slice(6, 9);
+
+        glMatrix.vec3.normalize(localAxes[0], localAxes[0]);
+        glMatrix.vec3.normalize(localAxes[1], localAxes[1]);
+        glMatrix.vec3.normalize(localAxes[2], localAxes[2]);
+
+        return localAxes;
     }
 };

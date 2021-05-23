@@ -33,6 +33,8 @@ class SketchRoomWidget {
         let rightAxesInfo = PP.RightGamepad.getAxesInfo();
         if (rightAxesInfo.myAxes[0] > 0.9) {
             this._toolSelected(ToolType.GRAB);
+        } else if (rightAxesInfo.myAxes[0] < -0.9) {
+            this._toolSelected(ToolType.TRANSLATE);
         }
 
         if (PP.RightGamepad.getButtonInfo(PP.ButtonType.THUMBSTICK).isPressEnd()) {

@@ -7,9 +7,9 @@ class GrabTool {
 
         this._myIsWorking = false;
 
-        this._myStartTransform = [];
+        this._myStartShapeTransform = [];
         this._myLocalGrabTransform = [];
-        this._myGrabHandedness = PP.HandednessIndex.NONE;
+        this._myCurrentHandedness = PP.HandednessIndex.NONE;
     }
 
     setSelectedShape(object) {
@@ -68,26 +68,47 @@ class GrabTool {
 
     _updateWork(dt) {
         let handTransform = null;
-        if (this._myGrabHandedness == PP.HandednessIndex.LEFT) {
+        if (this._myCurrentHandedness == PP.HandednessIndex.LEFT) {
             handTransform = PlayerPose.myLeftHandTransform.slice(0);
         } else {
             handTransform = PlayerPose.myRightHandTransform.slice(0);
         }
 
-        let objectWorldTransform = [];
-        glMatrix.quat2.mul(objectWorldTransform, handTransform, this._myLocalGrabTransform);
+        let newTransform = [];
+        glMatrix.quat2.mul(newTransform, handTransform, this._myLocalGrabTransform);
+        let newPosition = [];
+        glMatrix.quat2.getTranslation(newPosition, newTransform);
+        let newRotation = PP.MathUtils.quaternionToEuler(newTransform);
 
-        this._mySelectedShape.setTransform(objectWorldTransform);
+        let startPosition = [];
+        glMatrix.quat2.getTranslation(startPosition, this._myStartShapeTransform);
+        let startRotation = PP.MathUtils.quaternionToEuler(this._myStartShapeTransform);
+
+        let translation = [];
+        glMatrix.vec3.subtract(translation, newPosition, startPosition);
+        translation = ToolUtils.applyAxesTranslationSettings(translation, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
+
+        let rotation = [];
+        glMatrix.vec3.subtract(rotation, newRotation, startRotation);
+        rotation = ToolUtils.applyAxesRotationSettings(rotation, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
+
+        glMatrix.vec3.add(newPosition, startPosition, translation);
+        glMatrix.vec3.add(newRotation, rotation, startRotation);
+        newRotation = PP.MathUtils.eulerToQuaternion(newRotation);
+
+        glMatrix.quat2.fromRotationTranslation(newTransform, newRotation, newPosition);
+
+        this._mySelectedShape.setTransform(newTransform);
     }
 
     _startWork(handedness) {
-        this._myGrabHandedness = handedness;
+        this._myCurrentHandedness = handedness;
 
         this._myIsWorking = true;
-        this._myStartTransform = this._mySelectedShape.getTransform();
+        this._myStartShapeTransform = this._mySelectedShape.getTransform();
 
         let handTransform = null;
-        if (this._myGrabHandedness == PP.HandednessIndex.LEFT) {
+        if (this._myCurrentHandedness == PP.HandednessIndex.LEFT) {
             handTransform = PlayerPose.myLeftHandTransform.slice(0);
         } else {
             handTransform = PlayerPose.myRightHandTransform.slice(0);
@@ -95,18 +116,17 @@ class GrabTool {
 
         //get local transform to the hand
         glMatrix.quat2.conjugate(handTransform, handTransform);
-        glMatrix.quat2.mul(this._myLocalGrabTransform, handTransform, this._myStartTransform);
+        glMatrix.quat2.mul(this._myLocalGrabTransform, handTransform, this._myStartShapeTransform);
     }
 
     _stopWork() {
         this._myIsWorking = false;
         this._mySelectedShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
         this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
-        //finalize snap
     }
 
     _cancelWork() {
-        this._mySelectedShape.setTransform(this._myStartTransform);
+        this._mySelectedShape.setTransform(this._myStartShapeTransform);
         this._myIsWorking = false;
     }
 }
