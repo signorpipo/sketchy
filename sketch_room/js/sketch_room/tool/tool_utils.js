@@ -2,6 +2,9 @@ var ToolUtils = {
     applyAxesTranslationSettings(value, axesSettings, shapeTransform) {
         return ToolUtils.applyAxesSettings(value, axesSettings.myTranslationAxes, axesSettings.myAreLocal, shapeTransform);
     },
+    applyAxesScaleSettings(value, axesSettings, shapeTransform) {
+        return ToolUtils.applyAxesSettings(value, axesSettings.myScaleAxes, axesSettings.myAreLocal, shapeTransform);
+    },
     applyAxesRotationSettings(value, axesSettings, shapeTransform) {
         return ToolUtils.applyAxesSettings(value, axesSettings.myRotationAxes, axesSettings.myAreLocal, shapeTransform);
     },

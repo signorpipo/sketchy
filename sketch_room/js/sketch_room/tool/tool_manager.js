@@ -6,7 +6,7 @@ class ToolManager {
 
         this._createTools();
 
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("Position Snap", 0, 0.1, 3));
+        PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("Position Snap", 0.01, 0.1, 3));
         PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("Rotation Snap", 0, 1, 3));
 
         PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("X Axis Active", 0, 1));
@@ -72,6 +72,9 @@ class ToolManager {
             PP.EasyTuneVariables.get("X R Axis Active").myValue >= 0,
             PP.EasyTuneVariables.get("Y R Axis Active").myValue >= 0,
             PP.EasyTuneVariables.get("Z R Axis Active").myValue >= 0];
+
+        this._myToolSettings.myAxesSettings.myScaleAxes = this._myToolSettings.myAxesSettings.myTranslationAxes;
+
         this._myToolSettings.myAxesSettings.myAreLocal = PP.EasyTuneVariables.get("Use Local Axes").myValue >= 0;
     }
 
@@ -79,6 +82,7 @@ class ToolManager {
         this._myTools = [];
         this._myTools[ToolType.GRAB] = new GrabTool(this._myToolSettings);
         this._myTools[ToolType.TRANSLATE] = new TranslateTool(this._myToolSettings);
+        this._myTools[ToolType.SCALE] = new ScaleTool(this._myToolSettings);
         this._myTools[ToolType.CREATE] = new CreateTool(this._myToolSettings, this._mySceneObject);
         this._myTools[ToolType.SELECT] = new SelectTool();
     }

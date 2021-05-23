@@ -5,6 +5,9 @@ var SketchShapeData = {
 };
 
 var PlayerPose = {
+    myHeadTransform: [0, 0, 0.1, 0, 0, 0, 1],
+    myHeadPosition: [0, 0, 0],
+    myHeadRotation: [0, 0, 0, 1],
     myLeftHandTransform: [0, 0, 0.1, 0, 0, 0, 1],
     myLeftHandPosition: [0, 0, 0],
     myLeftHandRotation: [0, 0, 0, 1],

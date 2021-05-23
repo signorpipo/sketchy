@@ -60,5 +60,8 @@ PP.MathUtils = {
         glMatrix.vec3.normalize(localAxes[2], localAxes[2]);
 
         return localAxes;
+    },
+    isConcordant(first, second) {
+        return glMatrix.vec3.angle(first, second) <= Math.PI / 2;
     }
 };

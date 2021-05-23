@@ -1,4 +1,4 @@
-class TranslateTool {
+class ScaleTool {
     constructor(toolSettings) {
         this._myToolSettings = toolSettings;
         this._myIsEnabled = false;
@@ -6,8 +6,11 @@ class TranslateTool {
         this._mySelectedShape = null;
 
         this._myStartShapeTransform = [];
+        this._myStartShapeScale = [];
         this._myStartShapePosition = [];
         this._myStartHandPosition = [];
+
+        this._myScaleReferenceAxis = [];
 
         this._myIsWorking = false;
         this._myCurrentHandedness = PP.HandednessIndex.NONE;
@@ -77,11 +80,15 @@ class TranslateTool {
 
         let translation = [];
         glMatrix.vec3.subtract(translation, handPosition, this._myStartHandPosition);
+        let rawScale = PP.MathUtils.getComponentAlongAxis(translation, this._myScaleReferenceAxis);
+        let scaleAmount = glMatrix.vec3.length(rawScale) * (PP.MathUtils.isConcordant(rawScale, this._myScaleReferenceAxis) ? 1 : -1);
 
-        translation = ToolUtils.applyAxesTranslationSettings(translation, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
+        let scaleToApply = [scaleAmount, scaleAmount, scaleAmount];
+        scaleToApply = ToolUtils.applyAxesScaleSettings(scaleToApply, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
+        glMatrix.vec3.add(scaleToApply, this._myStartShapeScale, scaleToApply);
+        scaleToApply = scaleToApply.map(function (value) { return Math.max(value, 0.01); });
 
-        glMatrix.vec3.add(translation, translation, this._myStartShapePosition);
-        this._mySelectedShape.setPosition(translation);
+        this._mySelectedShape.setScale(scaleToApply);
     }
 
     _startWork(handedness) {
@@ -89,6 +96,7 @@ class TranslateTool {
 
         this._myIsWorking = true;
         this._myStartShapeTransform = this._mySelectedShape.getTransform();
+        this._myStartShapeScale = this._mySelectedShape.getScale();
         this._myStartShapePosition = this._mySelectedShape.getPosition();
 
         if (this._myCurrentHandedness == PP.HandednessIndex.LEFT) {
@@ -96,15 +104,21 @@ class TranslateTool {
         } else {
             this._myStartHandPosition = PlayerPose.myRightHandPosition.slice(0);
         }
+
+        glMatrix.vec3.subtract(this._myScaleReferenceAxis, this._myStartHandPosition, this._myStartShapePosition);
+        glMatrix.vec3.normalize(this._myScaleReferenceAxis, this._myScaleReferenceAxis);
     }
 
     _stopWork() {
         this._myIsWorking = false;
-        this._mySelectedShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
+        this._mySelectedShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
+        let scale = this._mySelectedShape.getScale();
+        scale = scale.map(function (value) { return Math.max(value, 0.01); });
+        this._mySelectedShape.setScale(scale);
     }
 
     _cancelWork() {
-        this._mySelectedShape.setPosition(this._myStartShapePosition);
+        this._mySelectedShape.setScale(this._myStartShapeScale);
         this._myIsWorking = false;
     }
 }
