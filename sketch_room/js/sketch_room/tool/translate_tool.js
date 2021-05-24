@@ -79,6 +79,7 @@ class TranslateTool {
         }
 
         this._myUseClosestLocalAxis = PP.LeftGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).myIsPressed || PP.RightGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).myIsPressed;
+        this._myUseClosestGlobalAxis = PP.LeftGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed || PP.RightGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed;
 
         if (this._myIsWorking) {
             this._updateWork(dt);
@@ -97,6 +98,8 @@ class TranslateTool {
         if (!this._myClosestAxis) {
             if (this._myUseClosestLocalAxis) {
                 this._updateClosestLocalAxis(dt);
+            } else if (this._myUseClosestGlobalAxis) {
+                this._updateClosestGlobalAxis(dt);
             }
         }
 
@@ -142,6 +145,14 @@ class TranslateTool {
     }
 
     _updateClosestLocalAxis(dt) {
+        this._updateClosestAxis(PP.MathUtils.getLocalAxes(this._myStartShapeTransform));
+    }
+
+    _updateClosestGlobalAxis(dt) {
+        this._updateClosestAxis([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+    }
+
+    _updateClosestAxis(referenceAxes) {
         let averageAxis = null;
         let validCount = 0;
         let translationSum = [0, 0, 0];
@@ -164,9 +175,8 @@ class TranslateTool {
         }
 
         if (averageAxis) {
-            let localAxes = PP.MathUtils.getLocalAxes(this._myStartShapeTransform);
             let minAngle = Math.PI;
-            for (let axis of localAxes) {
+            for (let axis of referenceAxes) {
                 let angle = glMatrix.vec3.angle(axis, averageAxis);
                 if (angle > Math.PI / 2) {
                     angle = Math.PI - angle; //close to axis, direction is not important
