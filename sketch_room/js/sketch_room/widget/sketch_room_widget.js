@@ -35,6 +35,8 @@ class SketchRoomWidget {
             this._toolSelected(ToolType.GRAB);
         } else if (rightAxesInfo.myAxes[0] < -0.9) {
             this._toolSelected(ToolType.TRANSLATE);
+        } else if (rightAxesInfo.myAxes[1] < -0.9) {
+            this._toolSelected(ToolType.ROTATE);
         } else if (rightAxesInfo.myAxes[1] > 0.9) {
             this._toolSelected(ToolType.SCALE);
         }

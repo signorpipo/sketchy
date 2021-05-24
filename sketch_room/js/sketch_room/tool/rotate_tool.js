@@ -1,4 +1,4 @@
-class ScaleTool {
+class RotateTool {
     constructor(toolSettings) {
         this._myToolSettings = toolSettings;
         this._myIsEnabled = false;
@@ -6,11 +6,9 @@ class ScaleTool {
         this._mySelectedShape = null;
 
         this._myStartShapeTransform = [];
-        this._myStartShapeScale = [];
-        this._myStartShapePosition = [];
-        this._myStartHandPosition = [];
-
-        this._myScaleReferenceAxis = [];
+        this._myStartShapeRotation = [];
+        this._myStartHandRotation = [];
+        this._myStartHandRotationInverse = [];
 
         this._myIsWorking = false;
         this._myCurrentHandedness = PP.HandednessIndex.NONE;
@@ -71,24 +69,20 @@ class ScaleTool {
     }
 
     _updateWork(dt) {
-        let handPosition = null;
+        let handRotation = null;
         if (this._myCurrentHandedness == PP.HandednessIndex.LEFT) {
-            handPosition = PlayerPose.myLeftHandPosition.slice(0);
+            handRotation = PlayerPose.myLeftHandRotation.slice(0);
         } else {
-            handPosition = PlayerPose.myRightHandPosition.slice(0);
+            handRotation = PlayerPose.myRightHandRotation.slice(0);
         }
 
-        let translation = [];
-        glMatrix.vec3.subtract(translation, handPosition, this._myStartHandPosition);
-        let rawScale = PP.MathUtils.getComponentAlongAxis(translation, this._myScaleReferenceAxis);
-        let scaleAmount = glMatrix.vec3.length(rawScale) * (PP.MathUtils.isConcordant(rawScale, this._myScaleReferenceAxis) ? 1 : -1);
+        let rotation = [];
+        glMatrix.quat.mul(rotation, handRotation, this._myStartHandRotationInverse);
 
-        let scaleToApply = [scaleAmount, scaleAmount, scaleAmount];
-        scaleToApply = ToolUtils.applyAxesScaleSettings(scaleToApply, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
-        glMatrix.vec3.add(scaleToApply, scaleToApply, this._myStartShapeScale);
-        scaleToApply = scaleToApply.map(function (value) { return Math.max(value, 0.01); });
+        glMatrix.quat.mul(rotation, rotation, this._myStartShapeRotation);
+        glMatrix.quat.normalize(rotation, rotation);
 
-        this._mySelectedShape.setScale(scaleToApply);
+        this._mySelectedShape.setRotation(rotation);
     }
 
     _startWork(handedness) {
@@ -96,29 +90,23 @@ class ScaleTool {
 
         this._myIsWorking = true;
         this._myStartShapeTransform = this._mySelectedShape.getTransform();
-        this._myStartShapeScale = this._mySelectedShape.getScale();
-        this._myStartShapePosition = this._mySelectedShape.getPosition();
+        this._myStartShapeRotation = this._mySelectedShape.getRotation();
 
         if (this._myCurrentHandedness == PP.HandednessIndex.LEFT) {
-            this._myStartHandPosition = PlayerPose.myLeftHandPosition.slice(0);
+            this._myStartHandRotation = PlayerPose.myLeftHandRotation.slice(0);
         } else {
-            this._myStartHandPosition = PlayerPose.myRightHandPosition.slice(0);
+            this._myStartHandRotation = PlayerPose.myRightHandRotation.slice(0);
         }
-
-        glMatrix.vec3.subtract(this._myScaleReferenceAxis, this._myStartHandPosition, this._myStartShapePosition);
-        glMatrix.vec3.normalize(this._myScaleReferenceAxis, this._myScaleReferenceAxis);
+        glMatrix.quat.conjugate(this._myStartHandRotationInverse, this._myStartHandRotation);
     }
 
     _stopWork() {
         this._myIsWorking = false;
-        this._mySelectedShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
-        let scale = this._mySelectedShape.getScale();
-        scale = scale.map(function (value) { return Math.max(value, 0.01); });
-        this._mySelectedShape.setScale(scale);
+        this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
     }
 
     _cancelWork() {
-        this._mySelectedShape.setScale(this._myStartShapeScale);
+        this._mySelectedShape.setRotation(this._myStartShapeRotation);
         this._myIsWorking = false;
     }
 }

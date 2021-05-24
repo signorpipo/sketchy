@@ -21,6 +21,9 @@ WL.registerComponent('sketch-tool-type-gui', {
                 case ToolType.TRANSLATE:
                     color = [230 / 255, 150 / 255, 25 / 255, 1];
                     break;
+                case ToolType.ROTATE:
+                    color = [210 / 255, 60 / 255, 40 / 255, 1];
+                    break;
                 case ToolType.SCALE:
                     color = [50 / 255, 200 / 255, 20 / 255, 1];
                     break;

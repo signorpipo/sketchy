@@ -82,6 +82,7 @@ class ToolManager {
         this._myTools = [];
         this._myTools[ToolType.GRAB] = new GrabTool(this._myToolSettings);
         this._myTools[ToolType.TRANSLATE] = new TranslateTool(this._myToolSettings);
+        this._myTools[ToolType.ROTATE] = new RotateTool(this._myToolSettings);
         this._myTools[ToolType.SCALE] = new ScaleTool(this._myToolSettings);
         this._myTools[ToolType.CREATE] = new CreateTool(this._myToolSettings, this._mySceneObject);
         this._myTools[ToolType.SELECT] = new SelectTool();
