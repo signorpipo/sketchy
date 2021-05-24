@@ -103,15 +103,15 @@ class TranslateTool {
             }
         }
 
-        let translation = [];
-        glMatrix.vec3.subtract(translation, handPosition, this._myStartHandPosition);
-
-        if (this._myClosestAxis) {
-            translation = PP.MathUtils.getComponentAlongAxis(translation, this._myClosestAxis);
-        }
-        //translation = ToolUtils.applyAxesTranslationSettings(translation, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
-
         if (!this._myUseClosestLocalAxis || this._myClosestAxis) {
+            let translation = [];
+            glMatrix.vec3.subtract(translation, handPosition, this._myStartHandPosition);
+
+            if (this._myClosestAxis) {
+                translation = PP.MathUtils.getComponentAlongAxis(translation, this._myClosestAxis);
+            }
+            //translation = ToolUtils.applyAxesTranslationSettings(translation, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
+
             glMatrix.vec3.add(translation, translation, this._myStartShapePosition);
             this._mySelectedShape.setPosition(translation);
         }
