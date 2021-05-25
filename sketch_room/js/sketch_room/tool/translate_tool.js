@@ -13,16 +13,17 @@ class TranslateTool {
         this._myCurrentHandedness = PP.HandednessIndex.NONE;
 
         this._myUseClosestLocalAxis = false;
+        this._myUseClosestGlobalAxis = false;
         this._myClosestAxis = null;
         this._myLastHandPositions = [];
 
         //Setup
         this._myClosestMaxPositions = 10;
         this._myClosestRequiredPositions = 5;
-        this._myClosestMinDifference = 0.001;
+        this._myClosestMinDifference = 0.0005;
 
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("ClosestMaxPositions", 12, 2));
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("ClosestMinDifference", 0.005, 0.001, 4));
+        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("ClosestMaxPositions", 10, 2));
+        PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("ClosestMinDifference", 0.0005, 0.001, 4));
     }
 
     setSelectedShape(object) {
@@ -103,7 +104,7 @@ class TranslateTool {
             }
         }
 
-        if (!this._myUseClosestLocalAxis || this._myClosestAxis) {
+        if (!(this._myUseClosestLocalAxis || this._myUseClosestGlobalAxis) || this._myClosestAxis) {
             let translation = [];
             glMatrix.vec3.subtract(translation, handPosition, this._myStartHandPosition);
 
@@ -131,7 +132,7 @@ class TranslateTool {
         }
 
         this._myClosestAxis = null;
-        this._myClosestLastHandPositions = [];
+        this._myLastHandPositions = [];
     }
 
     _stopWork() {
@@ -168,7 +169,7 @@ class TranslateTool {
 
         if (validCount >= this._myClosestRequiredPositions) {
             let averageAxisToCheck = [];
-            glMatrix.vec3.scale(averageAxisToCheck, translationSum, 1 / validCount);
+            glMatrix.vec3.scale(averageAxisToCheck, translationSum, 1 / validCount); //average useless remove
             if (glMatrix.vec3.length(averageAxisToCheck) > this._myClosestMinDifference) {
                 averageAxis = averageAxisToCheck;
             }

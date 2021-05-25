@@ -143,7 +143,7 @@ class ScaleTool {
         glMatrix.vec3.normalize(this._myScaleReferenceAxis, this._myScaleReferenceAxis);
 
         this._myClosestAxis = null;
-        this._myClosestLastHandPositions = [];
+        this._myLastHandPositions = [];
     }
 
     _stopWork() {

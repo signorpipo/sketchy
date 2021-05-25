@@ -36,9 +36,9 @@ PP.MathUtils = {
 
         return euler;
     },
-    getComponentAlongAxis(value, axis) {
-        let angle = glMatrix.vec3.angle(value, axis);
-        let length = Math.cos(angle) * glMatrix.vec3.length(value);
+    getComponentAlongAxis(vector, axis) {
+        let angle = glMatrix.vec3.angle(vector, axis);
+        let length = Math.cos(angle) * glMatrix.vec3.length(vector);
 
         let component = axis.slice(0);
         glMatrix.vec3.normalize(component, component);
