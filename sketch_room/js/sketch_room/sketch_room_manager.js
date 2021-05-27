@@ -2,7 +2,7 @@ class SketchRoomManager {
     constructor(sceneObject) {
         this._mySceneObject = sceneObject;
         this._myToolManager = new ToolManager(this._mySceneObject);
-        this._mySketchRoomWidget = new SketchRoomWidget();
+        this._mySketchRoomWidget = new SketchRoomWidget(this._myToolManager.getToolSettings());
 
         this._myShapes = [];
         this._mySelectedShape = null;

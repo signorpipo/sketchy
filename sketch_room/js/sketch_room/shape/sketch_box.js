@@ -39,7 +39,7 @@ class SketchBox {
         let scale = this.getScale();
         for (let i = 0; i < scale.length; i++) {
             if (snapValue[i] != 0) {
-                scale[i] = Math.round(scale[i] / snapValue[i]) * snapValue[i];
+                scale[i] = Math.max(snapValue[i], Math.round(scale[i] / snapValue[i]) * snapValue[i]);
             }
         }
         this.setScale(scale);

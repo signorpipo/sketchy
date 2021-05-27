@@ -1,5 +1,6 @@
 class ShapeWidget {
-    constructor() {
+    constructor(toolSettings) {
+        this._myToolSettings = toolSettings;
         this._myAdditionalSetup = null;
 
         this._myWidgets = [];
@@ -39,7 +40,7 @@ class ShapeWidget {
             }
         } else if (this._mySelectedShape) {
             this._myWidgets[this._mySelectedShape.getType()].setVisible(true);
-            this._myWidgets[this._mySelectedShape.getType()].setSelectedShape(shape);
+            this._myWidgets[this._mySelectedShape.getType()].setSelectedShape(this._mySelectedShape);
         }
 
         this._myIsVisible = visible;
@@ -73,7 +74,7 @@ class ShapeWidget {
     }
 
     _initializeWidgets(parentObject) {
-        this._myWidgets[ShapeType.BOX] = new BoxShapeWidget();
+        this._myWidgets[ShapeType.BOX] = new BoxShapeWidget(this._myToolSettings);
 
         for (let widget of this._myWidgets) {
             if (widget) {

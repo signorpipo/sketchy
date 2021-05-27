@@ -6,7 +6,7 @@ class ToolManager {
 
         this._createTools();
 
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("Position Snap", 0.01, 0.1, 3));
+        PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("Position Snap", 0.05, 0.1, 3));
         PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("Rotation Snap", 0, 1, 3));
 
         PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("X Axis Active", 0, 1));
@@ -20,6 +20,10 @@ class ToolManager {
 
     getTool(type) {
         return this._myTools[type];
+    }
+
+    getToolSettings() {
+        return this._myToolSettings;
     }
 
     selectTool(type) {

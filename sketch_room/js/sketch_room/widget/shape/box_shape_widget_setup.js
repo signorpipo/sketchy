@@ -73,5 +73,9 @@ class BoxShapeWidgetSetup extends SketchWidgetSetup {
 
     _initializeRuntimeSetup() {
         super._initializeRuntimeSetup();
+
+        this.myHoverTextColor = [210 / 255, 210 / 255, 210 / 255, 1];
+        this.myModifyThumbstickMinThreshold = 0.2;
+        this.myModifyThumbstickStepPerSecond = 0.1;
     }
 }

@@ -1,5 +1,7 @@
 class SketchRoomWidget {
-    constructor() {
+    constructor(toolSettings) {
+        this._myToolSettings = toolSettings;
+
         this._myWidgetFrame = new SketchWidgetFrame();
         this._myWidgetFrame.registerWidgetVisibleChangedEventListener(this, this._widgetVisibleChanged.bind(this));
         this._myWidgetFrame.registerWidgetChangedEventListener(this, this._widgetChanged.bind(this));
@@ -56,7 +58,7 @@ class SketchRoomWidget {
             }
         }
 
-        if (this._myWidgets[this._myCurrentWidgetType] && !this._myWidgets[this._myCurrentWidgetType].isUsingThumbstick()) {
+        if (!this._myWidgets[this._myCurrentWidgetType] || !this._myWidgets[this._myCurrentWidgetType].isUsingThumbstick()) {
             this._updateGamepadShortcuts(dt);
         }
     }
@@ -99,7 +101,7 @@ class SketchRoomWidget {
     }
 
     _initializeWidgets(parentObject) {
-        this._myWidgets[SketchWidgetType.SHAPE] = new ShapeWidget();
+        this._myWidgets[SketchWidgetType.SHAPE] = new ShapeWidget(this._myToolSettings);
 
         for (let widget of this._myWidgets) {
             if (widget) {

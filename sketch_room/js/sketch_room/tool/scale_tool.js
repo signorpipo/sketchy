@@ -119,7 +119,7 @@ class ScaleTool {
 
             //scaleToApply = ToolUtils.applyAxesScaleSettings(scaleToApply, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
             glMatrix.vec3.add(scaleToApply, scaleToApply, this._myStartShapeScale);
-            scaleToApply = scaleToApply.map(function (value) { return Math.max(value, 0.01); });
+            scaleToApply = scaleToApply.map(function (value) { return Math.max(value, 0.005); });
 
             this._mySelectedShape.setScale(scaleToApply);
         }
