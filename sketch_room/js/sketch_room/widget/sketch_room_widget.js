@@ -1,13 +1,34 @@
 class SketchRoomWidget {
     constructor() {
+        this._myWidgetFrame = new SketchWidgetFrame();
+        this._myWidgetFrame.registerWidgetVisibleChangedEventListener(this, this._widgetVisibleChanged.bind(this));
+        this._myWidgetFrame.registerWidgetChangedEventListener(this, this._widgetChanged.bind(this));
+
+        this._myAdditionalSetup = null;
+
         this._myCurrentToolType = ToolType.NONE;
 
         this._myToolSelectedCallbacks = new Map();
+
+        this._myWidgets = [];
+        this._myCurrentWidgetType = SketchWidgetType.NONE;
     }
 
-    selectTool(toolType) {
+    setSelectedShape(shape) {
+        for (let widget of this._myWidgets) {
+            if (widget) {
+                widget.setSelectedShape(shape);
+            }
+        }
+    }
+
+    setSelectedTool(toolType) {
         this._myCurrentToolType = toolType;
-        //update widgets and stuff
+        for (let widget of this._myWidgets) {
+            if (widget) {
+                widget.setSelectedTool(toolType);
+            }
+        }
     }
 
     registerToolSelectedChangedEventListener(id, callback) {
@@ -18,15 +39,26 @@ class SketchRoomWidget {
         this._myToolSelectedCallbacks.delete(id);
     }
 
-    start() {
-        //create all sub widgets
-        //manage visibility like easy tune
-        //select current one
-        //the widget has the tool manager so it can set the tool and the settings like snap and so on
+    start(parentObject, additionalSetup) {
+        this._myAdditionalSetup = additionalSetup;
+
+        this._myWidgetFrame.start(parentObject, additionalSetup);
+
+        this._initializeWidgets(this._myWidgetFrame.getWidgetObject());
     }
 
     update(dt) {
-        this._updateGamepadShortcuts(dt);
+        this._myWidgetFrame.update(dt);
+
+        for (let widget of this._myWidgets) {
+            if (widget) {
+                widget.update(dt);
+            }
+        }
+
+        if (this._myWidgets[this._myCurrentWidgetType] && !this._myWidgets[this._myCurrentWidgetType].isUsingThumbstick()) {
+            this._updateGamepadShortcuts(dt);
+        }
     }
 
     _updateGamepadShortcuts(dt) {
@@ -50,6 +82,29 @@ class SketchRoomWidget {
         if (this._myCurrentToolType != toolType) {
             for (let value of this._myToolSelectedCallbacks.values()) {
                 value(toolType);
+            }
+        }
+    }
+
+    _widgetChanged(sketchWidgetType) {
+        if (this._myWidgets[this._myCurrentWidgetType]) {
+            this._myWidgets[this._myCurrentWidgetType].setVisible(false);
+        }
+        this._myCurrentWidgetType = sketchWidgetType;
+        this._myWidgets[this._myCurrentWidgetType].setVisible(true);
+    }
+
+    _widgetVisibleChanged() {
+
+    }
+
+    _initializeWidgets(parentObject) {
+        this._myWidgets[SketchWidgetType.SHAPE] = new ShapeWidget();
+
+        for (let widget of this._myWidgets) {
+            if (widget) {
+                widget.start(parentObject, this._myAdditionalSetup);
+                widget.setVisible(false);
             }
         }
     }

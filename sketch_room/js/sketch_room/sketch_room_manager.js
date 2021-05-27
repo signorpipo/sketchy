@@ -13,7 +13,13 @@ class SketchRoomManager {
         this._registerWidgetEventListeners();
 
         this._myToolManager.start();
-        this._mySketchRoomWidget.start();
+
+        let widgetAdditionalSetup = {};
+        widgetAdditionalSetup.myShowOnStart = true;
+        widgetAdditionalSetup.myShowVisibilityButton = true;
+        widgetAdditionalSetup.myPlaneMaterial = WidgetData.myPlaneMaterial;
+        widgetAdditionalSetup.myTextMaterial = WidgetData.myTextMaterial;
+        this._mySketchRoomWidget.start(PlayerPose.myLeftHandObject, widgetAdditionalSetup);
 
         this._toolSelected(ToolType.CREATE);
     }
@@ -74,13 +80,15 @@ class SketchRoomManager {
         if (this._mySelectedShape) {
             this._mySelectedShape.setSelected(true);
         }
+
         this._myToolManager.setSelectedShape(this._mySelectedShape);
+        this._mySketchRoomWidget.setSelectedShape(this._mySelectedShape);
     }
 
     //Widget Event Related
     _toolSelected(toolType) {
-        this._mySketchRoomWidget.selectTool(toolType);
         this._myToolManager.selectTool(toolType);
+        this._mySketchRoomWidget.setSelectedTool(toolType);
     }
 
 }

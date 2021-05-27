@@ -6,6 +6,8 @@ class SketchBox {
         this._mySelected = false;
         this._mySelectedTimer = 0;
 
+        this._myType = ShapeType.BOX;
+
         this._buildObject();
 
         //Setup
@@ -54,6 +56,10 @@ class SketchBox {
         } else {
             this._mySelectedTimer = 0;
         }
+    }
+
+    getType() {
+        return this._myType;
     }
 
     getObject() {

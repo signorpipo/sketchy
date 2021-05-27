@@ -2,6 +2,11 @@ WL.registerComponent('set-global-hand-pose', {
     _myHandedness: { type: WL.Type.Enum, values: ['left', 'right'], default: 'left' },
 }, {
     init: function () {
+        if (this._myHandedness == 0) {
+            PlayerPose.myLeftHandObject = this.object;
+        } else {
+            PlayerPose.myRightHandObject = this.object;
+        }
     },
     start: function () {
     },

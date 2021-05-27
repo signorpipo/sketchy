@@ -1,8 +1,11 @@
 WL.registerComponent('sketch-room-component', {
-    _myMaterial: { type: WL.Type.Material, default: null },
+    _myShapeMaterial: { type: WL.Type.Material, default: null },
+    _myPlaneMaterial: { type: WL.Type.Material, default: null },
+    _myTextMaterial: { type: WL.Type.Material, default: null },
 }, {
     init: function () {
         this._initializeSketchShapeData();
+        this._initializeWidgetData();
 
         this._mySceneObject = WL.scene.addObject(this.object);
         this._myManager = new SketchRoomManager(this._mySceneObject);
@@ -15,7 +18,12 @@ WL.registerComponent('sketch-room-component', {
     },
     _initializeSketchShapeData: function () {
         SketchShapeData.myCubeMesh = PP.MeshUtils.createCubeMesh();
-        SketchShapeData.myMaterial = this._myMaterial;
+        SketchShapeData.myMaterial = this._myShapeMaterial;
         SketchShapeData.myCollisionGroup = 1;
+    },
+    _initializeWidgetData: function () {
+        WidgetData.myPlaneMaterial = this._myPlaneMaterial;
+        WidgetData.myTextMaterial = this._myTextMaterial;
+        WidgetData.myPlaneMesh = PP.MeshUtils.createPlaneMesh();
     }
 });
