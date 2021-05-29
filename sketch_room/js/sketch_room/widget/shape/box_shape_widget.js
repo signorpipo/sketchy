@@ -94,8 +94,12 @@ class BoxShapeWidget {
         this._myUI.myWidthValueCursorTargetComponent.addUnHoverFunction(this._widthUnHover.bind(this));
         this._myUI.myDepthValueCursorTargetComponent.addHoverFunction(this._depthHover.bind(this));
         this._myUI.myDepthValueCursorTargetComponent.addUnHoverFunction(this._depthUnHover.bind(this));
-        //hover size for gamepad stuff
-        //color stuff
+
+        for (let i = 0; i < this._myUI.myColorButtonsCursorTargetComponents.length; i++) {
+            this._myUI.myColorButtonsCursorTargetComponents[i].addClickFunction(this._changeColor.bind(this, i));
+            this._myUI.myColorButtonsCursorTargetComponents[i].addHoverFunction(this._colorHover.bind(this, i));
+            this._myUI.myColorButtonsCursorTargetComponents[i].addUnHoverFunction(this._colorUnHover.bind(this, i));
+        }
     }
 
     _heightHover() {
@@ -142,5 +146,26 @@ class BoxShapeWidget {
         valueTextComponent.material.outlineColor = this._mySetup.myTextOutlineColor;
 
         this._mySelectedShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
+    }
+
+    _changeColor(index) {
+        let newColor = this._mySetup.myColors[index];
+        this._mySelectedShape.setColor(newColor);
+    }
+
+    _colorHover(index) {
+        let material = this._myUI.myColorButtonsBackgroundComponents[index].material;
+        let color = this._mySetup.myColors[index].slice(0);
+
+        for (let i = 0; i < 3; ++i) {
+            color[i] = Math.min(1, color[i] + (1 - color[i]) * 0.6);
+        }
+
+        material.color = color;
+    }
+
+    _colorUnHover(index) {
+        let material = this._myUI.myColorButtonsBackgroundComponents[index].material;
+        material.color = this._mySetup.myColors[index];
     }
 }

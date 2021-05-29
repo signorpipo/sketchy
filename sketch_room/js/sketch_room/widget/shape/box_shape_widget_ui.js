@@ -25,16 +25,17 @@ class BoxShapeWidgetUI {
     //Skeleton
     _createSkeleton() {
         this.myPivotObject = WL.scene.addObject(this._myParentObject);
-
-        this._createMainSkeleton();
-        this._createPointerSkeleton();
-    }
-
-    _createMainSkeleton() {
         this.myMainPanel = WL.scene.addObject(this.myPivotObject);
         this.myMainPanelBackground = WL.scene.addObject(this.myMainPanel);
 
         this.myShapeTypeLabelText = WL.scene.addObject(this.myMainPanel);
+
+        this._createSizeSkeleton();
+        this._createColorSkeleton();
+        this._createPointerSkeleton();
+    }
+
+    _createSizeSkeleton() {
 
         this.mySizePanel = WL.scene.addObject(this.myMainPanel);
         this.mySizeLabelText = WL.scene.addObject(this.mySizePanel);
@@ -54,6 +55,27 @@ class BoxShapeWidgetUI {
         this.myDepthValueCursorTarget = WL.scene.addObject(this.mySizeValuesPanel);
     }
 
+    _createColorSkeleton() {
+        this.myColorPanel = WL.scene.addObject(this.myMainPanel);
+        this.myColorLabelText = WL.scene.addObject(this.myColorPanel);
+
+        this.myColorButtonsPanel = WL.scene.addObject(this.myColorPanel);
+
+        this.myColorButtons = [];
+        this.myColorButtonsBackgrounds = [];
+        this.myColorButtonsCursorTargets = [];
+
+        for (let i = 0; i < this._mySetup.myColors.length; i++) {
+            let colorButton = WL.scene.addObject(this.myColorButtonsPanel);
+            let colorButtonBackground = WL.scene.addObject(colorButton);
+            let colorButtonCursorTarget = WL.scene.addObject(colorButton);
+
+            this.myColorButtons.push(colorButton);
+            this.myColorButtonsBackgrounds.push(colorButtonBackground);
+            this.myColorButtonsCursorTargets.push(colorButtonCursorTarget);
+        }
+    }
+
     _createPointerSkeleton() {
         this.myPointerCursorTarget = WL.scene.addObject(this.myPivotObject);
     }
@@ -62,17 +84,18 @@ class BoxShapeWidgetUI {
     _setTransforms() {
         this.myPivotObject.setTranslationLocal(this._mySetup.myPivotObjectPosition);
 
-        this._setMainTransforms();
-        this._setPointerTransform();
-    }
-
-    _setMainTransforms() {
         this.myMainPanel.setTranslationLocal(this._mySetup.myMainPanelPosition);
         this.myMainPanelBackground.scale(this._mySetup.myMainPanelBackgroundScale);
 
         this.myShapeTypeLabelText.setTranslationLocal(this._mySetup.myShapeTypeLabelTextPosition);
         this.myShapeTypeLabelText.scale(this._mySetup.myShapeTypeLabelTextScale);
 
+        this._setSizeTransforms();
+        this._setColorTransforms();
+        this._setPointerTransform();
+    }
+
+    _setSizeTransforms() {
         this.mySizePanel.setTranslationLocal(this._mySetup.mySizePanelPosition);
         this.mySizeLabelText.setTranslationLocal(this._mySetup.mySizeLabelTextPosition);
         this.mySizeLabelText.scale(this._mySetup.mySizeLabelTextScale);
@@ -98,17 +121,26 @@ class BoxShapeWidgetUI {
         this.myDepthValueCursorTarget.setTranslationLocal(this._mySetup.myDepthValueCursorTargetPosition);
     }
 
+    _setColorTransforms() {
+        this.myColorPanel.setTranslationLocal(this._mySetup.myColorPanelPosition);
+        this.myColorLabelText.setTranslationLocal(this._mySetup.myColorLabelTextPosition);
+        this.myColorLabelText.scale(this._mySetup.myColorLabelTextScale);
+
+        this.myColorButtonsPanel.setTranslationLocal(this._mySetup.myColorButtonsPanelPosition);
+
+        for (let i = 0; i < this._mySetup.myColors.length; i++) {
+            this.myColorButtons[i].setTranslationLocal(this._mySetup.myColorsButtonPositions[i]);
+            this.myColorButtonsBackgrounds[i].scale(this._mySetup.myColorButtonScale);
+            this.myColorButtonsCursorTargets[i].setTranslationLocal(this._mySetup.myColorCursorTargetPosition);
+        }
+    }
+
     _setPointerTransform() {
         this.myPointerCursorTarget.setTranslationLocal(this._mySetup.myPointerCursorTargetPosition);
     }
 
     //Components
     _addComponents() {
-        this._addMainComponents();
-        this._addPointerComponents();
-    }
-
-    _addMainComponents() {
         this.myMainPanelBackgroundComponent = this.myMainPanelBackground.addComponent('mesh');
         this.myMainPanelBackgroundComponent.mesh = this._myPlaneMesh;
         this.myMainPanelBackgroundComponent.material = this._myAdditionalSetup.myPlaneMaterial.clone();
@@ -118,6 +150,12 @@ class BoxShapeWidgetUI {
         this._setupTextComponent(this.myShapeTypeLabelTextComponent);
         this.myShapeTypeLabelTextComponent.text = "Box";
 
+        this._addSizeComponents();
+        this._addColorComponents();
+        this._addPointerComponents();
+    }
+
+    _addSizeComponents() {
         this.mySizeLabelTextComponent = this.mySizeLabelText.addComponent('text');
         this._setupTextComponent(this.mySizeLabelTextComponent);
         this.mySizeLabelTextComponent.text = this._mySetup.mySizeLabelText;
@@ -173,6 +211,34 @@ class BoxShapeWidgetUI {
         this.myDepthValueCollisionComponent.collider = this._mySetup.myCursorTargetCollisionCollider;
         this.myDepthValueCollisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
         this.myDepthValueCollisionComponent.extents = this._mySetup.myDepthValueCollisionExtents;
+    }
+
+    _addColorComponents() {
+        this.myColorLabelTextComponent = this.myColorLabelText.addComponent('text');
+        this._setupTextComponent(this.myColorLabelTextComponent);
+        this.myColorLabelTextComponent.text = this._mySetup.myColorLabelText;
+        this.myColorLabelTextComponent.alignment = WL.Alignment.Left;
+
+        this.myColorButtonsBackgroundComponents = [];
+        this.myColorButtonsCursorTargetComponents = [];
+        this.myColorButtonsCursorCollisionComponents = [];
+
+        for (let i = 0; i < this._mySetup.myColors.length; i++) {
+            let backgroundComponent = this.myColorButtonsBackgrounds[i].addComponent('mesh');
+            backgroundComponent.mesh = this._myPlaneMesh;
+            backgroundComponent.material = this._myAdditionalSetup.myPlaneMaterial.clone();
+            backgroundComponent.material.color = this._mySetup.myColors[i];
+
+            let cursorTargetComponent = this.myColorButtonsCursorTargets[i].addComponent('cursor-target');
+            let collisionComponent = this.myColorButtonsCursorTargets[i].addComponent('collision');
+            collisionComponent.collider = this._mySetup.myCursorTargetCollisionCollider;
+            collisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
+            collisionComponent.extents = this._mySetup.myColorCollisionExtents;
+
+            this.myColorButtonsBackgroundComponents.push(backgroundComponent);
+            this.myColorButtonsCursorTargetComponents.push(cursorTargetComponent);
+            this.myColorButtonsCursorCollisionComponents.push(collisionComponent);
+        }
     }
 
     _addPointerComponents() {
