@@ -79,6 +79,11 @@ class SketchWidgetFrameUI {
         this.myShapeButtonBackground = WL.scene.addObject(this.myShapeButtonPanel);
         this.myShapeButtonText = WL.scene.addObject(this.myShapeButtonPanel);
         this.myShapeButtonCursorTarget = WL.scene.addObject(this.myShapeButtonPanel);
+
+        this.myToolsButtonPanel = WL.scene.addObject(this.myButtonsPanel);
+        this.myToolsButtonBackground = WL.scene.addObject(this.myToolsButtonPanel);
+        this.myToolsButtonText = WL.scene.addObject(this.myToolsButtonPanel);
+        this.myToolsButtonCursorTarget = WL.scene.addObject(this.myToolsButtonPanel);
     }
 
     //Transforms
@@ -104,6 +109,12 @@ class SketchWidgetFrameUI {
         this.myShapeButtonText.setTranslationLocal(this._mySetup.myShapeButtonTextPosition);
         this.myShapeButtonText.scale(this._mySetup.myShapeButtonTextScale);
         this.myShapeButtonCursorTarget.setTranslationLocal(this._mySetup.myShapeButtonCursorTargetPosition);
+
+        this.myToolsButtonPanel.setTranslationLocal(this._mySetup.myToolsButtonPosition);
+        this.myToolsButtonBackground.scale(this._mySetup.myToolsButtonBackgroundScale);
+        this.myToolsButtonText.setTranslationLocal(this._mySetup.myToolsButtonTextPosition);
+        this.myToolsButtonText.scale(this._mySetup.myToolsButtonTextScale);
+        this.myToolsButtonCursorTarget.setTranslationLocal(this._mySetup.myToolsButtonCursorTargetPosition);
     }
 
     //Components
@@ -142,7 +153,7 @@ class SketchWidgetFrameUI {
         this.myPinButtonCollisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
         this.myPinButtonCollisionComponent.extents = this._mySetup.myPinButtonCollisionExtents;
 
-        //Pin
+        //Shape
         this.myShapeButtonBackgroundComponent = this.myShapeButtonBackground.addComponent('mesh');
         this.myShapeButtonBackgroundComponent.mesh = this._myPlaneMesh;
         this.myShapeButtonBackgroundComponent.material = this._myAdditionalSetup.myPlaneMaterial.clone();
@@ -159,6 +170,24 @@ class SketchWidgetFrameUI {
         this.myShapeButtonCollisionComponent.collider = this._mySetup.myCursorTargetCollisionCollider;
         this.myShapeButtonCollisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
         this.myShapeButtonCollisionComponent.extents = this._mySetup.myShapeButtonCollisionExtents;
+
+        //Tools
+        this.myToolsButtonBackgroundComponent = this.myToolsButtonBackground.addComponent('mesh');
+        this.myToolsButtonBackgroundComponent.mesh = this._myPlaneMesh;
+        this.myToolsButtonBackgroundComponent.material = this._myAdditionalSetup.myPlaneMaterial.clone();
+        this.myToolsButtonBackgroundComponent.material.color = this._mySetup.myButtonDisabledBackgroundColor;
+
+        this.myToolsButtonTextComponent = this.myToolsButtonText.addComponent('text');
+        this._setupButtonTextComponent(this.myToolsButtonTextComponent);
+        this.myToolsButtonTextComponent.material.color = this._mySetup.myButtonDisabledTextColor;
+        this.myToolsButtonTextComponent.text = this._mySetup.myToolsButtonText;
+
+        this.myToolsButtonCursorTargetComponent = this.myToolsButtonCursorTarget.addComponent('cursor-target');
+
+        this.myToolsButtonCollisionComponent = this.myToolsButtonCursorTarget.addComponent('collision');
+        this.myToolsButtonCollisionComponent.collider = this._mySetup.myCursorTargetCollisionCollider;
+        this.myToolsButtonCollisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
+        this.myToolsButtonCollisionComponent.extents = this._mySetup.myToolsButtonCollisionExtents;
     }
 
     _setupButtonTextComponent(textComponent) {

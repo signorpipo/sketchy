@@ -62,10 +62,10 @@ class ToolManager {
             }
         }
 
-        this._myToolSettings.mySnapSettings.myPositionSnap = [PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue];
-        let radianValue = PP.MathUtils.toRadians(PP.EasyTuneVariables.get("Rotation Snap").myValue);
-        this._myToolSettings.mySnapSettings.myRotationSnap = [radianValue, radianValue, radianValue];
-        this._myToolSettings.mySnapSettings.myScaleSnap = [PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue];
+        //this._myToolSettings.mySnapSettings.myPositionSnap = [PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue];
+        //let radianValue = PP.MathUtils.toRadians(PP.EasyTuneVariables.get("Rotation Snap").myValue);
+        //this._myToolSettings.mySnapSettings.myRotationSnap = [radianValue, radianValue, radianValue];
+        //this._myToolSettings.mySnapSettings.myScaleSnap = [PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue];
 
         this._myToolSettings.myAxesSettings.myTranslationAxes = [
             PP.EasyTuneVariables.get("X Axis Active").myValue >= 0,

@@ -84,6 +84,10 @@ class SketchWidgetFrame {
         ui.myShapeButtonCursorTargetComponent.addClickFunction(this._selectShape.bind(this, true));
         ui.myShapeButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, ui.myShapeButtonBackgroundComponent.material));
         ui.myShapeButtonCursorTargetComponent.addUnHoverFunction(this._shapeUnHover.bind(this, ui.myShapeButtonBackgroundComponent.material));
+
+        ui.myToolsButtonCursorTargetComponent.addClickFunction(this._selectTools.bind(this, true));
+        ui.myToolsButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, ui.myToolsButtonBackgroundComponent.material));
+        ui.myToolsButtonCursorTargetComponent.addUnHoverFunction(this._shapeUnHover.bind(this, ui.myToolsButtonBackgroundComponent.material));
     }
 
     _toggleVisibility(isButton) {
@@ -151,12 +155,35 @@ class SketchWidgetFrame {
         }
     }
 
+    _selectTools() {
+        if (this.myIsWidgetVisible && this._myCurrentSketchWidget != SketchWidgetType.TOOLS) {
+            this._myCurrentSketchWidget = SketchWidgetType.TOOLS;
+
+            this._deselectAllWidgetTypeButtons();
+
+            let textMaterial = this._myUI.myToolsButtonTextComponent.material;
+            textMaterial.color = this._mySetup.myDefaultTextColor;
+
+            for (let value of this._myWidgetChangedCallbacks.values()) {
+                value(this._myCurrentSketchWidget);
+            }
+        }
+    }
+
     _deselectAllWidgetTypeButtons() {
         {
             let textMaterial = this._myUI.myShapeButtonTextComponent.material;
             textMaterial.color = this._mySetup.myButtonDisabledTextColor;
 
             let backgroundMaterial = this._myUI.myShapeButtonBackgroundComponent.material;
+            backgroundMaterial.color = this._mySetup.myButtonDisabledBackgroundColor;
+        }
+
+        {
+            let textMaterial = this._myUI.myToolsButtonTextComponent.material;
+            textMaterial.color = this._mySetup.myButtonDisabledTextColor;
+
+            let backgroundMaterial = this._myUI.myToolsButtonBackgroundComponent.material;
             backgroundMaterial.color = this._mySetup.myButtonDisabledBackgroundColor;
         }
     }
@@ -192,5 +219,6 @@ class SketchWidgetFrame {
 
 var SketchWidgetType = {
     NONE: 0,
-    SHAPE: 1
+    SHAPE: 1,
+    TOOLS: 2,
 };

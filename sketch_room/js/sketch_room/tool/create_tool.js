@@ -86,8 +86,8 @@ class CreateTool {
     _createShape(position) {
         let object = new SketchBox(this._mySceneObject);
         object.setPosition(position);
-        object.setScale(this._myShapeScale);
-        object.setColor(this._myShapeColor);
+        object.setScale(this._myToolSettings.myCreateSettings.myScale);
+        object.setColor(this._myToolSettings.myCreateSettings.myColor);
 
         object.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
         object.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
