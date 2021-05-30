@@ -89,6 +89,11 @@ class SketchBox {
         return this._myObject.scalingWorld.slice(0);
     }
 
+
+    getColor() {
+        return this._myColor;
+    }
+
     setTransform(value) {
         let position = [];
         glMatrix.quat2.getTranslation(position, value);

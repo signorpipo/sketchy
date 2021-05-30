@@ -64,15 +64,18 @@ class BoxShapeWidgetUI {
         this.myColorButtons = [];
         this.myColorButtonsBackgrounds = [];
         this.myColorButtonsCursorTargets = [];
+        this.myColorButtonsSelectedBackgrounds = [];
 
         for (let i = 0; i < this._mySetup.myColors.length; i++) {
             let colorButton = WL.scene.addObject(this.myColorButtonsPanel);
             let colorButtonBackground = WL.scene.addObject(colorButton);
             let colorButtonCursorTarget = WL.scene.addObject(colorButton);
+            let colorButtonSelectedBackground = WL.scene.addObject(colorButton);
 
             this.myColorButtons.push(colorButton);
             this.myColorButtonsBackgrounds.push(colorButtonBackground);
             this.myColorButtonsCursorTargets.push(colorButtonCursorTarget);
+            this.myColorButtonsSelectedBackgrounds.push(colorButtonSelectedBackground);
         }
     }
 
@@ -132,6 +135,8 @@ class BoxShapeWidgetUI {
             this.myColorButtons[i].setTranslationLocal(this._mySetup.myColorsButtonPositions[i]);
             this.myColorButtonsBackgrounds[i].scale(this._mySetup.myColorButtonScale);
             this.myColorButtonsCursorTargets[i].setTranslationLocal(this._mySetup.myColorCursorTargetPosition);
+            this.myColorButtonsSelectedBackgrounds[i].setTranslationLocal(this._mySetup.myColorSelectedBackgroundPosition);
+            this.myColorButtonsSelectedBackgrounds[i].scale([0, 0, 0]);
         }
     }
 
@@ -222,6 +227,7 @@ class BoxShapeWidgetUI {
         this.myColorButtonsBackgroundComponents = [];
         this.myColorButtonsCursorTargetComponents = [];
         this.myColorButtonsCursorCollisionComponents = [];
+        this.myColorButtonsSelectedBackgroundComponents = [];
 
         for (let i = 0; i < this._mySetup.myColors.length; i++) {
             let backgroundComponent = this.myColorButtonsBackgrounds[i].addComponent('mesh');
@@ -235,9 +241,15 @@ class BoxShapeWidgetUI {
             collisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
             collisionComponent.extents = this._mySetup.myColorCollisionExtents;
 
+            let selectedBackgroundComponent = this.myColorButtonsSelectedBackgrounds[i].addComponent('mesh');
+            selectedBackgroundComponent.mesh = this._myPlaneMesh;
+            selectedBackgroundComponent.material = this._myAdditionalSetup.myPlaneMaterial.clone();
+            selectedBackgroundComponent.material.color = this._mySetup.myColorSelectedBackgroundColor;
+
             this.myColorButtonsBackgroundComponents.push(backgroundComponent);
             this.myColorButtonsCursorTargetComponents.push(cursorTargetComponent);
             this.myColorButtonsCursorCollisionComponents.push(collisionComponent);
+            this.myColorButtonsSelectedBackgroundComponents.push(selectedBackgroundComponent);
         }
     }
 

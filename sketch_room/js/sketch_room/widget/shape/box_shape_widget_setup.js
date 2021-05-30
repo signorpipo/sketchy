@@ -107,6 +107,10 @@ class BoxShapeWidgetSetup extends SketchWidgetSetup {
             this.myColorsButtonPositions.push(colorPosition);
         }
 
+        this.myColorSelectedBackgroundPosition = [0, 0, -0.002];
+        this.myColorSelectedBackgroundScale = [this.myColorButtonScale[0] + 0.0025, this.myColorButtonScale[1] + 0.0025, this.myColorButtonScale[2] + 0.0025];
+        this.myColorSelectedBackgroundColor = [200 / 255, 200 / 255, 200 / 255, 1];
+
         this.myColorCursorTargetPosition = [0, 0, 0];
         this.myColorCollisionExtents = this.myColorButtonScale.slice(0);
         this.myColorCollisionExtents[2] = this.myCursorTargetCollisionThickness;

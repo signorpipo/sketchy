@@ -84,6 +84,16 @@ class BoxShapeWidget {
             this._myUI.myHeightValueTextComponent.text = size[1].toFixed(3);
             this._myUI.myWidthValueTextComponent.text = size[0].toFixed(3);
             this._myUI.myDepthValueTextComponent.text = size[2].toFixed(3);
+
+            for (let i = 0; i < this._myUI.myColorButtonsSelectedBackgrounds.length; i++) {
+                this._myUI.myColorButtonsSelectedBackgrounds[i].scale([0, 0, 0]);
+            }
+
+            let colorIndex = this._mySetup.myColors.findIndex(function (value) { return glMatrix.vec4.equals(value, this._mySelectedShape.getColor()); }.bind(this));
+            if (colorIndex >= 0) {
+                this._myUI.myColorButtonsSelectedBackgrounds[colorIndex].resetScaling();
+                this._myUI.myColorButtonsSelectedBackgrounds[colorIndex].scale(this._mySetup.myColorSelectedBackgroundScale);
+            }
         }
     }
 
