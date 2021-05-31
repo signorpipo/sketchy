@@ -19,7 +19,7 @@ class SketchRoomManager {
         widgetAdditionalSetup.myShowVisibilityButton = true;
         widgetAdditionalSetup.myPlaneMaterial = WidgetData.myPlaneMaterial;
         widgetAdditionalSetup.myTextMaterial = WidgetData.myTextMaterial;
-        this._mySketchRoomWidget.start(PlayerPose.myLeftHandObject, widgetAdditionalSetup);
+        this._mySketchRoomWidget.start(PlayerPose.myLeftHandObject, PlayerPose.myRightHandObject, widgetAdditionalSetup);
 
         this._toolSelected(ToolType.CREATE);
     }

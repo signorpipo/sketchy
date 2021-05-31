@@ -14,6 +14,8 @@ class SketchRoomWidget {
 
         this._myWidgets = [];
         this._myCurrentWidgetType = SketchWidgetType.NONE;
+
+        this._myCurrentToolWidget = null;
     }
 
     setSelectedShape(shape) {
@@ -22,6 +24,8 @@ class SketchRoomWidget {
                 widget.setSelectedShape(shape);
             }
         }
+
+        this._myCurrentToolWidget.setSelectedShape(shape);
     }
 
     setSelectedTool(toolType) {
@@ -31,6 +35,8 @@ class SketchRoomWidget {
                 widget.setSelectedTool(toolType);
             }
         }
+
+        this._myCurrentToolWidget.setSelectedTool(toolType);
     }
 
     registerToolSelectedChangedEventListener(id, callback) {
@@ -41,12 +47,12 @@ class SketchRoomWidget {
         this._myToolSelectedCallbacks.delete(id);
     }
 
-    start(parentObject, additionalSetup) {
+    start(widgetsParentObject, currentToolWidgetParentObject, additionalSetup) {
         this._myAdditionalSetup = additionalSetup;
 
-        this._myWidgetFrame.start(parentObject, additionalSetup);
+        this._myWidgetFrame.start(widgetsParentObject, additionalSetup);
 
-        this._initializeWidgets(this._myWidgetFrame.getWidgetObject());
+        this._initializeWidgets(this._myWidgetFrame.getWidgetObject(), currentToolWidgetParentObject);
     }
 
     update(dt) {
@@ -61,6 +67,8 @@ class SketchRoomWidget {
         if (!this._myWidgets[this._myCurrentWidgetType] || !this._myWidgets[this._myCurrentWidgetType].isUsingThumbstick()) {
             this._updateGamepadShortcuts(dt);
         }
+
+        this._myCurrentToolWidget.update(dt);
     }
 
     _updateGamepadShortcuts(dt) {
@@ -100,15 +108,19 @@ class SketchRoomWidget {
 
     }
 
-    _initializeWidgets(parentObject) {
+    _initializeWidgets(widgetsParentObject, currentToolWidgetParentObject) {
         this._myWidgets[SketchWidgetType.SHAPE] = new ShapeWidget(this._myToolSettings);
         this._myWidgets[SketchWidgetType.TOOLS] = new ToolsWidget(this._myToolSettings);
 
         for (let widget of this._myWidgets) {
             if (widget) {
-                widget.start(parentObject, this._myAdditionalSetup);
+                widget.start(widgetsParentObject, this._myAdditionalSetup);
                 widget.setVisible(false);
             }
         }
+
+        this._myCurrentToolWidget = new CurrentToolWidget(this._myToolSettings);
+        this._myCurrentToolWidget.start(currentToolWidgetParentObject, this._myAdditionalSetup);
+        this._myCurrentToolWidget.setVisible(true);
     }
-}
+};
