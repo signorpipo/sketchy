@@ -2678,7 +2678,8 @@
                 "js/sketch_room/widget/tools",
                 "js/sketch_room/widget/current_tool",
                 "js/sketch_room/shape/types",
-                "js/sketch_room/wall"
+                "js/sketch_room/wall",
+                "js/sketch_room/widget/shape/wall"
             ]
         },
         "editor": {

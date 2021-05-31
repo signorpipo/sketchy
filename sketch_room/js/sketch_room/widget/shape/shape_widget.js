@@ -75,6 +75,7 @@ class ShapeWidget {
 
     _initializeWidgets(parentObject) {
         this._myWidgets[ShapeType.BOX] = new BoxShapeWidget(this._myToolSettings);
+        this._myWidgets[ShapeType.WALL] = new WallShapeWidget(this._myToolSettings);
 
         for (let widget of this._myWidgets) {
             if (widget) {

@@ -132,7 +132,7 @@ WL.registerComponent('fixed-cursor', {
         if (rayHit.hitCount > 0) {
             let collision = rayHit.objects[0].getComponent("collision");
             if (collision) {
-                isHitValid = collision.group == this.collisionMask;
+                isHitValid = collision.group & this.collisionMask;
             }
         }
 
