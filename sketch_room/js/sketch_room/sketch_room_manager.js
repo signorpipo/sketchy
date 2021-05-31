@@ -1,8 +1,9 @@
 class SketchRoomManager {
-    constructor(sceneObject) {
+    constructor(sceneObject, lightObject) {
         this._mySceneObject = sceneObject;
         this._myToolManager = new ToolManager(this._mySceneObject);
         this._mySketchRoomWidget = new SketchRoomWidget(this._myToolManager.getToolSettings());
+        this._myWallManager = new WallManager(this._mySceneObject, lightObject);
 
         this._myShapes = [];
         this._mySelectedShape = null;
@@ -11,6 +12,7 @@ class SketchRoomManager {
     start() {
         this._registerToolsEventListeners();
         this._registerWidgetEventListeners();
+
 
         this._myToolManager.start();
 
@@ -21,12 +23,15 @@ class SketchRoomManager {
         widgetAdditionalSetup.myTextMaterial = WidgetData.myTextMaterial;
         this._mySketchRoomWidget.start(PlayerPose.myLeftHandObject, PlayerPose.myRightHandObject, widgetAdditionalSetup);
 
+        this._myWallManager.start();
+
         this._toolSelected(ToolType.CREATE);
     }
 
     update(dt) {
         this._myToolManager.update(dt);
         this._mySketchRoomWidget.update(dt);
+        this._myWallManager.update(dt);
 
         for (let shape of this._myShapes) {
             shape.update(dt);
@@ -90,5 +95,4 @@ class SketchRoomManager {
         this._myToolManager.selectTool(toolType);
         this._mySketchRoomWidget.setSelectedTool(toolType);
     }
-
 }

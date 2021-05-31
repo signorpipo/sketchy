@@ -65,11 +65,13 @@ class SelectTool {
             HandCursor.myRightCursor._setCursorVisibility(false);
         }
 
+        let squeezePressed = PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed || PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed;
+
         //activate cursor only when the button is pressed
-        if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SELECT).isPressStart()) {
+        if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SELECT).isPressStart() && !squeezePressed) {
             HandCursor.myLeftCursor.active = true;
         }
-        if (PP.RightGamepad.getButtonInfo(PP.ButtonType.SELECT).isPressStart()) {
+        if (PP.RightGamepad.getButtonInfo(PP.ButtonType.SELECT).isPressStart() && !squeezePressed) {
             HandCursor.myRightCursor.active = true;
         }
 
@@ -111,9 +113,13 @@ class SelectTool {
         if (this._myIsEnabled) {
             if (shape) {
                 let shapeComp = shape.getComponent("sketch-shape");
-                if (shapeComp && shapeComp.myShape) {
+                if (shapeComp && shapeComp.myShape && (shapeComp.myShape.getType() != ShapeType.WALL || !this._mySelectedShape || this._mySelectedShape.getType() == ShapeType.WALL)) {
                     for (let value of this._myShapeSelectedCallbacks.values()) {
                         value(shapeComp.myShape);
+                    }
+                } else if (this._mySelectedShape) {
+                    for (let value of this._myShapeSelectedCallbacks.values()) {
+                        value(null);
                     }
                 }
             } else {

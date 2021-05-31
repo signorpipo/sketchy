@@ -99,7 +99,7 @@ class CreateTool {
     }
 
     _deleteSelectedShape() {
-        if (this._mySelectedShape) {
+        if (this._mySelectedShape && this._mySelectedShape.getType() != ShapeType.WALL) {
             let selected = this._mySelectedShape; //keep it after delete deselecting occurs
 
             for (let value of this._myShapeDeletedCallbacks.values()) {

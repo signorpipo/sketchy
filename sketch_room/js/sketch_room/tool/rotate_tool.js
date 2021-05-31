@@ -53,14 +53,14 @@ class RotateTool {
         }
 
         if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressStart()) {
-            if (!this._myIsWorking && this._mySelectedShape) {
+            if (!this._myIsWorking && this._mySelectedShape && this._mySelectedShape.getType() != ShapeType.WALL) {
                 this._startWork(PP.HandednessIndex.LEFT);
             } else if (this._myIsWorking) {
                 this._cancelWork();
             }
         }
         if (PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressStart()) {
-            if (!this._myIsWorking && this._mySelectedShape) {
+            if (!this._myIsWorking && this._mySelectedShape && this._mySelectedShape.getType() != ShapeType.WALL) {
                 this._startWork(PP.HandednessIndex.RIGHT);
             } else if (this._myIsWorking) {
                 this._cancelWork();

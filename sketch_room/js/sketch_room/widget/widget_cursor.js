@@ -35,7 +35,7 @@ WL.registerComponent('widget-cursor', {
         this._myCursorMeshComponent.material = this._myCursorMaterial.clone();
         this._myCursorMeshComponent.material.color = this._myCursorColor;
 
-        this._myCursorComponent = this._myCursorObject.addComponent("cursor", { "collisionGroup": this._myCursorTargetCollisionGroup, "handedness": this._myHandedness + 1 });
+        this._myCursorComponent = this._myCursorObject.addComponent("fixed-cursor", { "collisionGroup": this._myCursorTargetCollisionGroup, "handedness": this._myHandedness + 1 });
         this._myCursorComponent.cursorObject = this._myCursorMeshObject;
         this._myCursorComponent.rayCastMode = 0; //collision
         if (this._myPulseOnHover) {
