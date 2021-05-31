@@ -77,23 +77,7 @@ class BoxShapeWidgetSetup extends SketchWidgetSetup {
 
         this.myColorButtonScale = [0.0125, 0.0125, 1];
 
-        this.myColors = [
-            [15 / 255, 17 / 255, 12 / 255, 1],
-            [20 / 255, 79 / 255, 118 / 255, 1],
-            [82 / 255, 40 / 255, 75 / 255, 1],
-            [216 / 255, 62 / 255, 88 / 255, 1],
-            [242 / 255, 149 / 255, 89 / 255, 1],
-            [74 / 255, 45 / 255, 35 / 255, 1],
-            [31 / 255, 132 / 255, 122 / 255, 1],
-
-            [239 / 255, 240 / 255, 244 / 255, 1],
-            [21 / 255, 173 / 255, 224 / 255, 1],
-            [215 / 255, 170 / 255, 208 / 255, 1],
-            [255 / 255, 130 / 255, 169 / 255, 1],
-            [255 / 255, 209 / 255, 102 / 255, 1],
-            [134 / 255, 81 / 255, 50 / 255, 1],
-            [6 / 255, 214 / 255, 160 / 255, 1],
-        ];
+        this.myColors = Colors;
 
         let colorsPerRow = 7;
         let spaceBetweenColors = (((this.myMainPanelBackgroundScale[0] * 2) - ((0.015 + this.myColorButtonsPanelPosition[0]) * 2)) - (this.myColorButtonScale[0] * 2 * colorsPerRow)) / (colorsPerRow - 1);

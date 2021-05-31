@@ -8,8 +8,8 @@ WL.registerComponent('show_on_thumbstick_touch', {
     },
     update: function (dt) {
         if (PP.RightGamepad.getButtonInfo(PP.ButtonType.THUMBSTICK).isTouchStart()) {
-            this.object.resetScaling();
-            this.object.resetTransform();
+            //this.object.resetScaling();
+            //this.object.resetTransform();
 
         } else if (PP.RightGamepad.getButtonInfo(PP.ButtonType.THUMBSTICK).isTouchEnd()) {
             this.object.scale([0, 0, 0]);

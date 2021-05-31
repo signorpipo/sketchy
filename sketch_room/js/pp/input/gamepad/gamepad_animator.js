@@ -28,7 +28,7 @@ WL.registerComponent('gamepad-animator', {
         this._myIsMeshEnabled = false;
     },
     start: function () {
-        this._mySelectMaterial = this._mySelect.getComponent("mesh").material.clone();
+        this._mySelectMaterial = this._mySelect.getComponent("mesh").material;
         this._mySelect.getComponent("mesh").material = this._mySelectMaterial;
         this._mySelectPosition = new Float32Array(3);
         this._mySelect.getTranslationLocal(this._mySelectPosition);
@@ -37,7 +37,7 @@ WL.registerComponent('gamepad-animator', {
             this._mySelectMaterial.ambientColor = this._myNormalAmbientButtonColor;
         }
 
-        this._mySqueezeMaterial = this._mySqueeze.getComponent("mesh").material.clone();
+        this._mySqueezeMaterial = this._mySqueeze.getComponent("mesh").material;
         this._mySqueeze.getComponent("mesh").material = this._mySqueezeMaterial;
         this._mySqueezePosition = new Float32Array(3);
         this._mySqueeze.getTranslationLocal(this._mySqueezePosition);
@@ -46,7 +46,7 @@ WL.registerComponent('gamepad-animator', {
             this._mySqueezeMaterial.ambientColor = this._myNormalAmbientButtonColor;
         }
 
-        this._myThumbstickMaterial = this._myThumbstick.getComponent("mesh").material.clone();
+        this._myThumbstickMaterial = this._myThumbstick.getComponent("mesh").material;
         this._myThumbstick.getComponent("mesh").material = this._myThumbstickMaterial;
         this._myThumbstickPosition = new Float32Array(3);
         this._myThumbstick.getTranslationLocal(this._myThumbstickPosition);
@@ -55,7 +55,7 @@ WL.registerComponent('gamepad-animator', {
             this._myThumbstickMaterial.ambientColor = this._myNormalAmbientButtonColor;
         }
 
-        this._myBottomButtonMaterial = this._myBottomButton.getComponent("mesh").material.clone();
+        this._myBottomButtonMaterial = this._myBottomButton.getComponent("mesh").material;
         this._myBottomButton.getComponent("mesh").material = this._myBottomButtonMaterial;
         this._myBottomButtonPosition = new Float32Array(3);
         this._myBottomButton.getTranslationLocal(this._myBottomButtonPosition);
@@ -64,7 +64,7 @@ WL.registerComponent('gamepad-animator', {
             this._myBottomButtonMaterial.ambientColor = this._myNormalAmbientButtonColor;
         }
 
-        this._myTopButtonMaterial = this._myTopButton.getComponent("mesh").material.clone();
+        this._myTopButtonMaterial = this._myTopButton.getComponent("mesh").material;
         this._myTopButton.getComponent("mesh").material = this._myTopButtonMaterial;
         this._myTopButtonPosition = new Float32Array(3);
         this._myTopButton.getTranslationLocal(this._myTopButtonPosition);

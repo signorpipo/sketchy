@@ -26,7 +26,7 @@ class AxesSettings {
 
 class CreateSettings {
     constructor() {
-        this.myColor = [21 / 255, 173 / 255, 224 / 255, 1];
+        this.myColor = Colors[9];
         this.myScale = [0.075, 0.075, 0.075];
     }
 }

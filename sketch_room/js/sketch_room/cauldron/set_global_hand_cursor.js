@@ -3,6 +3,9 @@ WL.registerComponent('set-global-hand-cursor', {
 }, {
     init: function () {
         let cursor = this.object.getComponent("cursor");
+        let cursorMaterial = cursor.cursorObject.getComponent("mesh").material.clone();
+        cursor.cursorObject.getComponent("mesh").material = cursorMaterial;
+        cursorMaterial.color = Colors[8];
         if (this._myHandedness == 0) {
             HandCursor.myLeftCursor = cursor;
         } else {

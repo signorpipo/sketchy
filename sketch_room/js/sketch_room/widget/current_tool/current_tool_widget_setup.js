@@ -10,9 +10,9 @@ class CurrentToolWidgetSetup {
 
         this.myTextAlignment = WL.Alignment.Center;
         this.myTextJustification = WL.Justification.Middle;
-        this.myTextOutlineRange = [0.4, 0.3];
+        this.myTextOutlineRange = [0.425, 0.3];
         this.myTextColor = [255 / 255, 255 / 255, 255 / 255, 1];
-        this.myTextOutlineColor = [0 / 255, 0 / 255, 0 / 255, 1];
+        this.myTextOutlineColor = [50 / 255, 50 / 255, 50 / 255, 1];
 
         this.myCurrentToolTextPosition = [0, 0.0125, 0];
         this.myCurrentToolTextScale = [0.19, 0.19, 0.19];
