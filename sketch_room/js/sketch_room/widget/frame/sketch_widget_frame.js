@@ -81,13 +81,17 @@ class SketchWidgetFrame {
         ui.myPinButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, ui.myPinButtonBackgroundComponent.material));
         ui.myPinButtonCursorTargetComponent.addUnHoverFunction(this._pinUnHover.bind(this, ui.myPinButtonBackgroundComponent.material));
 
+        ui.myWallButtonCursorTargetComponent.addClickFunction(this._selectWall.bind(this, true));
+        ui.myWallButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, ui.myWallButtonBackgroundComponent.material));
+        ui.myWallButtonCursorTargetComponent.addUnHoverFunction(this._wallUnHover.bind(this, ui.myWallButtonBackgroundComponent.material));
+
         ui.myShapeButtonCursorTargetComponent.addClickFunction(this._selectShape.bind(this, true));
         ui.myShapeButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, ui.myShapeButtonBackgroundComponent.material));
         ui.myShapeButtonCursorTargetComponent.addUnHoverFunction(this._shapeUnHover.bind(this, ui.myShapeButtonBackgroundComponent.material));
 
         ui.myToolsButtonCursorTargetComponent.addClickFunction(this._selectTools.bind(this, true));
         ui.myToolsButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, ui.myToolsButtonBackgroundComponent.material));
-        ui.myToolsButtonCursorTargetComponent.addUnHoverFunction(this._shapeUnHover.bind(this, ui.myToolsButtonBackgroundComponent.material));
+        ui.myToolsButtonCursorTargetComponent.addUnHoverFunction(this._toolsUnHover.bind(this, ui.myToolsButtonBackgroundComponent.material));
     }
 
     _toggleVisibility(isButton) {
@@ -140,6 +144,21 @@ class SketchWidgetFrame {
         }
     }
 
+    _selectWall() {
+        if (this.myIsWidgetVisible && this._myCurrentSketchWidget != SketchWidgetType.WALLS) {
+            this._myCurrentSketchWidget = SketchWidgetType.WALLS;
+
+            this._deselectAllWidgetTypeButtons();
+
+            let textMaterial = this._myUI.myWallButtonTextComponent.material;
+            textMaterial.color = this._mySetup.myDefaultTextColor;
+
+            for (let value of this._myWidgetChangedCallbacks.values()) {
+                value(this._myCurrentSketchWidget);
+            }
+        }
+    }
+
     _selectShape() {
         if (this.myIsWidgetVisible && this._myCurrentSketchWidget != SketchWidgetType.SHAPE) {
             this._myCurrentSketchWidget = SketchWidgetType.SHAPE;
@@ -186,6 +205,14 @@ class SketchWidgetFrame {
             let backgroundMaterial = this._myUI.myToolsButtonBackgroundComponent.material;
             backgroundMaterial.color = this._mySetup.myButtonDisabledBackgroundColor;
         }
+
+        {
+            let textMaterial = this._myUI.myWallButtonTextComponent.material;
+            textMaterial.color = this._mySetup.myButtonDisabledTextColor;
+
+            let backgroundMaterial = this._myUI.myWallButtonBackgroundComponent.material;
+            backgroundMaterial.color = this._mySetup.myButtonDisabledBackgroundColor;
+        }
     }
 
     _genericHover(material) {
@@ -215,10 +242,27 @@ class SketchWidgetFrame {
             material.color = this._mySetup.myButtonDisabledBackgroundColor;
         }
     }
+
+    _wallUnHover(material) {
+        if (this._myCurrentSketchWidget == SketchWidgetType.WALLS) {
+            material.color = this._mySetup.myBackgroundColor;
+        } else {
+            material.color = this._mySetup.myButtonDisabledBackgroundColor;
+        }
+    }
+
+    _toolsUnHover(material) {
+        if (this._myCurrentSketchWidget == SketchWidgetType.TOOLS) {
+            material.color = this._mySetup.myBackgroundColor;
+        } else {
+            material.color = this._mySetup.myButtonDisabledBackgroundColor;
+        }
+    }
 }
 
 var SketchWidgetType = {
     NONE: 0,
     SHAPE: 1,
     TOOLS: 2,
+    WALLS: 3,
 };

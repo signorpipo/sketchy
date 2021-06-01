@@ -2,18 +2,14 @@ class SketchRoomManager {
     constructor(sceneObject, lightObject) {
         this._mySceneObject = sceneObject;
         this._myToolManager = new ToolManager(this._mySceneObject);
-        this._mySketchRoomWidget = new SketchRoomWidget(this._myToolManager.getToolSettings());
         this._myWallManager = new WallManager(this._mySceneObject, lightObject);
+        this._mySketchRoomWidget = new SketchRoomWidget(this._myToolManager.getToolSettings(), this._myWallManager.getWallSettings());
 
         this._myShapes = [];
         this._mySelectedShape = null;
     }
 
     start() {
-        this._registerToolsEventListeners();
-        this._registerWidgetEventListeners();
-
-
         this._myToolManager.start();
 
         let widgetAdditionalSetup = {};
@@ -24,6 +20,9 @@ class SketchRoomManager {
         this._mySketchRoomWidget.start(PlayerPose.myLeftHandObject, PlayerPose.myRightHandObject, widgetAdditionalSetup);
 
         this._myWallManager.start();
+
+        this._registerToolsEventListeners();
+        this._registerWidgetEventListeners();
 
         this._toolSelected(ToolType.CREATE);
     }
@@ -49,6 +48,7 @@ class SketchRoomManager {
 
     _registerWidgetEventListeners() {
         this._mySketchRoomWidget.registerToolSelectedChangedEventListener(this, this._toolSelected.bind(this));
+        this._mySketchRoomWidget.registerExportEventListener(this, this._export.bind(this));
     }
 
     //Tool Event Related
@@ -94,5 +94,9 @@ class SketchRoomManager {
     _toolSelected(toolType) {
         this._myToolManager.selectTool(toolType);
         this._mySketchRoomWidget.setSelectedTool(toolType);
+    }
+
+    _export() {
+        return "Room copied in clipboard";
     }
 }

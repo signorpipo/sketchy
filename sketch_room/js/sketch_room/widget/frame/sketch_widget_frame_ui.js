@@ -75,6 +75,11 @@ class SketchWidgetFrameUI {
         this.myPinButtonText = WL.scene.addObject(this.myPinButtonPanel);
         this.myPinButtonCursorTarget = WL.scene.addObject(this.myPinButtonPanel);
 
+        this.myWallButtonPanel = WL.scene.addObject(this.myButtonsPanel);
+        this.myWallButtonBackground = WL.scene.addObject(this.myWallButtonPanel);
+        this.myWallButtonText = WL.scene.addObject(this.myWallButtonPanel);
+        this.myWallButtonCursorTarget = WL.scene.addObject(this.myWallButtonPanel);
+
         this.myShapeButtonPanel = WL.scene.addObject(this.myButtonsPanel);
         this.myShapeButtonBackground = WL.scene.addObject(this.myShapeButtonPanel);
         this.myShapeButtonText = WL.scene.addObject(this.myShapeButtonPanel);
@@ -103,6 +108,12 @@ class SketchWidgetFrameUI {
         this.myPinButtonText.setTranslationLocal(this._mySetup.myPinButtonTextPosition);
         this.myPinButtonText.scale(this._mySetup.myPinButtonTextScale);
         this.myPinButtonCursorTarget.setTranslationLocal(this._mySetup.myPinButtonCursorTargetPosition);
+
+        this.myWallButtonPanel.setTranslationLocal(this._mySetup.myWallButtonPosition);
+        this.myWallButtonBackground.scale(this._mySetup.myWallButtonBackgroundScale);
+        this.myWallButtonText.setTranslationLocal(this._mySetup.myWallButtonTextPosition);
+        this.myWallButtonText.scale(this._mySetup.myWallButtonTextScale);
+        this.myWallButtonCursorTarget.setTranslationLocal(this._mySetup.myWallButtonCursorTargetPosition);
 
         this.myShapeButtonPanel.setTranslationLocal(this._mySetup.myShapeButtonPosition);
         this.myShapeButtonBackground.scale(this._mySetup.myShapeButtonBackgroundScale);
@@ -152,6 +163,24 @@ class SketchWidgetFrameUI {
         this.myPinButtonCollisionComponent.collider = this._mySetup.myCursorTargetCollisionCollider;
         this.myPinButtonCollisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
         this.myPinButtonCollisionComponent.extents = this._mySetup.myPinButtonCollisionExtents;
+
+        //Walls
+        this.myWallButtonBackgroundComponent = this.myWallButtonBackground.addComponent('mesh');
+        this.myWallButtonBackgroundComponent.mesh = this._myPlaneMesh;
+        this.myWallButtonBackgroundComponent.material = this._myAdditionalSetup.myPlaneMaterial.clone();
+        this.myWallButtonBackgroundComponent.material.color = this._mySetup.myButtonDisabledBackgroundColor;
+
+        this.myWallButtonTextComponent = this.myWallButtonText.addComponent('text');
+        this._setupButtonTextComponent(this.myWallButtonTextComponent);
+        this.myWallButtonTextComponent.material.color = this._mySetup.myButtonDisabledTextColor;
+        this.myWallButtonTextComponent.text = this._mySetup.myWallButtonText;
+
+        this.myWallButtonCursorTargetComponent = this.myWallButtonCursorTarget.addComponent('cursor-target');
+
+        this.myWallButtonCollisionComponent = this.myWallButtonCursorTarget.addComponent('collision');
+        this.myWallButtonCollisionComponent.collider = this._mySetup.myCursorTargetCollisionCollider;
+        this.myWallButtonCollisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
+        this.myWallButtonCollisionComponent.extents = this._mySetup.myWallButtonCollisionExtents;
 
         //Shape
         this.myShapeButtonBackgroundComponent = this.myShapeButtonBackground.addComponent('mesh');

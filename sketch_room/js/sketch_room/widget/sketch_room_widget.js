@@ -1,6 +1,7 @@
 class SketchRoomWidget {
-    constructor(toolSettings) {
+    constructor(toolSettings, wallSettings) {
         this._myToolSettings = toolSettings;
+        this._myWallSettings = wallSettings;
 
         this._myWidgetFrame = new SketchWidgetFrame();
         this._myWidgetFrame.registerWidgetVisibleChangedEventListener(this, this._widgetVisibleChanged.bind(this));
@@ -45,6 +46,14 @@ class SketchRoomWidget {
 
     unregisterToolSelectedChangedEventListener(id) {
         this._myToolSelectedCallbacks.delete(id);
+    }
+
+    registerExportEventListener(id, callback) {
+        this._myWidgets[SketchWidgetType.WALLS].registerExportEventListener(id, callback);
+    }
+
+    unregisterExportEventListener(id) {
+        this._myWidgets[SketchWidgetType.WALLS].unregisterExportEventListener(id);
     }
 
     start(widgetsParentObject, currentToolWidgetParentObject, additionalSetup) {
@@ -111,6 +120,7 @@ class SketchRoomWidget {
     _initializeWidgets(widgetsParentObject, currentToolWidgetParentObject) {
         this._myWidgets[SketchWidgetType.SHAPE] = new ShapeWidget(this._myToolSettings);
         this._myWidgets[SketchWidgetType.TOOLS] = new ToolsWidget(this._myToolSettings);
+        this._myWidgets[SketchWidgetType.WALLS] = new WallWidget(this._myWallSettings);
 
         for (let widget of this._myWidgets) {
             if (widget) {

@@ -37,6 +37,17 @@ class SketchWidgetFrameSetup extends SketchWidgetSetup {
         this.myPinButtonCollisionExtents = this.myPinButtonBackgroundScale.slice(0);
         this.myPinButtonCollisionExtents[2] = this.myCursorTargetCollisionThickness;
 
+        this.myWallButtonPosition = [0.17, 0.04, 0.015];
+        this.myWallButtonBackgroundScale = [0.05, 0.015, 1];
+        this.myWallButtonTextPosition = [0, 0, 0.007];
+        this.myWallButtonTextScale = [0.18, 0.18, 0.18];
+        this.myWallButtonText = "room";
+
+        this.myWallButtonCursorTargetPosition = [0, 0, 0];
+        this.myWallButtonCursorTargetPosition[2] = this.myWallButtonTextPosition[2];
+        this.myWallButtonCollisionExtents = this.myWallButtonBackgroundScale.slice(0);
+        this.myWallButtonCollisionExtents[2] = this.myCursorTargetCollisionThickness;
+
         this.myShapeButtonPosition = [-0.06, 0.04, 0.015];
         this.myShapeButtonBackgroundScale = [0.05, 0.015, 1];
         this.myShapeButtonTextPosition = [0, 0, 0.007];
