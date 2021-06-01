@@ -7,6 +7,17 @@ class SketchWall extends SketchShape {
         this._buildObject();
     }
 
+    setScale(value) {
+        super.setScale(value);
+        if (this._myFloorCollision) {
+            value = value.slice(0);
+            //prevent going to close to the walls
+            value[0] -= 0.5;
+            value[2] -= 0.5;
+            this._myFloorCollision.extents = value;
+        }
+    }
+
     _buildObject() {
         this._myObject = WL.scene.addObject(this._myParentObject);
 
@@ -24,7 +35,10 @@ class SketchWall extends SketchShape {
         this._myCollision.extents = [1, 1, 1];
 
         if (this._myWallType == WallType.FLOOR) {
-            this._myCollision.group |= 1 << WallSetup.myFloorCollisionGroup;
+            this._myFloorCollision = this._myObject.addComponent('collision');
+            this._myFloorCollision.collider = WL.Collider.Box;
+            this._myFloorCollision.group = 1 << WallSetup.myFloorCollisionGroup;
+            this._myFloorCollision.extents = [1, 1, 1];
         }
     }
 }
