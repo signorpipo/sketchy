@@ -16,7 +16,7 @@
                 1.0,
                 0.0,
                 0.0,
-                1.700000047683716,
+                0.0,
                 0.0,
                 1.0
             ],
@@ -292,6 +292,9 @@
                         "_myControllerBodyMaterial": "34",
                         "_myControllerButtonMaterial": "35"
                     }
+                },
+                {
+                    "type": "set-local-floor"
                 }
             ]
         },
@@ -325,7 +328,7 @@
                         "_myTextMaterial": "DefaultFontMaterial",
                         "_myHandedness": "left"
                     },
-                    "active": false
+                    "active": true
                 },
                 {
                     "type": "easy-tune",
@@ -347,7 +350,7 @@
                         "camRoot": "14",
                         "cam": "19",
                         "floorGroup": 3,
-                        "indicatorYOffset": 1.700000047683716,
+                        "indicatorYOffset": 0.0,
                         "snapTurnAmount": 30.0,
                         "eyeR": "19",
                         "eyeL": "18"
@@ -2798,7 +2801,12 @@
             ]
         },
         "runtime": {
-            "visualizeColliders": false
+            "visualizeColliders": false,
+            "webxr": {
+                "requiredFeatures": {
+                    "local-floor": true
+                }
+            }
         }
     },
     "animations": {},
