@@ -2,8 +2,15 @@
 class ToolSettings {
     constructor() {
         this.mySnapSettings = new SnapSettings();
-        this.myAxesSettings = new AxesSettings();
         this.myCreateSettings = new CreateSettings();
+    }
+
+    save(data) {
+        this.mySnapSettings.save(data);
+    }
+
+    load(data) {
+        this.mySnapSettings.load(data);
     }
 }
 
@@ -13,14 +20,33 @@ class SnapSettings {
         this.myRotationSnap = [PP.MathUtils.toRadians(1), PP.MathUtils.toRadians(1), PP.MathUtils.toRadians(1)]; //Euler Rotation
         this.myScaleSnap = [0.005, 0.005, 0.005];
     }
-}
 
-class AxesSettings {
-    constructor() {
-        this.myTranslationAxes = [true, true, true];
-        this.myRotationAxes = [true, true, true];
-        this.myScaleAxes = [true, true, true];
-        this.myAreLocal = false;
+    save(data) {
+        data.push(this.myPositionSnap[0]);
+        data.push(this.myPositionSnap[1]);
+        data.push(this.myPositionSnap[2]);
+
+        data.push(this.myRotationSnap[0]);
+        data.push(this.myRotationSnap[1]);
+        data.push(this.myRotationSnap[2]);
+
+        data.push(this.myScaleSnap[0]);
+        data.push(this.myScaleSnap[1]);
+        data.push(this.myScaleSnap[2]);
+    }
+
+    load(data) {
+        this.myPositionSnap[0] = data.shift();
+        this.myPositionSnap[1] = data.shift();
+        this.myPositionSnap[2] = data.shift();
+
+        this.myRotationSnap[0] = data.shift();
+        this.myRotationSnap[1] = data.shift();
+        this.myRotationSnap[2] = data.shift();
+
+        this.myScaleSnap[0] = data.shift();
+        this.myScaleSnap[1] = data.shift();
+        this.myScaleSnap[2] = data.shift();
     }
 }
 

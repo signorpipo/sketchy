@@ -5,17 +5,6 @@ class ToolManager {
         this._myToolSettings = new ToolSettings();
 
         this._createTools();
-
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("Position Snap", 0.05, 0.1, 3));
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("Rotation Snap", 0, 1, 3));
-
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("X Axis Active", 0, 1));
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("Y Axis Active", 0, 1));
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("Z Axis Active", 0, 1));
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("X R Axis Active", 0, 1));
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("Y R Axis Active", 0, 1));
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("Z R Axis Active", 0, 1));
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("Use Local Axes", -1, 1));
     }
 
     getTool(type) {
@@ -61,25 +50,6 @@ class ToolManager {
                 tool.update(dt);
             }
         }
-
-        //this._myToolSettings.mySnapSettings.myPositionSnap = [PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue];
-        //let radianValue = PP.MathUtils.toRadians(PP.EasyTuneVariables.get("Rotation Snap").myValue);
-        //this._myToolSettings.mySnapSettings.myRotationSnap = [radianValue, radianValue, radianValue];
-        //this._myToolSettings.mySnapSettings.myScaleSnap = [PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue, PP.EasyTuneVariables.get("Position Snap").myValue];
-
-        this._myToolSettings.myAxesSettings.myTranslationAxes = [
-            PP.EasyTuneVariables.get("X Axis Active").myValue >= 0,
-            PP.EasyTuneVariables.get("Y Axis Active").myValue >= 0,
-            PP.EasyTuneVariables.get("Z Axis Active").myValue >= 0];
-
-        this._myToolSettings.myAxesSettings.myRotationAxes = [
-            PP.EasyTuneVariables.get("X R Axis Active").myValue >= 0,
-            PP.EasyTuneVariables.get("Y R Axis Active").myValue >= 0,
-            PP.EasyTuneVariables.get("Z R Axis Active").myValue >= 0];
-
-        this._myToolSettings.myAxesSettings.myScaleAxes = this._myToolSettings.myAxesSettings.myTranslationAxes;
-
-        this._myToolSettings.myAxesSettings.myAreLocal = PP.EasyTuneVariables.get("Use Local Axes").myValue >= 0;
     }
 
     _createTools() {
@@ -90,6 +60,14 @@ class ToolManager {
         this._myTools[ToolType.SCALE] = new ScaleTool(this._myToolSettings);
         this._myTools[ToolType.CREATE] = new CreateTool(this._myToolSettings, this._mySceneObject);
         this._myTools[ToolType.SELECT] = new SelectTool();
+    }
+
+    save(data) {
+        this._myToolSettings.save(data);
+    }
+
+    load(data) {
+        this._myToolSettings.load(data);
     }
 }
 

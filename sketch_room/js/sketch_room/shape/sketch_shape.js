@@ -167,4 +167,58 @@ class SketchShape {
         glMatrix.vec3.scale(ambientColor, ambientColor, 0.5);
         this._myMesh.material.ambientColor = ambientColor;
     }
+
+    save(data) {
+        let type = this.getType();
+        let position = this.getPosition();
+        let rotation = this.getEulerRotation();
+        let scale = this.getScale();
+        let color = this.getColor();
+
+        data.push(type);
+
+        data.push(position[0]);
+        data.push(position[1]);
+        data.push(position[2]);
+
+        data.push(rotation[0]);
+        data.push(rotation[1]);
+        data.push(rotation[2]);
+
+        data.push(scale[0]);
+        data.push(scale[1]);
+        data.push(scale[2]);
+
+        data.push(color[0]);
+        data.push(color[1]);
+        data.push(color[2]);
+    }
+
+    load(data) {
+        let position = [];
+        let rotation = [];
+        let scale = [];
+        let color = [];
+
+        position[0] = data.shift();
+        position[1] = data.shift();
+        position[2] = data.shift();
+
+        rotation[0] = data.shift();
+        rotation[1] = data.shift();
+        rotation[2] = data.shift();
+
+        scale[0] = data.shift();
+        scale[1] = data.shift();
+        scale[2] = data.shift();
+
+        color[0] = data.shift();
+        color[1] = data.shift();
+        color[2] = data.shift();
+
+        this.setPosition(position);
+        this.setEulerRotation(rotation);
+        this.setScale(scale);
+        this.setColor(color);
+    }
 }
