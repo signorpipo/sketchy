@@ -328,7 +328,7 @@
                         "_myTextMaterial": "DefaultFontMaterial",
                         "_myHandedness": "left"
                     },
-                    "active": true
+                    "active": false
                 },
                 {
                     "type": "easy-tune",
