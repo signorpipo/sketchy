@@ -5,7 +5,6 @@ WL.registerComponent('sketch-room-component', {
     _myLightObject: { type: WL.Type.Object, default: null },
 }, {
     init: function () {
-        navigator.clipboard.writeText("ciao");
         this._initializeSketchShapeData();
         this._initializeWidgetData();
 
