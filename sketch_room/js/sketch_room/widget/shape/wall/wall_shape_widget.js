@@ -10,4 +10,11 @@ class WallShapeWidget extends BoxShapeWidget {
 
     _updateGamepad(dt) {
     }
+
+
+    _sizeHover(labelTextComponent, valueTextComponent) {
+    }
+
+    _sizeUnHover(labelTextComponent, valueTextComponent) {
+    }
 }
