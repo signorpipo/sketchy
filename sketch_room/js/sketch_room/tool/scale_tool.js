@@ -160,7 +160,7 @@ class ScaleTool {
     }
 
     _updateClosestLocalAxis(dt) {
-        this._updateClosestAxis(PP.MathUtils.getLocalAxes(this._myStartShapeTransform));
+        this._updateClosestAxis(PP.MathUtils.getAxes(this._myStartShapeTransform));
     }
 
     _updateClosestAxis(referenceAxes) {

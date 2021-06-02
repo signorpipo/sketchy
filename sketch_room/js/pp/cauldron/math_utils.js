@@ -46,22 +46,37 @@ PP.MathUtils = {
 
         return component;
     },
-    getLocalAxes(transform) {
+    getAxes(transform) {
         let rotationMatrix = [];
         glMatrix.mat3.fromQuat(rotationMatrix, transform);
 
-        let localAxes = [];
-        localAxes[0] = rotationMatrix.slice(0, 3);
-        localAxes[1] = rotationMatrix.slice(3, 6);
-        localAxes[2] = rotationMatrix.slice(6, 9);
+        let axes = [];
+        axes[0] = rotationMatrix.slice(0, 3);
+        axes[1] = rotationMatrix.slice(3, 6);
+        axes[2] = rotationMatrix.slice(6, 9);
 
-        glMatrix.vec3.normalize(localAxes[0], localAxes[0]);
-        glMatrix.vec3.normalize(localAxes[1], localAxes[1]);
-        glMatrix.vec3.normalize(localAxes[2], localAxes[2]);
+        glMatrix.vec3.normalize(axes[0], axes[0]);
+        glMatrix.vec3.normalize(axes[1], axes[1]);
+        glMatrix.vec3.normalize(axes[2], axes[2]);
 
-        return localAxes;
+        return axes;
     },
     isConcordant(first, second) {
         return glMatrix.vec3.angle(first, second) <= Math.PI / 2;
+    },
+    getLocalTransform(transform, parentTransform) {
+        let localTransform = [];
+
+        glMatrix.quat2.conjugate(localTransform, parentTransform);
+        glMatrix.quat2.mul(localTransform, localTransform, transform);
+
+        return localTransform;
+    },
+    getWorldTransform(localTransform, parentTransform) {
+        let worldTransform = [];
+
+        glMatrix.quat2.mul(worldTransform, parentTransform, localTransform);
+
+        return worldTransform;
     }
 };

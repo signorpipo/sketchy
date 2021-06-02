@@ -11,7 +11,7 @@ var ToolUtils = {
     applyAxesSettings(value, activeAxes, areLocal, shapeTransform) {
         let referenceAxes = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
         if (areLocal) {
-            referenceAxes = PP.MathUtils.getLocalAxes(shapeTransform);
+            referenceAxes = PP.MathUtils.getAxes(shapeTransform);
         }
 
         let adjustedValue = [0, 0, 0];

@@ -12,8 +12,8 @@ class SketchWall extends SketchShape {
         if (this._myFloorCollision) {
             value = value.slice(0);
             //prevent going to close to the walls
-            value[0] -= 0.5;
-            value[2] -= 0.5;
+            value[0] -= 0.3;
+            value[2] -= 0.3;
             this._myFloorCollision.extents = value;
         }
     }

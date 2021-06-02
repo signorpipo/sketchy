@@ -5,7 +5,8 @@ WL.registerComponent("controller-teleport-component", {
     teleportIndicatorMeshObject: { type: WL.Type.Object, default: null },
     /** Root of the player, the object that will be positioned on teleportation. */
     camRoot: { type: WL.Type.Object, default: null },
-    cam: { type: WL.Type.Object, default: null },
+    eyeLeft: { type: WL.Type.Object, default: null },
+    eyeRight: { type: WL.Type.Object, default: null },
     /** Collision group of valid "floor" objects that can be teleported on */
     floorGroup: { type: WL.Type.Int, default: 1 },
     thumbstickActivationThreshhold: { type: WL.Type.Float, default: -0.7 },
@@ -33,6 +34,9 @@ WL.registerComponent("controller-teleport-component", {
         } else {
             console.error(this.object.name, 'controller-teleport-component.js: Teleport indicator mesh is missing.');
         }
+
+        this._extraRotation = 0;
+        this._currentStickAxes = [];
     },
     start: function () {
         WL.onXRSessionStart.push(this.setupVREvents.bind(this));
@@ -50,7 +54,7 @@ WL.registerComponent("controller-teleport-component", {
 
         if (!this.isIndicating && this.prevThumbstickYAxisInput >= this.thumbstickActivationThreshhold && thumbstickYAxisInput < this.thumbstickActivationThreshhold) {
             this.isIndicating = true;
-            this.cam.getForward(this._tempVec);
+            this.eyeLeft.getForward(this._tempVec);
             this._tempVec[1] = 0;
             glMatrix.vec3.normalize(this._tempVec, this._tempVec);
             this._camRotation = Math.atan2(this._tempVec[0], this._tempVec[2]);
@@ -64,13 +68,15 @@ WL.registerComponent("controller-teleport-component", {
                 //      console.log(xrFrame.getViewerPose(xrReferenceSpace).transform)
                 //    })
                 // }.bind(this))
-                this.cam.getForward(this._tempVec);
+                this.eyeLeft.getForward(this._tempVec);
                 this._tempVec[1] = 0;
                 glMatrix.vec3.normalize(this._tempVec, this._tempVec);
                 this._camRotation = Math.atan2(this._tempVec[0], this._tempVec[2]);
                 this._camRotation = this._currentIndicatorRotation - this._camRotation;
                 //this.camRoot.rotateAxisAngleRad([0, 1, 0], this._camRotation);
-                this.camRoot.setTranslationLocal(this.hitSpot);
+
+                let rotationToAdd = Math.PI + Math.atan2(this._currentStickAxes[0], this._currentStickAxes[1]); // + Math.PI because up is -1, remove if up is 1
+                this._teleportPlayer(this.hitSpot, rotationToAdd);
             } else if (!this.camRoot) {
                 console.error(this.object.name, 'controller-teleport-component.js: Cam Root reference is missing.');
             }
@@ -93,7 +99,9 @@ WL.registerComponent("controller-teleport-component", {
                     this.indicatorHidden = false;
                 }
 
-                this._currentIndicatorRotation = this._camRotation + (Math.PI + Math.atan2(thumbstickXAxisInput, thumbstickYAxisInput));
+                this._currentStickAxes = [thumbstickXAxisInput, thumbstickYAxisInput];
+                this._extraRotation = Math.PI + Math.atan2(thumbstickXAxisInput, thumbstickYAxisInput);
+                this._currentIndicatorRotation = this._camRotation + (this._extraRotation - Math.PI);
                 this.teleportIndicatorMeshObject.resetTranslationRotation();
                 this.teleportIndicatorMeshObject.rotateAxisAngleRad([0, 1, 0], this._currentIndicatorRotation);
 
@@ -113,11 +121,8 @@ WL.registerComponent("controller-teleport-component", {
             }
         } else {
             if (Math.abs(this.prevThumbstickXAxisInput) <= Math.abs(this.thumbstickActivationThreshhold) && Math.abs(thumbstickXAxisInput) > Math.abs(this.thumbstickActivationThreshhold)) {
-                this.camRoot.getTranslationWorld(this._tempVec);
-                this._camRotation -= Math.sign(thumbstickXAxisInput) * this.snapTurnAmount;
-                this.camRoot.resetTranslationRotation();
-                this.camRoot.rotateAxisAngleRad([0, 1, 0], this._camRotation);
-                this.camRoot.translate(this._tempVec);
+                let rotationToAdd = -Math.sign(thumbstickXAxisInput) * this.snapTurnAmount;
+                this._teleportPlayer(this._getCurrentHeadFloorPosition(), rotationToAdd);
             }
         }
 
@@ -159,6 +164,73 @@ WL.registerComponent("controller-teleport-component", {
             }
         }.bind(this));
 
-
+        s.requestReferenceSpace('local-floor').then(function (refSpace) {
+            refSpace.addEventListener("reset", this.onViewReset().bind(this));
+        }.bind(this));
     },
+    _teleportPlayer: function (newPosition, rotationToAdd) {
+        //current head floor position
+        let currentHeadFloorPosition = this._getCurrentHeadFloorPosition();
+
+        //current head rotation
+        let currentHeadForward = [];
+        this.eyeLeft.getForward(currentHeadForward);
+        currentHeadForward[1] = 0;
+        if (glMatrix.vec3.length(currentHeadForward) < 0.0001) {
+            currentHeadForward = [0, 0, 1];
+        }
+        glMatrix.vec3.normalize(currentHeadForward, currentHeadForward);
+
+        let currentHeadUp = [0, 1, 0];
+
+        let currentHeadRight = [];
+        glMatrix.vec3.cross(currentHeadRight, currentHeadUp, currentHeadForward);
+        glMatrix.vec3.normalize(currentHeadRight, currentHeadRight);
+
+        let currentHeadRotation = [];
+        glMatrix.quat.setAxes(currentHeadRotation, currentHeadForward, currentHeadRight, currentHeadUp);
+
+        //current head floor transform
+        let currentHeadFloorTransform = [];
+        glMatrix.quat2.fromRotationTranslation(currentHeadFloorTransform, currentHeadRotation, currentHeadFloorPosition);
+
+        //new head floor transform        
+        let newHeadPosition = newPosition.slice(0);
+        let newHeadRotation = glMatrix.quat.clone(currentHeadRotation);
+        glMatrix.quat.rotateY(newHeadRotation, newHeadRotation, rotationToAdd);
+        let newHeadFloorTransform = [];
+        glMatrix.quat2.fromRotationTranslation(newHeadFloorTransform, newHeadRotation, newHeadPosition);
+
+        //local cam root transform to head floor
+        let currentCamRootTransform = this.camRoot.transformWorld.slice(0);
+        let localCamRootTransform = PP.MathUtils.getLocalTransform(currentCamRootTransform, currentHeadFloorTransform);
+
+        //new cam root transform
+        let newCamRootTransform = PP.MathUtils.getWorldTransform(localCamRootTransform, newHeadFloorTransform);
+        let newCamRootPosition = [];
+        glMatrix.quat2.getTranslation(newCamRootPosition, newCamRootTransform);
+
+        this.camRoot.resetTranslationRotation();
+        this.camRoot.rotate(newCamRootTransform);
+        this.camRoot.setTranslationWorld(newCamRootPosition);
+    },
+    _getCurrentHeadFloorPosition: function () {
+        let eyeLeftPosition = [];
+        this.eyeLeft.getTranslationWorld(eyeLeftPosition);
+        let eyeRightPosition = [];
+        this.eyeRight.getTranslationWorld(eyeRightPosition);
+
+        let currentHeadPosition = [];
+        glMatrix.vec3.add(currentHeadPosition, eyeLeftPosition, eyeRightPosition);
+        glMatrix.vec3.scale(currentHeadPosition, currentHeadPosition, 0.5);
+
+        let currentCamRootPosition = [];
+        this.camRoot.getTranslationWorld(currentCamRootPosition);
+        currentHeadPosition[1] = currentCamRootPosition[1];
+
+        return currentHeadPosition;
+    },
+    onViewReset() {
+        //console.log("RESET");
+    }
 });
