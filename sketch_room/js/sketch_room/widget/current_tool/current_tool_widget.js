@@ -42,19 +42,24 @@ class CurrentToolWidget {
 
     _refreshUI() {
         let toolName = "";
+        let hasAxisLock = false;
 
         switch (this._myCurrentToolType) {
             case ToolType.GRAB:
                 toolName = "Grab";
+                hasAxisLock = true;
                 break;
             case ToolType.TRANSLATE:
                 toolName = "Move";
+                hasAxisLock = true;
                 break;
             case ToolType.ROTATE:
                 toolName = "Rotate";
+                hasAxisLock = true;
                 break;
             case ToolType.SCALE:
                 toolName = "Scale";
+                hasAxisLock = true;
                 break;
             case ToolType.CREATE:
                 toolName = "Create";
@@ -63,12 +68,32 @@ class CurrentToolWidget {
                 toolName = "Error";
                 break;
         }
-
         this._myUI.myCurrentToolTextComponent.text = toolName;
 
-        let axisLockType = "Free";
+        if (hasAxisLock) {
+            let axisLockType = "";
 
-        this._myUI.myAxisLockTextComponent.text = this._mySetup.myAxisLockText.concat(axisLockType);
+            switch (this._myToolSettings.myAxisLockSettings.myAxisLockType[this._myCurrentToolType]) {
+                case AxisLockType.FREE:
+                    axisLockType = "Free";
+                    hasAxisLock = true;
+                    break;
+                case AxisLockType.LOCAL:
+                    axisLockType = "Local";
+                    hasAxisLock = true;
+                    break;
+                case AxisLockType.GLOBAL:
+                    axisLockType = "Global";
+                    break;
+                default:
+                    axisLockType = "Error";
+                    break;
+            }
+
+            this._myUI.myAxisLockTextComponent.text = this._mySetup.myAxisLockText.concat(axisLockType);
+        } else {
+            this._myUI.myAxisLockTextComponent.text = "";
+        }
     }
 }
 

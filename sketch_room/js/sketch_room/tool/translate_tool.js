@@ -12,10 +12,8 @@ class TranslateTool {
         this._myIsWorking = false;
         this._myCurrentHandedness = PP.HandednessIndex.NONE;
 
-        this._myUseClosestLocalAxis = false;
-        this._myUseClosestGlobalAxis = false;
         this._myClosestAxis = null;
-        this._myLastHandPositions = [];
+        this._myKeepCurrentClosestAxis = false;
 
         //Setup
         this._myClosestMaxPositions = 10;
@@ -79,8 +77,23 @@ class TranslateTool {
             }
         }
 
-        this._myUseClosestLocalAxis = PP.LeftGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).myIsPressed || PP.RightGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).myIsPressed;
-        this._myUseClosestGlobalAxis = PP.LeftGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed || PP.RightGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed;
+        if (PP.RightGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).isPressEnd()) {
+            let axisLockType = this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.TRANSLATE];
+            switch (axisLockType) {
+                case AxisLockType.FREE:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.TRANSLATE] = AxisLockType.LOCAL;
+                    break;
+                case AxisLockType.LOCAL:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.TRANSLATE] = AxisLockType.GLOBAL;
+                    break;
+                case AxisLockType.GLOBAL:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.TRANSLATE] = AxisLockType.FREE;
+                    break;
+                default:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.TRANSLATE] = AxisLockType.LOCAL;
+                    break;
+            }
+        }
 
         if (this._myIsWorking) {
             this._updateWork(dt);
@@ -95,27 +108,17 @@ class TranslateTool {
             handPosition = PlayerPose.myRightHandPosition.slice(0);
         }
 
-        this._addHandPosition(handPosition);
-        if (!this._myClosestAxis) {
-            if (this._myUseClosestLocalAxis) {
-                this._updateClosestLocalAxis(dt);
-            } else if (this._myUseClosestGlobalAxis) {
-                this._updateClosestGlobalAxis(dt);
-            }
+        this._updateAxisLock(handPosition);
+
+        let translation = [];
+        glMatrix.vec3.subtract(translation, handPosition, this._myStartHandPosition);
+
+        if (this._myClosestAxis) {
+            translation = PP.MathUtils.getComponentAlongAxis(translation, this._myClosestAxis);
         }
 
-        if (!(this._myUseClosestLocalAxis || this._myUseClosestGlobalAxis) || this._myClosestAxis) {
-            let translation = [];
-            glMatrix.vec3.subtract(translation, handPosition, this._myStartHandPosition);
-
-            if (this._myClosestAxis) {
-                translation = PP.MathUtils.getComponentAlongAxis(translation, this._myClosestAxis);
-            }
-            //translation = ToolUtils.applyAxesTranslationSettings(translation, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
-
-            glMatrix.vec3.add(translation, translation, this._myStartShapePosition);
-            this._mySelectedShape.setPosition(translation);
-        }
+        glMatrix.vec3.add(translation, translation, this._myStartShapePosition);
+        this._mySelectedShape.setPosition(translation);
 
         this._mySelectedShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
     }
@@ -134,7 +137,7 @@ class TranslateTool {
         }
 
         this._myClosestAxis = null;
-        this._myLastHandPositions = [];
+        this._myKeepCurrentClosestAxis = false;
     }
 
     _stopWork() {
@@ -147,56 +150,44 @@ class TranslateTool {
         this._myIsWorking = false;
     }
 
-    _updateClosestLocalAxis(dt) {
-        this._updateClosestAxis(PP.MathUtils.getAxes(this._myStartShapeTransform));
-    }
-
-    _updateClosestGlobalAxis(dt) {
-        this._updateClosestAxis([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
-    }
-
-    _updateClosestAxis(referenceAxes) {
-        let averageAxis = null;
-        let validCount = 0;
-        let translationSum = [0, 0, 0];
-
-        let difference = [];
-        for (let i = 0; i < this._myLastHandPositions.length; i++) {
-            glMatrix.vec3.subtract(difference, this._myLastHandPositions[i], this._myStartHandPosition);
-            if (glMatrix.vec3.length(difference) > this._myClosestMinDifference) {
-                validCount++;
-                glMatrix.vec3.add(translationSum, translationSum, difference);
-            }
+    _updateAxisLock(currentHandPosition) {
+        if (this._myKeepCurrentClosestAxis) {
+            return;
         }
 
-        if (validCount >= this._myClosestRequiredPositions) {
-            let averageAxisToCheck = [];
-            glMatrix.vec3.scale(averageAxisToCheck, translationSum, 1 / validCount); //average useless remove
-            if (glMatrix.vec3.length(averageAxisToCheck) > this._myClosestMinDifference) {
-                averageAxis = averageAxisToCheck;
-            }
-        }
+        let axisLockType = this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.TRANSLATE];
 
-        if (averageAxis) {
-            let minAngle = Math.PI;
-            for (let axis of referenceAxes) {
-                let angle = glMatrix.vec3.angle(axis, averageAxis);
-                if (angle > Math.PI / 2) {
-                    angle = Math.PI - angle; //close to axis, direction is not important
+        this._myClosestAxis = null;
+
+        if (axisLockType != AxisLockType.FREE) {
+            let direction = [];
+            glMatrix.vec3.subtract(direction, currentHandPosition, this._myStartHandPosition);
+            let difference = glMatrix.vec3.length(direction);
+            if (difference > 0.0001) {
+                glMatrix.vec3.normalize(direction, direction);
+
+                let referenceAxes = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+                if (axisLockType == AxisLockType.LOCAL) {
+                    referenceAxes = PP.MathUtils.getAxes(this._myStartShapeTransform);
                 }
 
-                if (angle < minAngle) {
-                    minAngle = angle;
-                    this._myClosestAxis = axis;
+                let minAngle = Math.PI;
+                for (let axis of referenceAxes) {
+                    let angle = glMatrix.vec3.angle(axis, direction);
+                    if (angle > Math.PI / 2) {
+                        angle = Math.PI - angle; //close to axis, direction is not important
+                    }
+
+                    if (angle < minAngle) {
+                        minAngle = angle;
+                        this._myClosestAxis = axis;
+                    }
+                }
+
+                if (difference > 0.05) {
+                    this._myKeepCurrentClosestAxis = true;
                 }
             }
-        }
-    }
-
-    _addHandPosition(position) {
-        this._myLastHandPositions.push(position);
-        if (this._myLastHandPositions.length > this._myClosestRequiredPositions) {
-            this._myLastHandPositions.shift();
         }
     }
 }

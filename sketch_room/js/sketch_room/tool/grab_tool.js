@@ -86,11 +86,9 @@ class GrabTool {
 
         let translation = [];
         glMatrix.vec3.subtract(translation, newPosition, startPosition);
-        //translation = ToolUtils.applyAxesTranslationSettings(translation, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
 
         let rotation = [];
         glMatrix.vec3.subtract(rotation, newRotation, startRotation);
-        //rotation = ToolUtils.applyAxesRotationSettings(rotation, this._myToolSettings.myAxesSettings, this._myStartShapeTransform);
 
         glMatrix.vec3.add(newPosition, startPosition, translation);
         glMatrix.vec3.add(newRotation, rotation, startRotation);
