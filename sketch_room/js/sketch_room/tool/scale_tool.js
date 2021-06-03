@@ -123,6 +123,8 @@ class ScaleTool {
 
             this._mySelectedShape.setScale(scaleToApply);
         }
+
+        this._mySelectedShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
     }
 
     _startWork(handedness) {
@@ -149,9 +151,6 @@ class ScaleTool {
     _stopWork() {
         this._myIsWorking = false;
         this._mySelectedShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
-        let scale = this._mySelectedShape.getScale();
-        scale = scale.map(function (value) { return Math.max(value, 0.01); });
-        this._mySelectedShape.setScale(scale);
     }
 
     _cancelWork() {

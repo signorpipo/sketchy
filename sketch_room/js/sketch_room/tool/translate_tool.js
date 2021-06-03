@@ -116,6 +116,8 @@ class TranslateTool {
             glMatrix.vec3.add(translation, translation, this._myStartShapePosition);
             this._mySelectedShape.setPosition(translation);
         }
+
+        this._mySelectedShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
     }
 
     _startWork(handedness) {

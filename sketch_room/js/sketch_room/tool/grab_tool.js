@@ -99,6 +99,8 @@ class GrabTool {
         glMatrix.quat2.fromRotationTranslation(newTransform, newRotation, newPosition);
 
         this._mySelectedShape.setTransform(newTransform);
+        this._mySelectedShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
+        this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
     }
 
     _startWork(handedness) {

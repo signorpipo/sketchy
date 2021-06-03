@@ -129,6 +129,8 @@ class RotateTool {
 
             this._mySelectedShape.setRotation(rotation);
         }
+
+        this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
     }
 
     _startWork(handedness) {
