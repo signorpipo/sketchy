@@ -70,9 +70,9 @@ class ToolsWidget {
                 this._myToolSettings.mySnapSettings.myPositionSnap[1] = positionSnap;
                 this._myToolSettings.mySnapSettings.myPositionSnap[2] = positionSnap;
 
-                this._myToolSettings.mySnapSettings.myScaleSnap[0] = positionSnap;
-                this._myToolSettings.mySnapSettings.myScaleSnap[1] = positionSnap;
-                this._myToolSettings.mySnapSettings.myScaleSnap[2] = positionSnap;
+                this._myToolSettings.mySnapSettings.myScaleSnap[0] = positionSnap / 2;
+                this._myToolSettings.mySnapSettings.myScaleSnap[1] = positionSnap / 2;
+                this._myToolSettings.mySnapSettings.myScaleSnap[2] = positionSnap / 2;
             }
 
             if (this._myRotationHover) {

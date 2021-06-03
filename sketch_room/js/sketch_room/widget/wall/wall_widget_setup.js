@@ -24,7 +24,7 @@ class WallWidgetSetup extends SketchWidgetSetup {
 
         this.mySizeLabelTextPosition = [0, 0, 0];
         this.mySizeLabelTextScale = [0.18, 0.18, 0.18];
-        this.mySizeLabelText = "Size";
+        this.mySizeLabelText = "Size (meters)";
 
         let sizeValuesTextScale = [0.144, 0.144, 0.144];
         let spaceFromLabel = 0.07;

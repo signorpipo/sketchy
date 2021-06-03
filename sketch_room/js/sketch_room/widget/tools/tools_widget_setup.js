@@ -25,7 +25,7 @@ class ToolsWidgetSetup extends SketchWidgetSetup {
 
         this.mySnapLabelTextPosition = [0, 0, 0];
         this.mySnapLabelTextScale = [0.18, 0.18, 0.18];
-        this.mySnapLabelText = "Snap";
+        this.mySnapLabelText = "Snap (meters)";
 
         let snapValuesTextScale = [0.144, 0.144, 0.144];
         let valueCursorExtraWidth = 0.005;

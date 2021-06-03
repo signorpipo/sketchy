@@ -19,6 +19,7 @@ class SnapSettings {
         this.myPositionSnap = [0.05, 0.05, 0.05];
         this.myRotationSnap = [PP.MathUtils.toRadians(15), PP.MathUtils.toRadians(15), PP.MathUtils.toRadians(15)]; //Euler Rotation
         this.myScaleSnap = this.myPositionSnap.slice(0);
+        glMatrix.vec3.scale(this.myScaleSnap, this.myScaleSnap, 0.5);
     }
 
     save(data) {
