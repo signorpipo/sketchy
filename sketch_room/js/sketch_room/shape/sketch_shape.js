@@ -141,6 +141,10 @@ class SketchShape {
         this._myObject.destroy();
     }
 
+    clone() {
+        return null;
+    }
+
     update(dt) {
         if (this._mySelected) {
             this._selectedUpdate(dt);

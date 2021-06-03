@@ -5,6 +5,15 @@ class SketchBox extends SketchShape {
         this._buildObject();
     }
 
+    clone() {
+        let clone = new SketchBox(this._myParentObject);
+        clone.setPosition(this.getPosition());
+        clone.setRotation(this.getRotation());
+        clone.setScale(this.getScale());
+        clone.setColor(this.getColor());
+        return clone;
+    }
+
     _buildObject() {
         this._myObject = WL.scene.addObject(this._myParentObject);
 
