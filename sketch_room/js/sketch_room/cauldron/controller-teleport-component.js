@@ -165,7 +165,7 @@ WL.registerComponent("controller-teleport-component", {
         }.bind(this));
 
         s.requestReferenceSpace('local-floor').then(function (refSpace) {
-            refSpace.addEventListener("reset", this.onViewReset().bind(this));
+            //refSpace.addEventListener("reset", this.onViewReset().bind(this));
         }.bind(this));
     },
     _teleportPlayer: function (newPosition, rotationToAdd) {

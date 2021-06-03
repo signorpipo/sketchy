@@ -61,7 +61,8 @@ class SketchWidgetFrameUI {
     _createSkeleton() {
         this.myPivotObject = WL.scene.addObject(this._myParentObject);
         this.myLocalPivotObject = WL.scene.addObject(this.myPivotObject);
-        this.myWidgetObject = WL.scene.addObject(this.myLocalPivotObject);
+        this.myWidgetPivotObject = WL.scene.addObject(this.myLocalPivotObject);
+        this.myWidgetObject = WL.scene.addObject(this.myWidgetPivotObject);
 
         this.myVisibilityButtonPanel = WL.scene.addObject(this.myLocalPivotObject);
         this.myVisibilityButtonBackground = WL.scene.addObject(this.myVisibilityButtonPanel);
@@ -89,6 +90,11 @@ class SketchWidgetFrameUI {
         this.myToolsButtonBackground = WL.scene.addObject(this.myToolsButtonPanel);
         this.myToolsButtonText = WL.scene.addObject(this.myToolsButtonPanel);
         this.myToolsButtonCursorTarget = WL.scene.addObject(this.myToolsButtonPanel);
+
+        this.myHowToButtonPanel = WL.scene.addObject(this.myButtonsPanel);
+        this.myHowToButtonBackground = WL.scene.addObject(this.myHowToButtonPanel);
+        this.myHowToButtonText = WL.scene.addObject(this.myHowToButtonPanel);
+        this.myHowToButtonCursorTarget = WL.scene.addObject(this.myHowToButtonPanel);
     }
 
     //Transforms
@@ -96,6 +102,7 @@ class SketchWidgetFrameUI {
         this.myPivotObject.resetRotation();
         this.myPivotObject.rotateObject(this._mySetup.myPivotObjectRotation);
         this.myLocalPivotObject.setTranslationLocal(this._mySetup.myLocalPivotObjectPosition);
+        this.myWidgetPivotObject.setTranslationLocal(this._mySetup.myWidgetPivotObjectPosition);
 
         this.myVisibilityButtonPanel.setTranslationLocal(this._mySetup.myVisibilityButtonPosition);
         this.myVisibilityButtonBackground.scale(this._mySetup.myVisibilityButtonBackgroundScale);
@@ -126,6 +133,12 @@ class SketchWidgetFrameUI {
         this.myToolsButtonText.setTranslationLocal(this._mySetup.myToolsButtonTextPosition);
         this.myToolsButtonText.scale(this._mySetup.myToolsButtonTextScale);
         this.myToolsButtonCursorTarget.setTranslationLocal(this._mySetup.myToolsButtonCursorTargetPosition);
+
+        this.myHowToButtonPanel.setTranslationLocal(this._mySetup.myHowToButtonPosition);
+        this.myHowToButtonBackground.scale(this._mySetup.myHowToButtonBackgroundScale);
+        this.myHowToButtonText.setTranslationLocal(this._mySetup.myHowToButtonTextPosition);
+        this.myHowToButtonText.scale(this._mySetup.myHowToButtonTextScale);
+        this.myHowToButtonCursorTarget.setTranslationLocal(this._mySetup.myHowToButtonCursorTargetPosition);
     }
 
     //Components
@@ -217,6 +230,24 @@ class SketchWidgetFrameUI {
         this.myToolsButtonCollisionComponent.collider = this._mySetup.myCursorTargetCollisionCollider;
         this.myToolsButtonCollisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
         this.myToolsButtonCollisionComponent.extents = this._mySetup.myToolsButtonCollisionExtents;
+
+        //How To
+        this.myHowToButtonBackgroundComponent = this.myHowToButtonBackground.addComponent('mesh');
+        this.myHowToButtonBackgroundComponent.mesh = this._myPlaneMesh;
+        this.myHowToButtonBackgroundComponent.material = this._myAdditionalSetup.myPlaneMaterial.clone();
+        this.myHowToButtonBackgroundComponent.material.color = this._mySetup.myButtonDisabledBackgroundColor;
+
+        this.myHowToButtonTextComponent = this.myHowToButtonText.addComponent('text');
+        this._setupButtonTextComponent(this.myHowToButtonTextComponent);
+        this.myHowToButtonTextComponent.material.color = this._mySetup.myButtonDisabledTextColor;
+        this.myHowToButtonTextComponent.text = this._mySetup.myHowToButtonText;
+
+        this.myHowToButtonCursorTargetComponent = this.myHowToButtonCursorTarget.addComponent('cursor-target');
+
+        this.myHowToButtonCollisionComponent = this.myHowToButtonCursorTarget.addComponent('collision');
+        this.myHowToButtonCollisionComponent.collider = this._mySetup.myCursorTargetCollisionCollider;
+        this.myHowToButtonCollisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
+        this.myHowToButtonCollisionComponent.extents = this._mySetup.myHowToButtonCollisionExtents;
     }
 
     _setupButtonTextComponent(textComponent) {

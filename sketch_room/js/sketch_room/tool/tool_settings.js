@@ -16,9 +16,9 @@ class ToolSettings {
 
 class SnapSettings {
     constructor() {
-        this.myPositionSnap = [0.005, 0.005, 0.005];
-        this.myRotationSnap = [PP.MathUtils.toRadians(1), PP.MathUtils.toRadians(1), PP.MathUtils.toRadians(1)]; //Euler Rotation
-        this.myScaleSnap = [0.005, 0.005, 0.005];
+        this.myPositionSnap = [0.05, 0.05, 0.05];
+        this.myRotationSnap = [PP.MathUtils.toRadians(15), PP.MathUtils.toRadians(15), PP.MathUtils.toRadians(15)]; //Euler Rotation
+        this.myScaleSnap = this.myPositionSnap.slice(0);
     }
 
     save(data) {

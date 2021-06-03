@@ -92,6 +92,10 @@ class SketchWidgetFrame {
         ui.myToolsButtonCursorTargetComponent.addClickFunction(this._selectTools.bind(this, true));
         ui.myToolsButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, ui.myToolsButtonBackgroundComponent.material));
         ui.myToolsButtonCursorTargetComponent.addUnHoverFunction(this._toolsUnHover.bind(this, ui.myToolsButtonBackgroundComponent.material));
+
+        ui.myHowToButtonCursorTargetComponent.addClickFunction(this._selectHowTo.bind(this, true));
+        ui.myHowToButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, ui.myHowToButtonBackgroundComponent.material));
+        ui.myHowToButtonCursorTargetComponent.addUnHoverFunction(this._toolsUnHover.bind(this, ui.myHowToButtonBackgroundComponent.material));
     }
 
     _toggleVisibility(isButton) {
@@ -189,6 +193,21 @@ class SketchWidgetFrame {
         }
     }
 
+    _selectHowTo() {
+        if (this.myIsWidgetVisible && this._myCurrentSketchWidget != SketchWidgetType.HOWTO) {
+            this._myCurrentSketchWidget = SketchWidgetType.HOWTO;
+
+            this._deselectAllWidgetTypeButtons();
+
+            let textMaterial = this._myUI.myHowToButtonTextComponent.material;
+            textMaterial.color = this._mySetup.myDefaultTextColor;
+
+            for (let value of this._myWidgetChangedCallbacks.values()) {
+                value(this._myCurrentSketchWidget);
+            }
+        }
+    }
+
     _deselectAllWidgetTypeButtons() {
         {
             let textMaterial = this._myUI.myShapeButtonTextComponent.material;
@@ -265,4 +284,5 @@ var SketchWidgetType = {
     SHAPE: 1,
     TOOLS: 2,
     WALLS: 3,
+    HOWTO: 4,
 };

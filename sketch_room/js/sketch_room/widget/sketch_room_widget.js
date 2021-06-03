@@ -121,6 +121,7 @@ class SketchRoomWidget {
         this._myWidgets[SketchWidgetType.SHAPE] = new ShapeWidget(this._myToolSettings);
         this._myWidgets[SketchWidgetType.TOOLS] = new ToolsWidget(this._myToolSettings);
         this._myWidgets[SketchWidgetType.WALLS] = new WallWidget(this._myWallSettings);
+        this._myWidgets[SketchWidgetType.HOWTO] = new HowToWidget();
 
         for (let widget of this._myWidgets) {
             if (widget) {
