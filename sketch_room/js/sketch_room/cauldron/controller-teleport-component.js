@@ -37,6 +37,8 @@ WL.registerComponent("controller-teleport-component", {
 
         this._extraRotation = 0;
         this._currentStickAxes = [];
+
+        this._prevHeadForward = [];
     },
     start: function () {
         WL.onXRSessionStart.push(this.setupVREvents.bind(this));
@@ -47,91 +49,114 @@ WL.registerComponent("controller-teleport-component", {
             this._teleportPlayer([0, 0, 0], 0);
         }
 
-        let thumbstickXAxisInput = 0;
-        let thumbstickYAxisInput = 0;
-        let inputLength = 0;
-        if (this.gamepadLeft && this.gamepadLeft.axes) {
-            thumbstickXAxisInput = this.gamepadLeft.axes[2];
-            thumbstickYAxisInput = this.gamepadLeft.axes[3];
-            inputLength = Math.abs(thumbstickXAxisInput) + Math.abs(thumbstickYAxisInput);
-        }
+        if (!PP.LeftGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).myIsPressed) {
+            let thumbstickXAxisInput = 0;
+            let thumbstickYAxisInput = 0;
+            let inputLength = 0;
+            if (this.gamepadLeft && this.gamepadLeft.axes) {
+                thumbstickXAxisInput = this.gamepadLeft.axes[2];
+                thumbstickYAxisInput = this.gamepadLeft.axes[3];
+                inputLength = Math.abs(thumbstickXAxisInput) + Math.abs(thumbstickYAxisInput);
+            }
 
-        if (!this.isIndicating && this.prevThumbstickYAxisInput >= this.thumbstickActivationThreshhold && thumbstickYAxisInput < this.thumbstickActivationThreshhold) {
-            this.isIndicating = true;
-            this.eyeLeft.getForward(this._tempVec);
-            this._tempVec[1] = 0;
-            glMatrix.vec3.normalize(this._tempVec, this._tempVec);
-            this._camRotation = Math.atan2(this._tempVec[0], this._tempVec[2]);
-        } else if (this.isIndicating && inputLength < this.thumbstickDeactivationThreshhold) {
-            this.isIndicating = false;
-            this.teleportIndicatorMeshObject.translate([1000, 1000, 1000]);
-
-            if (this.hitSpot && this.camRoot) {
-                // this.session.requestReferenceSpace("local").then(function(xrReferenceSpace) {
-                //    this.session.requestAnimationFrame(function(time, xrFrame) {
-                //      console.log(xrFrame.getViewerPose(xrReferenceSpace).transform)
-                //    })
-                // }.bind(this))
+            if (!this.isIndicating && this.prevThumbstickYAxisInput >= this.thumbstickActivationThreshhold && thumbstickYAxisInput < this.thumbstickActivationThreshhold) {
+                this.isIndicating = true;
                 this.eyeLeft.getForward(this._tempVec);
                 this._tempVec[1] = 0;
                 glMatrix.vec3.normalize(this._tempVec, this._tempVec);
                 this._camRotation = Math.atan2(this._tempVec[0], this._tempVec[2]);
-                this._camRotation = this._currentIndicatorRotation - this._camRotation;
-                //this.camRoot.rotateAxisAngleRad([0, 1, 0], this._camRotation);
+            } else if (this.isIndicating && inputLength < this.thumbstickDeactivationThreshhold) {
+                this.isIndicating = false;
+                this.teleportIndicatorMeshObject.translate([1000, 1000, 1000]);
 
-                let rotationToAdd = Math.PI + Math.atan2(this._currentStickAxes[0], this._currentStickAxes[1]); // + Math.PI because up is -1, remove if up is 1
-                this._teleportPlayer(this.hitSpot, rotationToAdd);
-            } else if (!this.camRoot) {
-                console.error(this.object.name, 'controller-teleport-component.js: Cam Root reference is missing.');
-            }
-        }
+                if (this.hitSpot && this.camRoot) {
+                    // this.session.requestReferenceSpace("local").then(function(xrReferenceSpace) {
+                    //    this.session.requestAnimationFrame(function(time, xrFrame) {
+                    //      console.log(xrFrame.getViewerPose(xrReferenceSpace).transform)
+                    //    })
+                    // }.bind(this))
+                    this.eyeLeft.getForward(this._tempVec);
+                    this._tempVec[1] = 0;
+                    glMatrix.vec3.normalize(this._tempVec, this._tempVec);
+                    this._camRotation = Math.atan2(this._tempVec[0], this._tempVec[2]);
+                    this._camRotation = this._currentIndicatorRotation - this._camRotation;
+                    //this.camRoot.rotateAxisAngleRad([0, 1, 0], this._camRotation);
 
-        if (this.isIndicating && this.teleportIndicatorMeshObject && this.input) {
-            let origin = [0, 0, 0];
-            glMatrix.quat2.getTranslation(origin, this.object.transformWorld);
-
-            let quat = this.object.transformWorld.slice(0);
-            let extraRotation = [-0.5, 0, 0, 0.866];
-            extraRotation = glMatrix.quat.normalize(extraRotation, extraRotation);
-            glMatrix.quat.mul(quat, quat, extraRotation);
-
-            let forwardDirection = [0, 0, 0];
-            glMatrix.vec3.transformQuat(forwardDirection, [0, 0, -1], quat);
-            let rayHit = WL.scene.rayCast(origin, forwardDirection, 1 << this.floorGroup);
-            if (rayHit.hitCount > 0) {
-                if (this.indicatorHidden) {
-                    this.indicatorHidden = false;
+                    let rotationToAdd = Math.PI + Math.atan2(this._currentStickAxes[0], this._currentStickAxes[1]); // + Math.PI because up is -1, remove if up is 1
+                    this._teleportPlayer(this.hitSpot, rotationToAdd);
+                } else if (!this.camRoot) {
+                    console.error(this.object.name, 'controller-teleport-component.js: Cam Root reference is missing.');
                 }
+            }
 
-                this._currentStickAxes = [thumbstickXAxisInput, thumbstickYAxisInput];
-                this._extraRotation = Math.PI + Math.atan2(thumbstickXAxisInput, thumbstickYAxisInput);
-                this._currentIndicatorRotation = this._camRotation + (this._extraRotation - Math.PI);
-                this.teleportIndicatorMeshObject.resetTranslationRotation();
-                this.teleportIndicatorMeshObject.rotateAxisAngleRad([0, 1, 0], this._currentIndicatorRotation);
+            if (this.isIndicating && this.teleportIndicatorMeshObject && this.input) {
+                let origin = [0, 0, 0];
+                glMatrix.quat2.getTranslation(origin, this.object.transformWorld);
 
-                this.teleportIndicatorMeshObject.translate(rayHit.locations[0]);
+                let quat = this.object.transformWorld.slice(0);
+                let extraRotation = [-0.5, 0, 0, 0.866];
+                extraRotation = glMatrix.quat.normalize(extraRotation, extraRotation);
+                glMatrix.quat.mul(quat, quat, extraRotation);
+
+                let forwardDirection = [0, 0, 0];
+                glMatrix.vec3.transformQuat(forwardDirection, [0, 0, -1], quat);
+                let rayHit = WL.scene.rayCast(origin, forwardDirection, 1 << this.floorGroup);
+                if (rayHit.hitCount > 0) {
+                    if (this.indicatorHidden) {
+                        this.indicatorHidden = false;
+                    }
+
+                    this._currentStickAxes = [thumbstickXAxisInput, thumbstickYAxisInput];
+                    this._extraRotation = Math.PI + Math.atan2(thumbstickXAxisInput, thumbstickYAxisInput);
+                    this._currentIndicatorRotation = this._camRotation + (this._extraRotation - Math.PI);
+                    this.teleportIndicatorMeshObject.resetTranslationRotation();
+                    this.teleportIndicatorMeshObject.rotateAxisAngleRad([0, 1, 0], this._currentIndicatorRotation);
+
+                    this.teleportIndicatorMeshObject.translate(rayHit.locations[0]);
 
 
-                this.hitSpot = rayHit.locations[0].slice(0);
-                if (this.indicatorYOffset) {
-                    this.hitSpot[1] += this.indicatorYOffset;
+                    this.hitSpot = rayHit.locations[0].slice(0);
+                    if (this.indicatorYOffset) {
+                        this.hitSpot[1] += this.indicatorYOffset;
+                    }
+                } else {
+                    if (!this.indicatorHidden) {
+                        this.teleportIndicatorMeshObject.translate([1000, 1000, 1000]);
+                        this.indicatorHidden = true;
+                    }
+                    this.hitSpot = undefined;
                 }
             } else {
-                if (!this.indicatorHidden) {
-                    this.teleportIndicatorMeshObject.translate([1000, 1000, 1000]);
-                    this.indicatorHidden = true;
+                if (Math.abs(this.prevThumbstickXAxisInput) <= Math.abs(this.thumbstickActivationThreshhold) && Math.abs(thumbstickXAxisInput) > Math.abs(this.thumbstickActivationThreshhold)) {
+                    let rotationToAdd = -Math.sign(thumbstickXAxisInput) * this.snapTurnAmount;
+                    this._teleportPlayer(this._getCurrentHeadFloorPosition(), rotationToAdd);
                 }
-                this.hitSpot = undefined;
             }
+
+            this.prevThumbstickXAxisInput = thumbstickXAxisInput;
+            this.prevThumbstickYAxisInput = thumbstickYAxisInput;
         } else {
-            if (Math.abs(this.prevThumbstickXAxisInput) <= Math.abs(this.thumbstickActivationThreshhold) && Math.abs(thumbstickXAxisInput) > Math.abs(this.thumbstickActivationThreshhold)) {
-                let rotationToAdd = -Math.sign(thumbstickXAxisInput) * this.snapTurnAmount;
-                this._teleportPlayer(this._getCurrentHeadFloorPosition(), rotationToAdd);
+            if (this.isIndicating) {
+                this.isIndicating = false;
+                this.teleportIndicatorMeshObject.setTranslationWorld([1000, 1000, 1000]);
             }
+
+            let currentForward = [];
+            this.eyeLeft.getForward(currentForward);
+            currentForward[1] = 0;
+            this._prevHeadForward[1] = 0;
+            let angle = glMatrix.vec3.angle(currentForward, this._prevHeadForward);
+
+            let cross = [];
+            glMatrix.vec3.cross(cross, currentForward, this._prevHeadForward);
+            if (!PP.MathUtils.isConcordant(cross, [0, 1, 0])) {
+                angle = -angle;
+            }
+
+            this._teleportPlayer(this._getCurrentHeadFloorPosition(), angle);
         }
 
-        this.prevThumbstickXAxisInput = thumbstickXAxisInput;
-        this.prevThumbstickYAxisInput = thumbstickYAxisInput;
+        this.eyeLeft.getForward(this._prevHeadForward);
     },
     setupVREvents: function (s) {
         /* If in VR, one-time bind the listener */
