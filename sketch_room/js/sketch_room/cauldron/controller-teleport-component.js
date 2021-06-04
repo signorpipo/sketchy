@@ -43,6 +43,10 @@ WL.registerComponent("controller-teleport-component", {
         this.teleportIndicatorMeshObject.translate([1000, 1000, 1000]);
     },
     update: function () {
+        if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.THUMBSTICK).isPressEnd()) {
+            this._teleportPlayer([0, 0, 0], 0);
+        }
+
         let thumbstickXAxisInput = 0;
         let thumbstickYAxisInput = 0;
         let inputLength = 0;
