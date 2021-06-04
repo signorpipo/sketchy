@@ -297,7 +297,9 @@
                     "type": "set-global-head-pose",
                     "set-global-head-pose": {
                         "eyeLeft": "18",
-                        "eyeRight": "19"
+                        "eyeRight": "19",
+                        "_myEyeLeft": "18",
+                        "_myEyeRight": "19"
                     }
                 }
             ]
@@ -332,7 +334,7 @@
                         "_myTextMaterial": "DefaultFontMaterial",
                         "_myHandedness": "left"
                     },
-                    "active": true
+                    "active": false
                 },
                 {
                     "type": "easy-tune",

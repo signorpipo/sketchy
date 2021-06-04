@@ -14,9 +14,6 @@ class TranslateTool {
 
         this._myClosestAxis = null;
         this._myKeepCurrentClosestAxis = false;
-
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneInteger("ClosestMaxPositions", 10, 2));
-        PP.EasyTuneVariables.addVariable(new PP.EasyTuneNumber("ClosestMinDifference", 0.0005, 0.001, 4));
     }
 
     setSelectedShape(object) {
@@ -43,10 +40,6 @@ class TranslateTool {
     }
 
     update(dt) {
-        this._myClosestMaxPositions = PP.EasyTuneVariables.get("ClosestMaxPositions").myValue;
-        this._myClosestRequiredPositions = Math.round(this._myClosestMaxPositions / 2);
-        this._myClosestMinDifference = PP.EasyTuneVariables.get("ClosestMinDifference").myValue;
-
         if (!this._myIsEnabled) {
             return;
         }
