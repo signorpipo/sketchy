@@ -241,8 +241,6 @@ class SketchShape {
         let ambientColor = selectedColor.slice(0);
         glMatrix.vec3.scale(ambientColor, ambientColor, 0.5);
         this._myMesh.material.ambientColor = ambientColor;
-
-        console.log("cia");
     }
 
     _getBoxVertices() {
