@@ -49,6 +49,81 @@ class SketchShape {
         this.setScale(scale);
     }
 
+    snapInsideRoom(wallSettings, toolSettings) {
+        let vertices = this._getBoxVertices();
+        let position = this.getPosition();
+        let positionSnap = toolSettings.mySnapSettings.myPositionSnap;
+
+        //right
+        {
+            let farthest = this._getFarthestOnAxis(vertices, [1, 0, 0]);
+            let distance = farthest[0] - (wallSettings.myWidth / 2);
+            if (distance > 0.0001) {
+                let snapToMove = Math.ceil((distance - 0.0001) / positionSnap[0]);
+                distance = snapToMove * positionSnap[0];
+                glMatrix.vec3.add(position, position, [-distance, 0, 0]);
+            }
+        }
+
+        //left
+        {
+            let farthest = this._getFarthestOnAxis(vertices, [-1, 0, 0]);
+            let distance = farthest[0] + (wallSettings.myWidth / 2);
+            if (distance < -0.0001) {
+                let snapToMove = Math.ceil((-distance - 0.0001) / positionSnap[0]);
+                distance = -snapToMove * positionSnap[0];
+                glMatrix.vec3.add(position, position, [-distance, 0, 0]);
+            }
+        }
+
+        //up
+        {
+            let farthest = this._getFarthestOnAxis(vertices, [0, 1, 0]);
+            let distance = farthest[1] - wallSettings.myHeight;
+            if (distance > 0) {
+                let snapToMove = Math.ceil((distance - 0.0001) / positionSnap[1]);
+                distance = snapToMove * positionSnap[1];
+                glMatrix.vec3.add(position, position, [0, -distance, 0]);
+            }
+        }
+
+        //down
+        {
+            let farthest = this._getFarthestOnAxis(vertices, [0, -1, 0]);
+            let distance = farthest[1];
+            if (distance < 0) {
+                let snapToMove = Math.ceil((-distance - 0.0001) / positionSnap[1]);
+                distance = -snapToMove * positionSnap[1];
+                glMatrix.vec3.add(position, position, [0, -distance, 0]);
+            }
+        }
+
+        //front
+        {
+            let farthest = this._getFarthestOnAxis(vertices, [0, 0, 1]);
+            let distance = farthest[2] - (wallSettings.myDepth / 2);
+            if (distance > 0) {
+                let snapToMove = Math.ceil((distance - 0.0001) / positionSnap[2]);
+                distance = snapToMove * positionSnap[2];
+                glMatrix.vec3.add(position, position, [0, 0, -distance]);
+            }
+        }
+
+        //behind
+        {
+            let farthest = this._getFarthestOnAxis(vertices, [0, 0, -1]);
+            let distance = farthest[2] + (wallSettings.myDepth / 2);
+            if (distance < 0) {
+                let snapToMove = Math.ceil((-distance - 0.0001) / positionSnap[2]);
+                distance = -snapToMove * positionSnap[2];
+                glMatrix.vec3.add(position, position, [0, 0, -distance]);
+            }
+        }
+
+        this.setPosition(position);
+        this.snapPosition(toolSettings.mySnapSettings.myPositionSnap);
+    }
+
     setSelected(selected) {
         if (this._mySelected == selected) {
             return;
@@ -133,10 +208,6 @@ class SketchShape {
         this._myMesh.material.ambientColor = ambientColor;
     }
 
-    getData() {
-        //export string version to put in url 
-    }
-
     delete() {
         this._myObject.destroy();
     }
@@ -170,6 +241,76 @@ class SketchShape {
         let ambientColor = selectedColor.slice(0);
         glMatrix.vec3.scale(ambientColor, ambientColor, 0.5);
         this._myMesh.material.ambientColor = ambientColor;
+
+        console.log("cia");
+    }
+
+    _getBoxVertices() {
+        let axes = PP.MathUtils.getAxes(this.getTransform());
+        let scale = this.getScale();
+        let position = this.getPosition();
+
+        let boxVertices = [[], [], [], [], [], [], [], []];
+
+        let ySize = [];
+        glMatrix.vec3.scale(ySize, axes[1], scale[1]);
+        let xSize = [];
+        glMatrix.vec3.scale(xSize, axes[0], scale[0]);
+        let zSize = [];
+        glMatrix.vec3.scale(zSize, axes[2], scale[2]);
+
+        let yTopPosition = [];
+        glMatrix.vec3.add(yTopPosition, position, ySize);
+        let yBottomPosition = [];
+        glMatrix.vec3.sub(yBottomPosition, position, ySize);
+
+        //top
+        glMatrix.vec3.add(boxVertices[0], yTopPosition, xSize);
+        glMatrix.vec3.add(boxVertices[0], boxVertices[0], zSize);
+
+        glMatrix.vec3.add(boxVertices[1], yTopPosition, xSize);
+        glMatrix.vec3.sub(boxVertices[1], boxVertices[1], zSize);
+
+        glMatrix.vec3.sub(boxVertices[2], yTopPosition, xSize);
+        glMatrix.vec3.add(boxVertices[2], boxVertices[2], zSize);
+
+        glMatrix.vec3.sub(boxVertices[3], yTopPosition, xSize);
+        glMatrix.vec3.sub(boxVertices[3], boxVertices[3], zSize);
+
+        //bottom
+        glMatrix.vec3.add(boxVertices[4], yBottomPosition, xSize);
+        glMatrix.vec3.add(boxVertices[4], boxVertices[4], zSize);
+
+        glMatrix.vec3.add(boxVertices[5], yBottomPosition, xSize);
+        glMatrix.vec3.sub(boxVertices[5], boxVertices[5], zSize);
+
+        glMatrix.vec3.sub(boxVertices[6], yBottomPosition, xSize);
+        glMatrix.vec3.add(boxVertices[6], boxVertices[6], zSize);
+
+        glMatrix.vec3.sub(boxVertices[7], yBottomPosition, xSize);
+        glMatrix.vec3.sub(boxVertices[7], boxVertices[7], zSize);
+
+        return boxVertices;
+    }
+
+    _getFarthestOnAxis(positions, axis) {
+        let farthest = [];
+
+        let maxDistance = -Infinity;
+        for (let position of positions) {
+            let projection = PP.MathUtils.getComponentAlongAxis(position, axis);
+            let distance = glMatrix.vec3.length(projection);
+            if (!PP.MathUtils.isConcordant(projection, axis)) {
+                distance = -distance;
+            }
+
+            if (distance > maxDistance) {
+                maxDistance = distance;
+                farthest = position;
+            }
+        }
+
+        return farthest;
     }
 
     save(data) {

@@ -1,7 +1,9 @@
 
 class ToolManager {
-    constructor(sceneObject) {
+    constructor(sceneObject, wallSettings) {
         this._mySceneObject = sceneObject;
+        this._myWallSettings = wallSettings;
+
         this._myToolSettings = new ToolSettings();
 
         this._createTools();
@@ -54,11 +56,11 @@ class ToolManager {
 
     _createTools() {
         this._myTools = [];
-        this._myTools[ToolType.GRAB] = new GrabTool(this._myToolSettings);
-        this._myTools[ToolType.TRANSLATE] = new TranslateTool(this._myToolSettings);
-        this._myTools[ToolType.ROTATE] = new RotateTool(this._myToolSettings);
-        this._myTools[ToolType.SCALE] = new ScaleTool(this._myToolSettings);
-        this._myTools[ToolType.CREATE] = new CreateTool(this._myToolSettings, this._mySceneObject);
+        this._myTools[ToolType.GRAB] = new GrabTool(this._myToolSettings, this._myWallSettings);
+        this._myTools[ToolType.TRANSLATE] = new TranslateTool(this._myToolSettings, this._myWallSettings);
+        this._myTools[ToolType.ROTATE] = new RotateTool(this._myToolSettings, this._myWallSettings);
+        this._myTools[ToolType.SCALE] = new ScaleTool(this._myToolSettings, this._myWallSettings);
+        this._myTools[ToolType.CREATE] = new CreateTool(this._myToolSettings, this._myWallSettings, this._mySceneObject);
         this._myTools[ToolType.SELECT] = new SelectTool();
     }
 

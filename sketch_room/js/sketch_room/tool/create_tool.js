@@ -1,6 +1,7 @@
 class CreateTool {
-    constructor(toolSettings, sceneObject) {
+    constructor(toolSettings, wallSettings, sceneObject) {
         this._myToolSettings = toolSettings;
+        this._myWallSettings = wallSettings;
         this._mySceneObject = sceneObject;
         this._myIsEnabled = false;
 
@@ -122,6 +123,7 @@ class CreateTool {
             newShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
             newShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
             newShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
+            newShape.snapInsideRoom(this._myWallSettings, this._myToolSettings);
 
             for (let value of this._myShapeCreatedCallbacks.values()) {
                 value(newShape);

@@ -1,6 +1,7 @@
 class RotateTool {
-    constructor(toolSettings) {
+    constructor(toolSettings, wallSettings) {
         this._myToolSettings = toolSettings;
+        this._myWallSettings = wallSettings;
         this._myIsEnabled = false;
 
         this._mySelectedShape = null;
@@ -129,6 +130,7 @@ class RotateTool {
         this._mySelectedShape.setRotation(rotation);
 
         this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
+        this._mySelectedShape.snapInsideRoom(this._myWallSettings, this._myToolSettings);
     }
 
     _startWork(handedness) {
@@ -152,6 +154,7 @@ class RotateTool {
     _stopWork() {
         this._myIsWorking = false;
         this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
+        this._mySelectedShape.snapInsideRoom(this._myWallSettings, this._myToolSettings);
     }
 
     _cancelWork() {

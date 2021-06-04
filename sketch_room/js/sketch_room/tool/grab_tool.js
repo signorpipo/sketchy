@@ -1,6 +1,7 @@
 class GrabTool {
-    constructor(toolSettings) {
+    constructor(toolSettings, wallSettings) {
         this._myToolSettings = toolSettings;
+        this._myWallSettings = wallSettings;
         this._myIsEnabled = false;
 
         this._mySelectedShape = null;
@@ -99,6 +100,7 @@ class GrabTool {
         this._mySelectedShape.setTransform(newTransform);
         this._mySelectedShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
         this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
+        this._mySelectedShape.snapInsideRoom(this._myWallSettings, this._myToolSettings);
     }
 
     _startWork(handedness) {
@@ -123,6 +125,7 @@ class GrabTool {
         this._myIsWorking = false;
         this._mySelectedShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
         this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
+        this._mySelectedShape.snapInsideRoom(this._myWallSettings, this._myToolSettings);
     }
 
     _cancelWork() {

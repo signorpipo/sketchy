@@ -1,6 +1,7 @@
 class ScaleTool {
-    constructor(toolSettings) {
+    constructor(toolSettings, wallSettings) {
         this._myToolSettings = toolSettings;
+        this._myWallSettings = wallSettings;
         this._myIsEnabled = false;
 
         this._mySelectedShape = null;
@@ -127,6 +128,7 @@ class ScaleTool {
         this._mySelectedShape.setScale(scaleToApply);
 
         this._mySelectedShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
+        this._mySelectedShape.snapInsideRoom(this._myWallSettings, this._myToolSettings);
     }
 
     _startWork(handedness) {
@@ -153,6 +155,7 @@ class ScaleTool {
     _stopWork() {
         this._myIsWorking = false;
         this._mySelectedShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
+        this._mySelectedShape.snapInsideRoom(this._myWallSettings, this._myToolSettings);
     }
 
     _cancelWork() {

@@ -17,8 +17,8 @@ class ToolSettings {
 
 class SnapSettings {
     constructor() {
-        this.myPositionSnap = [0.001, 0.001, 0.001];
-        this.myRotationSnap = [PP.MathUtils.toRadians(0), PP.MathUtils.toRadians(0), PP.MathUtils.toRadians(0)]; //Euler Rotation
+        this.myPositionSnap = [0.05, 0.05, 0.05];
+        this.myRotationSnap = [PP.MathUtils.toRadians(5), PP.MathUtils.toRadians(5), PP.MathUtils.toRadians(5)]; //Euler Rotation
         this.myScaleSnap = this.myPositionSnap.slice(0);
         glMatrix.vec3.scale(this.myScaleSnap, this.myScaleSnap, 0.5);
     }
@@ -56,8 +56,8 @@ class AxisLockSettings {
     constructor() {
         this.myAxisLockType = [];
         this.myAxisLockType[ToolType.GRAB] = AxisLockType.FREE;
-        this.myAxisLockType[ToolType.TRANSLATE] = AxisLockType.LOCAL;
-        this.myAxisLockType[ToolType.ROTATE] = AxisLockType.LOCAL;
+        this.myAxisLockType[ToolType.TRANSLATE] = AxisLockType.FREE;
+        this.myAxisLockType[ToolType.ROTATE] = AxisLockType.FREE;
         this.myAxisLockType[ToolType.SCALE] = AxisLockType.LOCAL;
     }
 }

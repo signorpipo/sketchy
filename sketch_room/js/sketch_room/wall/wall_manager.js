@@ -58,7 +58,7 @@ class WallManager {
         this._myWalls[WallType.SOUTH].setPosition([0, halfHeight, -halfDepth - halfThickness]);
         this._myWalls[WallType.SOUTH].setScale([halfWidth, halfHeight, halfThickness]);
 
-        this._myLightObject.setTranslationLocal([0, height - 0.5, 0]);
+        this._myLightObject.setTranslationLocal([0, Math.min(3.5, height - 0.25), 0]);
     }
 
     _createWalls() {
