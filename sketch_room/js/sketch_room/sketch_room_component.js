@@ -1,5 +1,6 @@
 WL.registerComponent('sketch-room-component', {
     _myShapeMaterial: { type: WL.Type.Material, default: null },
+    _myWallMaterial: { type: WL.Type.Material, default: null },
     _myPlaneMaterial: { type: WL.Type.Material, default: null },
     _myTextMaterial: { type: WL.Type.Material, default: null },
     _myLightObject: { type: WL.Type.Object, default: null },
@@ -19,7 +20,8 @@ WL.registerComponent('sketch-room-component', {
     },
     _initializeSketchShapeData: function () {
         SketchShapeData.myCubeMesh = PP.MeshUtils.createCubeMesh();
-        SketchShapeData.myMaterial = this._myShapeMaterial;
+        SketchShapeData.myShapeMaterial = this._myShapeMaterial;
+        SketchShapeData.myWallMaterial = this._myWallMaterial;
         SketchShapeData.myCollisionGroup = 1;
     },
     _initializeWidgetData: function () {

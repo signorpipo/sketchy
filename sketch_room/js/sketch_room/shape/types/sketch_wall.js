@@ -26,7 +26,7 @@ class SketchWall extends SketchShape {
 
         this._myMesh = this._myObject.addComponent('mesh');
         this._myMesh.mesh = SketchShapeData.myCubeMesh;
-        this._myMesh.material = SketchShapeData.myMaterial.clone();
+        this._myMesh.material = SketchShapeData.myWallMaterial.clone();
 
         this._myCursorTarget = this._myObject.addComponent('cursor-target');
         this._myCollision = this._myObject.addComponent('collision');

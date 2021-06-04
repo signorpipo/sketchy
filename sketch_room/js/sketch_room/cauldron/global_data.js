@@ -1,6 +1,7 @@
 var SketchShapeData = {
     myCubeMesh: null,
-    myMaterial: null,
+    myShapeMaterial: null,
+    myWallMaterial: null,
     myCollisionGroup: 0
 };
 
