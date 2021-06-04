@@ -117,7 +117,8 @@ WL.registerComponent('fixed-cursor', {
         }
 
         if (this.cursorObject) {
-            if (this.hoveringObject && (this.cursorPos[0] != 0 || this.cursorPos[1] != 0 || this.cursorPos[2] != 0)) {
+            if (this.hoveringObject && (this.cursorPos[0] != 0 || this.cursorPos[1] != 0 || this.cursorPos[2] != 0) &&
+                (!isNaN(this.cursorPos[0]) && !isNaN(this.cursorPos[1]) && !isNaN(this.cursorPos[2]))) {
                 this._setCursorVisibility(true);
                 this.cursorObject.setTranslationWorld(this.cursorPos);
             } else {

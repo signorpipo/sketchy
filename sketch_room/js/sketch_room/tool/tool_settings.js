@@ -17,8 +17,8 @@ class ToolSettings {
 
 class SnapSettings {
     constructor() {
-        this.myPositionSnap = [0.0015, 0.0015, 0.0015];
-        this.myRotationSnap = [PP.MathUtils.toRadians(15), PP.MathUtils.toRadians(15), PP.MathUtils.toRadians(15)]; //Euler Rotation
+        this.myPositionSnap = [0.001, 0.001, 0.001];
+        this.myRotationSnap = [PP.MathUtils.toRadians(0), PP.MathUtils.toRadians(0), PP.MathUtils.toRadians(0)]; //Euler Rotation
         this.myScaleSnap = this.myPositionSnap.slice(0);
         glMatrix.vec3.scale(this.myScaleSnap, this.myScaleSnap, 0.5);
     }

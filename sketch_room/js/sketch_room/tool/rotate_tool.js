@@ -7,21 +7,15 @@ class RotateTool {
 
         this._myStartShapeTransform = [];
         this._myStartShapeRotation = [];
-        this._myStartHandRotation = [];
-        this._myStartHandRotationInverse = [];
+        this._myStartHandPosition = [];
+        this._myStartShapeStartHandDirection = [];
 
         this._myIsWorking = false;
         this._myCurrentHandedness = PP.HandednessIndex.NONE;
 
-        this._myUseClosestLocalAxis = false;
-        this._myUseClosestGlobalAxis = false;
+        this._myClosestHandDirection = null;
         this._myClosestAxis = null;
-        this._myLastHandRotations = [];
-
-        //Setup
-        this._myClosestMaxRotations = 10;
-        this._myClosestRequiredRotations = 5;
-        this._myClosestMinDifference = Math.PI / (180 * 2);
+        this._myKeepCurrentClosestAxis = false;
     }
 
     setSelectedShape(object) {
@@ -73,8 +67,23 @@ class RotateTool {
             }
         }
 
-        this._myUseClosestLocalAxis = PP.LeftGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).myIsPressed || PP.RightGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).myIsPressed;
-        this._myUseClosestGlobalAxis = PP.LeftGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed || PP.RightGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed;
+        if (PP.RightGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).isPressEnd()) {
+            let axisLockType = this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.ROTATE];
+            switch (axisLockType) {
+                case AxisLockType.FREE:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.ROTATE] = AxisLockType.LOCAL;
+                    break;
+                case AxisLockType.LOCAL:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.ROTATE] = AxisLockType.GLOBAL;
+                    break;
+                case AxisLockType.GLOBAL:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.ROTATE] = AxisLockType.FREE;
+                    break;
+                default:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.ROTATE] = AxisLockType.LOCAL;
+                    break;
+            }
+        }
 
         if (this._myIsWorking) {
             this._updateWork(dt);
@@ -82,53 +91,84 @@ class RotateTool {
     }
 
     _updateWork(dt) {
-        let handRotation = null;
+        let handPosition = null;
         if (this._myCurrentHandedness == PP.HandednessIndex.LEFT) {
-            handRotation = PlayerPose.myLeftHandRotation.slice(0);
+            handPosition = PlayerPose.myLeftHandPosition.slice(0);
         } else {
-            handRotation = PlayerPose.myRightHandRotation.slice(0);
+            handPosition = PlayerPose.myRightHandPosition.slice(0);
         }
 
-        this._addHandPosition(handRotation);
-        if (!this._myClosestAxis) {
-            if (this._myUseClosestLocalAxis) {
-                this._updateClosestLocalAxis(dt);
-            } else if (this._myUseClosestGlobalAxis) {
-                this._updateClosestGlobalAxis(dt);
+        let rotationAxis = null;
+        let handDirection = [];
+        glMatrix.vec3.subtract(handDirection, handPosition, this._myStartHandPosition);
+        let rotationAmountNormalized = glMatrix.vec3.length(handDirection);
+
+        if (this._myClosestAxis) {
+            rotationAxis = this._myClosestAxis;
+
+            let projectedHandDirection = PP.MathUtils.getComponentAlongAxis(handDirection, this._myClosestHandDirection);
+            rotationAmountNormalized = glMatrix.vec3.length(projectedHandDirection) * (PP.MathUtils.isConcordant(projectedHandDirection, this._myClosestHandDirection) ? 1 : -1);
+        } else {
+            let rotationAxes = this._getRotationAxes(handDirection);
+
+            glMatrix.vec3.normalize(rotationAxis, rotationAxis);
+        }
+
+        //actual rotation
+        let rotationAmount = rotationAmountNormalized * (Math.PI / 0.15); //15 centimeters for 180 degrees
+
+        let rotation = [];
+        glMatrix.quat.setAxisAngle(rotation, rotationAxis, rotationAmount);
+
+        glMatrix.quat.mul(rotation, rotation, this._myStartShapeRotation);
+        glMatrix.quat.normalize(rotation, rotation);
+
+        this._mySelectedShape.setRotation(rotation);
+
+        /*
+        //compute rotation axis
+        let rotationAxis = null;
+        {
+            let difference = glMatrix.vec3.length(handDirection);
+            if (difference > 0.0001) {
+                let cross = [];
+                glMatrix.vec3.cross(cross, this._myStartShapeStartHandDirection, handDirection);
+
+                if (glMatrix.vec3.length(cross) > 0.0001) {
+                    glMatrix.vec3.normalize(cross, cross);
+                    rotationAxis = cross;
+                }
             }
         }
 
+        if (rotationAxis) {
+            let rotationAmountNormalized = glMatrix.vec3.length(handDirection);
 
-        if (!(this._myUseClosestLocalAxis || this._myUseClosestGlobalAxis) || this._myClosestAxis) {
-            let rotation = [];
-            glMatrix.quat.mul(rotation, handRotation, this._myStartHandRotationInverse);
-
+            //closest axis
+            this._updateAxisLock(handDirection, rotationAxis);
             if (this._myClosestAxis) {
-                let rotationAxis = [];
-                let rotationAngle = glMatrix.quat.getAxisAngle(rotationAxis, rotation);
-                if (isNaN(rotationAngle)) {
-                    rotationAngle = 0;
-                }
-
-                glMatrix.vec3.scale(rotationAxis, rotationAxis, rotationAngle);
-                rotationAxis = PP.MathUtils.getComponentAlongAxis(rotationAxis, this._myClosestAxis);
-
-                rotationAngle = glMatrix.vec3.length(rotationAxis);
-                if (rotationAngle > 0.0001) {
-                    glMatrix.vec3.normalize(rotationAxis, rotationAxis);
-                } else {
-                    rotationAngle = 0;
-                    rotationAxis = this._myClosestAxis; // rotationAxis is [0,0,0]
-                }
-
-                glMatrix.quat.setAxisAngle(rotation, rotationAxis, rotationAngle);
+                rotationAxis = this._myClosestAxis;
+                let projectedHandDirection = PP.MathUtils.getComponentAlongAxis(handDirection, this._myClosestHandDirection);
+                rotationAmountNormalized = glMatrix.vec3.length(projectedHandDirection) * (PP.MathUtils.isConcordant(projectedHandDirection, this._myClosestHandDirection) ? 1 : -1);
+                //console.log(rotationAxis);
             }
+            glMatrix.vec3.normalize(rotationAxis, rotationAxis);
+
+            //actual rotation
+            let rotationAmount = rotationAmountNormalized * (Math.PI / 0.15); //15 centimeters for 180 degrees
+
+            let rotation = [];
+            glMatrix.quat.setAxisAngle(rotation, rotationAxis, rotationAmount);
 
             glMatrix.quat.mul(rotation, rotation, this._myStartShapeRotation);
             glMatrix.quat.normalize(rotation, rotation);
 
             this._mySelectedShape.setRotation(rotation);
+
+        } else {
+            this._mySelectedShape.setRotation(this._myStartShapeRotation);
         }
+        */
 
         this._mySelectedShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
     }
@@ -141,14 +181,17 @@ class RotateTool {
         this._myStartShapeRotation = this._mySelectedShape.getRotation();
 
         if (this._myCurrentHandedness == PP.HandednessIndex.LEFT) {
-            this._myStartHandRotation = PlayerPose.myLeftHandRotation.slice(0);
+            this._myStartHandPosition = PlayerPose.myLeftHandPosition.slice(0);
         } else {
-            this._myStartHandRotation = PlayerPose.myRightHandRotation.slice(0);
+            this._myStartHandPosition = PlayerPose.myRightHandPosition.slice(0);
         }
-        glMatrix.quat.conjugate(this._myStartHandRotationInverse, this._myStartHandRotation);
+
+        this._myStartShapeStartHandDirection = [];
+        glMatrix.vec3.subtract(this._myStartShapeStartHandDirection, this._myStartHandPosition, this._mySelectedShape.getPosition());
 
         this._myClosestAxis = null;
-        this._myLastHandRotations = [];
+        this._myClosestRotationAxis = null;
+        this._myKeepCurrentClosestAxis = false;
     }
 
     _stopWork() {
@@ -161,50 +204,109 @@ class RotateTool {
         this._myIsWorking = false;
     }
 
-    _updateClosestLocalAxis(dt) {
-        this._updateClosestAxis(PP.MathUtils.getAxes(this._myStartShapeTransform));
-    }
-
-    _updateClosestGlobalAxis(dt) {
-        this._updateClosestAxis([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
-    }
-
-    _updateClosestAxis(referenceAxes) {
-        let averageAxis = [0, 0, 0];
-        let validCount = 0;
-
-        let difference = [];
-        let rotationAxis = [];
-        for (let i = 0; i < this._myLastHandRotations.length; i++) {
-            glMatrix.quat.mul(difference, this._myLastHandRotations[i], this._myStartHandRotationInverse);
-            let rotationAngle = glMatrix.quat.getAxisAngle(rotationAxis, difference);
-            if (rotationAngle > this._myClosestMinDifference) {
-                validCount++;
-                glMatrix.vec3.scale(rotationAxis, rotationAxis, rotationAngle);
-                glMatrix.vec3.add(averageAxis, averageAxis, rotationAxis);
-            }
+    _updateAxisLock(handDirection, rotationAxis) {
+        if (this._myKeepCurrentClosestAxis) {
+            return;
         }
 
-        if (validCount >= this._myClosestRequiredRotations) {
+        let axisLockType = this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.ROTATE];
+
+        this._myClosestAxis = null;
+
+        if (axisLockType != AxisLockType.FREE) {
+            let referenceAxes = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+            if (axisLockType == AxisLockType.LOCAL) {
+                referenceAxes = PP.MathUtils.getAxes(this._myStartShapeTransform);
+            }
+
+            //Hand direction
             let minAngle = Math.PI;
-            for (let axis of referenceAxes) {
-                let angle = glMatrix.vec3.angle(axis, averageAxis);
+            let handDirectionAxisIndex = 0;
+            for (let i = 0; i < referenceAxes.length; i++) {
+                let axis = referenceAxes[i];
+                let angle = glMatrix.vec3.angle(axis, handDirection);
                 if (angle > Math.PI / 2) {
                     angle = Math.PI - angle; //close to axis, direction is not important
                 }
 
                 if (angle < minAngle) {
                     minAngle = angle;
-                    this._myClosestAxis = axis;
+                    handDirectionAxisIndex = i;
                 }
+            }
+
+            let rotationAxisIndexMap = [1, 0, 2];
+            let rotationAxisIndex = rotationAxisIndexMap[handDirectionAxisIndex];
+
+            this._myClosestAxis = referenceAxes[rotationAxisIndex].slice(0);
+            if (!PP.MathUtils.isConcordant(this._myClosestAxis, rotationAxis)) {
+                glMatrix.vec3.scale(this._myClosestAxis, this._myClosestAxis, -1);
+            }
+
+            this._myClosestHandDirection = referenceAxes[handDirectionAxisIndex].slice(0);
+            if (!PP.MathUtils.isConcordant(this._myClosestHandDirection, handDirection)) {
+                glMatrix.vec3.scale(this._myClosestHandDirection, this._myClosestHandDirection, -1);
+            }
+
+            if (glMatrix.vec3.length(handDirection) > 0.05) {
+                this._myKeepCurrentClosestAxis = true;
             }
         }
     }
+    _getRotationAxes(handDirection) {
+        let initialAxes = [];
+        let headAxes = PP.MathUtils.getAxes(PlayerPose.myHeadTransform);
+        if (axisLockType == AxisLockType.FREE) {
+            let normalizedDirection = [];
+            glMatrix.vec3.normalize(normalizedDirection, handDirection);
 
-    _addHandPosition(position) {
-        this._myLastHandRotations.push(position);
-        if (this._myLastHandRotations.length > this._myClosestLastHandRotations) {
-            this._myLastHandRotations.shift();
+            let crossAxis = headAxes[2];
+            if (glMatrix.vec3.angle(normalizedDirection, crossAxis) < PP.MathUtils.toRadians(30)) {
+                crossAxis = headAxis[1];
+            }
+
+            initialAxes[0] = normalizedDirection;
+            initialAxes[1] = [];
+            glMatrix.vec3.cross(initialAxes[1], initialAxes[0], crossAxis);
+            initialAxes[12] = [];
+            glMatrix.vec3.cross(initialAxes[2], initialAxes[0], initialAxes[1]);
+        } else if (axisLockType == AxisLockType.LOCAL) {
+            initialAxes = PP.MathUtils.getAxes(this._myStartShapeTransform);
+        } else {
+            initialAxes = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
         }
+
+        let rotationAxes = [];
+        for (let i = 0; i < headAxes.length; i++) {
+            let closestIndex = this._getClosestVectorIndex(headAxes[i], initialAxes);
+
+            rotationAxes[i] = initialAxes[closestIndex];
+
+            if (!PP.MathUtils.isConcordant(headAxes[i], rotationAxes[i])) {
+                glMatrix.vec3.scale(rotationAxes[i], rotationAxes[i], -1);
+            }
+            initialAxes.splice(closestIndex, 1);
+        }
+
+    }
+
+    _getClosestVectorIndex(vector, vectorList) {
+        let minAngle = Math.PI;
+        let closestIndex = -1;
+
+        for (let j = 0; j < vectorList.length; j++) {
+            let currentVector = vectorList[j];
+            let angle = glMatrix.vec3.angle(vector, currentVector);
+            if (angle > Math.PI / 2) {
+                angle = Math.PI - angle; //close to axis, direction is not important
+            }
+
+            if (angle <= minAngle) {
+                minAngle = angle;
+                closestIndex = j;
+            }
+        }
+
+        return closestIndex;
     }
 }

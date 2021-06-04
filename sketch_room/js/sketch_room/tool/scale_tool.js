@@ -15,14 +15,8 @@ class ScaleTool {
         this._myIsWorking = false;
         this._myCurrentHandedness = PP.HandednessIndex.NONE;
 
-        this._myUseClosestLocalAxis = false;
         this._myClosestAxis = null;
         this._myKeepCurrentClosestAxis = false;
-
-        //Setup
-        this._myClosestMaxPositions = 10;
-        this._myClosestRequiredPositions = 5;
-        this._myClosestMinDifference = 0.001;
     }
 
     setSelectedShape(object) {
