@@ -47,6 +47,7 @@ class CurrentToolWidget {
         if (this._myLastToolType && this._myLastToolType == this._myCurrentToolType && this._myLastAxisLockType == this._myToolSettings.myAxisLockSettings.myAxisLockType[this._myCurrentToolType]) {
             return;
         }
+
         let toolName = "";
         let hasAxisLock = false;
 

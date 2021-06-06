@@ -7,6 +7,8 @@ class SketchRoomManager {
 
         this._myShapes = [];
         this._mySelectedShape = null;
+
+        this.myHasExportedWithTrick = false;
     }
 
     start() {
@@ -37,6 +39,8 @@ class SketchRoomManager {
         for (let shape of this._myShapes) {
             shape.update(dt);
         }
+
+        this._updateExportTrick();
     }
 
     _registerToolsEventListeners() {
@@ -188,6 +192,18 @@ class SketchRoomManager {
         for (let i = 0; i < this._myShapes.length; i++) {
             let shape = this._myShapes[i];
             shape.save(data);
+        }
+    }
+
+    _updateExportTrick() {
+        if (!this.myHasExportedWithTrick && PP.RightGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed && PP.LeftGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed) {
+            this.myHasExportedWithTrick = true;
+            this._export();
+        }
+
+        if (!PP.RightGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed && !PP.LeftGamepad.getButtonInfo(PP.ButtonType.BOTTOM_BUTTON).myIsPressed) {
+
+            this.myHasExportedWithTrick = false;
         }
     }
 }
