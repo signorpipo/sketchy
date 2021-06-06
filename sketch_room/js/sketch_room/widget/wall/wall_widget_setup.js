@@ -92,6 +92,6 @@ class WallWidgetSetup extends SketchWidgetSetup {
         this.myModifyThumbstickMinThreshold = 0.2;
         this.myModifyThumbstickStepPerSecond = 1;
 
-        this.myResultTimer = 10;
+        this.myResultTimer = 15;
     }
 }
