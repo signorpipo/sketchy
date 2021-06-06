@@ -8,6 +8,9 @@ class CurrentToolWidget {
         this._myIsVisible = false;
 
         this._myCurrentToolType = ToolType.NONE;
+
+        this._myLastToolType = null;
+        this._myLastAxisLockType = null;
     }
 
     setSelectedShape(shape) {
@@ -41,6 +44,9 @@ class CurrentToolWidget {
     }
 
     _refreshUI() {
+        if (this._myLastToolType && this._myLastToolType == this._myCurrentToolType && this._myLastAxisLockType == this._myToolSettings.myAxisLockSettings.myAxisLockType[this._myCurrentToolType]) {
+            return;
+        }
         let toolName = "";
         let hasAxisLock = false;
 
@@ -94,6 +100,9 @@ class CurrentToolWidget {
         } else {
             this._myUI.myAxisLockTextComponent.text = "";
         }
+
+        this._myLastToolType = this._myCurrentToolType;
+        this._myLastAxisLockType = this._myToolSettings.myAxisLockSettings.myAxisLockType[this._myCurrentToolType];
     }
 }
 
