@@ -28,10 +28,9 @@ class SelectTool {
     setSelectedShape(shape) {
         if (this._mySelectedShape != shape) {
             this._mySelectedShape = shape;
+            this._hideOutline();
             if (shape) {
                 this._myIsOutlineVisible = true;
-            } else {
-                this._hideOutline();
             }
         }
     }
@@ -113,7 +112,7 @@ class SelectTool {
             this._myDoubleClickDeselectTimer = 0;
         }
 
-        this._updateSelectVisual();
+        this._updateSelectVisual(dt);
     }
 
     _updateSelectVisual(dt) {
@@ -157,6 +156,11 @@ class SelectTool {
             glMatrix.vec3.scale(ambientColor, ambientColor, 0.5);
             outlineMaterial.diffuseColor = diffuseColor;
             outlineMaterial.ambientColor = ambientColor;
+
+            if (this._mySelectedShape.getType() == ShapeType.BOX) {
+                outlineMaterial.diffuseColor = [0, 0, 0, 1];
+                outlineMaterial.ambientColor = [0, 0, 0, 1];
+            }
         }
     }
 
