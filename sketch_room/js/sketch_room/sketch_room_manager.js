@@ -1,8 +1,8 @@
 class SketchRoomManager {
-    constructor(sceneObject, lightObject, shapeOutlineObject) {
+    constructor(sceneObject, lightObject, shapeOutlineObject, invertedCubeObject) {
         this._mySceneObject = sceneObject;
         this._myWallManager = new WallManager(this._mySceneObject, lightObject);
-        this._myToolManager = new ToolManager(this._mySceneObject, shapeOutlineObject, this._myWallManager.getWallSettings());
+        this._myToolManager = new ToolManager(this._mySceneObject, shapeOutlineObject, invertedCubeObject, this._myWallManager.getWallSettings());
         this._mySketchRoomWidget = new SketchRoomWidget(this._myToolManager.getToolSettings(), this._myWallManager.getWallSettings());
 
         this._myShapes = [];

@@ -5,13 +5,14 @@ WL.registerComponent('sketch-room-component', {
     _myTextMaterial: { type: WL.Type.Material, default: null },
     _myLightObject: { type: WL.Type.Object, default: null },
     _myShapeOutlineObject: { type: WL.Type.Object, default: null },
+    _myInvertedCubeObject: { type: WL.Type.Object, default: null },
 }, {
     init: function () {
         this._initializeSketchShapeData();
         this._initializeWidgetData();
 
         this._mySceneObject = WL.scene.addObject(this.object);
-        this._myManager = new SketchRoomManager(this._mySceneObject, this._myLightObject, this._myShapeOutlineObject);
+        this._myManager = new SketchRoomManager(this._mySceneObject, this._myLightObject, this._myShapeOutlineObject, this._myInvertedCubeObject);
     },
     start: function () {
         this._myManager.start();

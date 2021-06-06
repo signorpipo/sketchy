@@ -1,6 +1,7 @@
 class SelectTool {
-    constructor(shapeOutlineObject) {
+    constructor(shapeOutlineObject, invertedCubeObject) {
         this._myShapeOutlineObject = shapeOutlineObject;
+        this._myInvertedCubeObject = invertedCubeObject;
 
         this._myIsEnabled = false;
         this._myCursorStartCounter = 1; //let the cursor perform the first update
@@ -54,6 +55,10 @@ class SelectTool {
     start() {
         this._myShapeOutlineMaterial = this._myShapeOutlineObject.getComponent("mesh").material.clone();
         this._myShapeOutlineObject.getComponent("mesh").material = this._myShapeOutlineMaterial;
+
+        this._myInvertedCubeMaterial = this._myInvertedCubeObject.getComponent("mesh").material.clone();
+        this._myInvertedCubeObject.getComponent("mesh").material = this._myInvertedCubeMaterial;
+
         this._hideOutline();
     }
 
@@ -108,14 +113,31 @@ class SelectTool {
             this._myDoubleClickDeselectTimer = 0;
         }
 
+        this._updateSelectVisual();
+    }
+
+    _updateSelectVisual(dt) {
         if (this._myIsOutlineVisible) {
+
+            let outlineObject = this._myShapeOutlineObject;
+            let outlineMaterial = this._myShapeOutlineMaterial;
+
             let shapeScale = this._mySelectedShape.getScale();
-            glMatrix.vec3.scale(shapeScale, shapeScale, 1.01);
-            this._myShapeOutlineObject.resetScaling();
-            this._myShapeOutlineObject.scale(shapeScale);
-            this._myShapeOutlineObject.setTranslationWorld(this._mySelectedShape.getPosition());
-            this._myShapeOutlineObject.resetRotation();
-            this._myShapeOutlineObject.rotateObject(this._mySelectedShape.getRotation());
+
+            if (this._mySelectedShape.getType() == ShapeType.BOX) {
+                outlineObject = this._myInvertedCubeObject;
+                outlineMaterial = this._myInvertedCubeMaterial;
+
+                glMatrix.vec3.add(shapeScale, shapeScale, [0.005, 0.005, 0.005]);
+            } else {
+                glMatrix.vec3.add(shapeScale, shapeScale, [0.001, 0.001, 0.001]);
+            }
+
+            outlineObject.resetScaling();
+            outlineObject.scale(shapeScale);
+            outlineObject.setTranslationWorld(this._mySelectedShape.getPosition());
+            outlineObject.resetRotation();
+            outlineObject.rotateObject(this._mySelectedShape.getRotation());
 
             this._myOutlineTimer += dt;
             let currentShadeFactor = Math.sin(this._myOutlineTimer * this._myOutlineSpeedFactor) * this._myOutlineShadeFactor;
@@ -133,8 +155,8 @@ class SelectTool {
             }
             let ambientColor = diffuseColor.slice(0);
             glMatrix.vec3.scale(ambientColor, ambientColor, 0.5);
-            this._myShapeOutlineMaterial.diffuseColor = diffuseColor;
-            this._myShapeOutlineMaterial.ambientColor = ambientColor;
+            outlineMaterial.diffuseColor = diffuseColor;
+            outlineMaterial.ambientColor = ambientColor;
         }
     }
 
@@ -179,7 +201,11 @@ class SelectTool {
     _hideOutline() {
         this._myOutlineTimer = 0;
         this._myIsOutlineVisible = false;
+
         this._myShapeOutlineObject.scale([0, 0, 0]);
         this._myShapeOutlineObject.setTranslationLocal([0, -7777, 0]);
+
+        this._myInvertedCubeObject.scale([0, 0, 0]);
+        this._myInvertedCubeObject.setTranslationLocal([0, -7777, 0]);
     }
 }

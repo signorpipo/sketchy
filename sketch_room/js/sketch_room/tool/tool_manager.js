@@ -1,12 +1,12 @@
 
 class ToolManager {
-    constructor(sceneObject, shapeOutlineObject, wallSettings) {
+    constructor(sceneObject, shapeOutlineObject, invertedCubeObject, wallSettings) {
         this._mySceneObject = sceneObject;
         this._myWallSettings = wallSettings;
 
         this._myToolSettings = new ToolSettings();
 
-        this._createTools(shapeOutlineObject);
+        this._createTools(shapeOutlineObject, invertedCubeObject);
     }
 
     getTool(type) {
@@ -54,14 +54,14 @@ class ToolManager {
         }
     }
 
-    _createTools(shapeOutlineObject) {
+    _createTools(shapeOutlineObject, invertedCubeObject) {
         this._myTools = [];
         this._myTools[ToolType.GRAB] = new GrabTool(this._myToolSettings, this._myWallSettings);
         this._myTools[ToolType.TRANSLATE] = new TranslateTool(this._myToolSettings, this._myWallSettings);
         this._myTools[ToolType.ROTATE] = new RotateTool(this._myToolSettings, this._myWallSettings);
         this._myTools[ToolType.SCALE] = new ScaleTool(this._myToolSettings, this._myWallSettings);
         this._myTools[ToolType.CREATE] = new CreateTool(this._myToolSettings, this._myWallSettings, this._mySceneObject);
-        this._myTools[ToolType.SELECT] = new SelectTool(shapeOutlineObject);
+        this._myTools[ToolType.SELECT] = new SelectTool(shapeOutlineObject, invertedCubeObject);
     }
 
     save(data) {
