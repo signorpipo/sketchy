@@ -138,29 +138,8 @@ class SelectTool {
             outlineObject.resetRotation();
             outlineObject.rotateObject(this._mySelectedShape.getRotation());
 
-            this._myOutlineTimer += dt;
-            let currentShadeFactor = Math.sin(this._myOutlineTimer * this._myOutlineSpeedFactor) * this._myOutlineShadeFactor;
-            let diffuseColor = this._mySelectedShape.getColor();
-            if (currentShadeFactor >= 0) {
-                //Darker
-                for (let i = 0; i < 3; ++i) {
-                    diffuseColor[i] = diffuseColor[i] * (1 - currentShadeFactor);
-                }
-            } else {
-                //Lighter
-                for (let i = 0; i < 3; ++i) {
-                    diffuseColor[i] = Math.min(1, diffuseColor[i] + (1 - diffuseColor[i]) * (-currentShadeFactor));
-                }
-            }
-            let ambientColor = diffuseColor.slice(0);
-            glMatrix.vec3.scale(ambientColor, ambientColor, 0.5);
-            outlineMaterial.diffuseColor = diffuseColor;
-            outlineMaterial.ambientColor = ambientColor;
-
-            if (this._mySelectedShape.getType() == ShapeType.BOX) {
-                outlineMaterial.diffuseColor = [0, 0, 0, 1];
-                outlineMaterial.ambientColor = [0, 0, 0, 1];
-            }
+            outlineMaterial.diffuseColor = [0, 0, 0, 1];
+            outlineMaterial.ambientColor = [0, 0, 0, 1];
         }
     }
 
