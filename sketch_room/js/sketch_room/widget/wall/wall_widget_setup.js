@@ -67,8 +67,19 @@ class WallWidgetSetup extends SketchWidgetSetup {
         this.myDepthValueCollisionExtents = [spaceFromLabel / 2 + valueCursorExtraWidth, valueCursorExtraHeight, 1];
         this.myDepthValueCollisionExtents[2] = this.myCursorTargetCollisionThickness;
 
-        this.myExportPanelPosition = [0, -0.09, panelZ];
-        this.myExportButtonPosition = [0, 0, 0];
+        this.myButtonPanelPosition = [0, -0.09, panelZ];
+
+        this.myClearButtonPosition = [-0.075, 0, 0];
+        this.myClearButtonBackgroundScale = [0.05, 0.015, 1];
+        this.myClearButtonTextPosition = [0, 0, 0.007];
+        this.myClearButtonTextScale = [0.18, 0.18, 0.18];
+        this.myClearButtonText = "clear";
+
+        this.myClearButtonCursorTargetPosition = [0, 0, 0];
+        this.myClearButtonCollisionExtents = this.myClearButtonBackgroundScale.slice(0);
+        this.myClearButtonCollisionExtents[2] = this.myCursorTargetCollisionThickness;
+
+        this.myExportButtonPosition = [0.075, 0, 0];
         this.myExportButtonBackgroundScale = [0.05, 0.015, 1];
         this.myExportButtonTextPosition = [0, 0, 0.007];
         this.myExportButtonTextScale = [0.18, 0.18, 0.18];

@@ -6,6 +6,12 @@ class WallSettings {
         this.myDepth = 5;
     }
 
+    reset() {
+        this.myHeight = 4;
+        this.myWidth = 5;
+        this.myDepth = 5;
+    }
+
     save(data) {
         data.push(this.myHeight);
         data.push(this.myWidth);

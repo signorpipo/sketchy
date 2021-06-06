@@ -31,7 +31,7 @@ class WallWidgetUI {
         this.myWallLabelText = WL.scene.addObject(this.myMainPanel);
 
         this._createSizeSkeleton();
-        this._createExportSkeleton();
+        this._createButtonSkeleton();
         this._createPointerSkeleton();
     }
 
@@ -54,15 +54,20 @@ class WallWidgetUI {
         this.myDepthValueCursorTarget = WL.scene.addObject(this.mySizeValuesPanel);
     }
 
-    _createExportSkeleton() {
-        this.myExportPanel = WL.scene.addObject(this.myMainPanel);
+    _createButtonSkeleton() {
+        this.myButtonPanel = WL.scene.addObject(this.myMainPanel);
 
-        this.myExportButtonPanel = WL.scene.addObject(this.myExportPanel);
+        this.myClearButtonPanel = WL.scene.addObject(this.myButtonPanel);
+        this.myClearButtonBackground = WL.scene.addObject(this.myClearButtonPanel);
+        this.myClearButtonText = WL.scene.addObject(this.myClearButtonPanel);
+        this.myClearButtonCursorTarget = WL.scene.addObject(this.myClearButtonPanel);
+
+        this.myExportButtonPanel = WL.scene.addObject(this.myButtonPanel);
         this.myExportButtonBackground = WL.scene.addObject(this.myExportButtonPanel);
         this.myExportButtonText = WL.scene.addObject(this.myExportButtonPanel);
         this.myExportButtonCursorTarget = WL.scene.addObject(this.myExportButtonPanel);
 
-        this.myExportResultText = WL.scene.addObject(this.myExportPanel);
+        this.myExportResultText = WL.scene.addObject(this.myButtonPanel);
     }
 
     _createPointerSkeleton() {
@@ -80,7 +85,7 @@ class WallWidgetUI {
         this.myWallLabelText.scale(this._mySetup.myWallLabelTextScale);
 
         this._setSizeTransforms();
-        this._setExportTransforms();
+        this._setButtonTransforms();
         this._setPointerTransform();
     }
 
@@ -110,8 +115,14 @@ class WallWidgetUI {
         this.myDepthValueCursorTarget.setTranslationLocal(this._mySetup.myDepthValueCursorTargetPosition);
     }
 
-    _setExportTransforms() {
-        this.myExportPanel.setTranslationLocal(this._mySetup.myExportPanelPosition);
+    _setButtonTransforms() {
+        this.myButtonPanel.setTranslationLocal(this._mySetup.myButtonPanelPosition);
+
+        this.myClearButtonPanel.setTranslationLocal(this._mySetup.myClearButtonPosition);
+        this.myClearButtonBackground.scale(this._mySetup.myClearButtonBackgroundScale);
+        this.myClearButtonText.setTranslationLocal(this._mySetup.myClearButtonTextPosition);
+        this.myClearButtonText.scale(this._mySetup.myClearButtonTextScale);
+        this.myClearButtonCursorTarget.setTranslationLocal(this._mySetup.myClearButtonCursorTargetPosition);
 
         this.myExportButtonPanel.setTranslationLocal(this._mySetup.myExportButtonPosition);
         this.myExportButtonBackground.scale(this._mySetup.myExportButtonBackgroundScale);
@@ -139,7 +150,7 @@ class WallWidgetUI {
         this.myWallLabelTextComponent.text = "Room";
 
         this._addSizeComponents();
-        this._addExportComponents();
+        this._addButtonComponents();
         this._addPointerComponents();
     }
 
@@ -201,7 +212,23 @@ class WallWidgetUI {
         this.myDepthValueCollisionComponent.extents = this._mySetup.myDepthValueCollisionExtents;
     }
 
-    _addExportComponents() {
+    _addButtonComponents() {
+        this.myClearButtonBackgroundComponent = this.myClearButtonBackground.addComponent('mesh');
+        this.myClearButtonBackgroundComponent.mesh = this._myPlaneMesh;
+        this.myClearButtonBackgroundComponent.material = this._myAdditionalSetup.myPlaneMaterial.clone();
+        this.myClearButtonBackgroundComponent.material.color = this._mySetup.myBackgroundColor;
+
+        this.myClearButtonTextComponent = this.myClearButtonText.addComponent('text');
+        this._setupTextComponent(this.myClearButtonTextComponent);
+        this.myClearButtonTextComponent.text = this._mySetup.myClearButtonText;
+
+        this.myClearButtonCursorTargetComponent = this.myClearButtonCursorTarget.addComponent('cursor-target');
+
+        this.myClearButtonCollisionComponent = this.myClearButtonCursorTarget.addComponent('collision');
+        this.myClearButtonCollisionComponent.collider = this._mySetup.myCursorTargetCollisionCollider;
+        this.myClearButtonCollisionComponent.group = 1 << this._mySetup.myCursorTargetCollisionGroup;
+        this.myClearButtonCollisionComponent.extents = this._mySetup.myClearButtonCollisionExtents;
+
         this.myExportButtonBackgroundComponent = this.myExportButtonBackground.addComponent('mesh');
         this.myExportButtonBackgroundComponent.mesh = this._myPlaneMesh;
         this.myExportButtonBackgroundComponent.material = this._myAdditionalSetup.myPlaneMaterial.clone();

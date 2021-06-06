@@ -45,8 +45,9 @@ WL.registerComponent("controller-teleport-component", {
         this.teleportIndicatorMeshObject.translate([1000, 1000, 1000]);
     },
     update: function () {
-        if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.THUMBSTICK).isPressEnd()) {
+        if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.THUMBSTICK).isPressEnd() || ResetPosition) {
             this._teleportPlayer([0, 0, 0], 0);
+            ResetPosition = false;
         }
 
         if (!PP.LeftGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).myIsPressed) {

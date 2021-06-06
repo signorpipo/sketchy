@@ -31,3 +31,5 @@ var HandCursor = {
 };
 
 var CurrentToolType = null;
+
+var ResetPosition = false;

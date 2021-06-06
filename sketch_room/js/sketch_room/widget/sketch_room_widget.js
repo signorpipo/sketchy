@@ -56,6 +56,14 @@ class SketchRoomWidget {
         this._myWidgets[SketchWidgetType.WALLS].unregisterExportEventListener(id);
     }
 
+    registerClearEventListener(id, callback) {
+        this._myWidgets[SketchWidgetType.WALLS].registerClearEventListener(id, callback);
+    }
+
+    unregisterClearEventListener(id) {
+        this._myWidgets[SketchWidgetType.WALLS].unregisterClearEventListener(id);
+    }
+
     start(widgetsParentObject, currentToolWidgetParentObject, additionalSetup) {
         this._myAdditionalSetup = additionalSetup;
 

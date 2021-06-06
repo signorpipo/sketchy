@@ -95,7 +95,7 @@ class SketchWidgetFrame {
 
         ui.myHowToButtonCursorTargetComponent.addClickFunction(this._selectHowTo.bind(this, true));
         ui.myHowToButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, ui.myHowToButtonBackgroundComponent.material));
-        ui.myHowToButtonCursorTargetComponent.addUnHoverFunction(this._toolsUnHover.bind(this, ui.myHowToButtonBackgroundComponent.material));
+        ui.myHowToButtonCursorTargetComponent.addUnHoverFunction(this._howToUnHover.bind(this, ui.myHowToButtonBackgroundComponent.material));
     }
 
     _toggleVisibility(isButton) {
@@ -232,6 +232,14 @@ class SketchWidgetFrame {
             let backgroundMaterial = this._myUI.myWallButtonBackgroundComponent.material;
             backgroundMaterial.color = this._mySetup.myButtonDisabledBackgroundColor;
         }
+
+        {
+            let textMaterial = this._myUI.myHowToButtonTextComponent.material;
+            textMaterial.color = this._mySetup.myButtonDisabledTextColor;
+
+            let backgroundMaterial = this._myUI.myHowToButtonBackgroundComponent.material;
+            backgroundMaterial.color = this._mySetup.myButtonDisabledBackgroundColor;
+        }
     }
 
     _genericHover(material) {
@@ -272,6 +280,14 @@ class SketchWidgetFrame {
 
     _toolsUnHover(material) {
         if (this._myCurrentSketchWidget == SketchWidgetType.TOOLS) {
+            material.color = this._mySetup.myBackgroundColor;
+        } else {
+            material.color = this._mySetup.myButtonDisabledBackgroundColor;
+        }
+    }
+
+    _howToUnHover(material) {
+        if (this._myCurrentSketchWidget == SketchWidgetType.HOWTO) {
             material.color = this._mySetup.myBackgroundColor;
         } else {
             material.color = this._mySetup.myButtonDisabledBackgroundColor;

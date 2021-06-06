@@ -55,6 +55,7 @@ class SketchRoomManager {
     _registerWidgetEventListeners() {
         this._mySketchRoomWidget.registerToolSelectedChangedEventListener(this, this._toolSelected.bind(this));
         this._mySketchRoomWidget.registerExportEventListener(this, this._export.bind(this));
+        this._mySketchRoomWidget.registerClearEventListener(this, this._clear.bind(this));
     }
 
     //Tool Event Related
@@ -205,5 +206,17 @@ class SketchRoomManager {
 
             this.myHasExportedWithTrick = false;
         }
+    }
+
+    _clear() {
+        this._selectShape(null);
+        this._myWallManager.reset();
+        ResetPosition = true;
+
+        for (let shape of this._myShapes) {
+            shape.delete();
+        }
+
+        this._myShapes = [];
     }
 }

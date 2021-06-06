@@ -16,6 +16,13 @@ class WallManager {
         return this._myWallSettings;
     }
 
+    reset() {
+        this._myWallSettings.reset();
+        for (let wall of this._myWalls) {
+            wall.setColor(Colors[8]);
+        }
+    }
+
     start() {
         this._createWalls();
     }

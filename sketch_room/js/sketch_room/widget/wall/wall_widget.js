@@ -16,6 +16,7 @@ class WallWidget {
         this._myTempDepth = 0;
 
         this._myExportCallbacks = new Map();
+        this._myClearCallbacks = new Map();
     }
 
     setSelectedShape(shape) {
@@ -39,6 +40,14 @@ class WallWidget {
 
     unregisterExportEventListener(id) {
         this._myExportCallbacks.delete(id);
+    }
+
+    registerClearEventListener(id, callback) {
+        this._myClearCallbacks.set(id, callback);
+    }
+
+    unregisterClearEventListener(id) {
+        this._myClearCallbacks.delete(id);
     }
 
     isUsingThumbstick() {
@@ -115,9 +124,21 @@ class WallWidget {
         this._myUI.myDepthValueCursorTargetComponent.addHoverFunction(this._depthHover.bind(this));
         this._myUI.myDepthValueCursorTargetComponent.addUnHoverFunction(this._depthUnHover.bind(this));
 
+        this._myUI.myClearButtonCursorTargetComponent.addClickFunction(this._clear.bind(this));
+        this._myUI.myClearButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, this._myUI.myClearButtonBackgroundComponent.material));
+        this._myUI.myClearButtonCursorTargetComponent.addUnHoverFunction(this._genericUnHover.bind(this, this._myUI.myClearButtonBackgroundComponent.material));
+
         this._myUI.myExportButtonCursorTargetComponent.addClickFunction(this._export.bind(this));
         this._myUI.myExportButtonCursorTargetComponent.addHoverFunction(this._genericHover.bind(this, this._myUI.myExportButtonBackgroundComponent.material));
         this._myUI.myExportButtonCursorTargetComponent.addUnHoverFunction(this._genericUnHover.bind(this, this._myUI.myExportButtonBackgroundComponent.material));
+    }
+
+    _clear() {
+        if (this._myIsVisible) {
+            for (let value of this._myClearCallbacks.values()) {
+                value();
+            }
+        }
     }
 
     _export() {
