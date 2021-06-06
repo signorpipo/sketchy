@@ -49,27 +49,22 @@ class CurrentToolWidget {
         }
 
         let toolName = "";
-        let hasAxisLock = false;
 
         switch (this._myCurrentToolType) {
             case ToolType.GRAB:
                 toolName = "Grab";
-                hasAxisLock = true;
                 break;
             case ToolType.TRANSLATE:
                 toolName = "Move";
-                hasAxisLock = true;
                 break;
             case ToolType.ROTATE:
                 toolName = "Rotate";
-                hasAxisLock = true;
                 break;
             case ToolType.SCALE:
                 toolName = "Scale";
-                hasAxisLock = true;
                 break;
             case ToolType.CREATE:
-                toolName = "Create";
+                toolName = "Shape";
                 break;
             default:
                 toolName = "Error";
@@ -77,29 +72,38 @@ class CurrentToolWidget {
         }
         this._myUI.myCurrentToolTextComponent.text = toolName;
 
-        if (hasAxisLock) {
-            let axisLockType = "";
+        let axisLockType = "";
 
-            switch (this._myToolSettings.myAxisLockSettings.myAxisLockType[this._myCurrentToolType]) {
-                case AxisLockType.FREE:
-                    axisLockType = "Free";
-                    hasAxisLock = true;
-                    break;
-                case AxisLockType.LOCAL:
-                    axisLockType = "Local";
-                    hasAxisLock = true;
-                    break;
-                case AxisLockType.GLOBAL:
-                    axisLockType = "Global";
-                    break;
-                default:
-                    axisLockType = "Error";
-                    break;
-            }
+        switch (this._myToolSettings.myAxisLockSettings.myAxisLockType[this._myCurrentToolType]) {
+            case AxisLockType.FREE:
+                axisLockType = "Free";
+                if (this._myCurrentToolType == ToolType.CREATE) {
+                    axisLockType = "Create";
+                }
+                break;
+            case AxisLockType.LOCAL:
+                axisLockType = "Local";
+                if (this._myCurrentToolType == ToolType.CREATE) {
+                    axisLockType = "Clone";
+                }
+                break;
+            case AxisLockType.GLOBAL:
+                axisLockType = "Global";
+                if (this._myCurrentToolType == ToolType.CREATE) {
+                    axisLockType = "Delete";
+                } else if (this._myCurrentToolType == ToolType.SCALE) {
+                    axisLockType = "All";
+                }
+                break;
+            default:
+                axisLockType = "Error";
+                break;
+        }
 
-            this._myUI.myAxisLockTextComponent.text = this._mySetup.myAxisLockText.concat(axisLockType);
+        if (this._myCurrentToolType == ToolType.CREATE) {
+            this._myUI.myAxisLockTextComponent.text = "Mode: ".concat(axisLockType);
         } else {
-            this._myUI.myAxisLockTextComponent.text = "";
+            this._myUI.myAxisLockTextComponent.text = this._mySetup.myAxisLockText.concat(axisLockType);
         }
 
         this._myLastToolType = this._myCurrentToolType;

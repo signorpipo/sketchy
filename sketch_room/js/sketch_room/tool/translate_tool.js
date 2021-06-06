@@ -20,7 +20,7 @@ class TranslateTool {
     setSelectedShape(object) {
         if (this._mySelectedShape != object) {
             if (this._myIsWorking) {
-                this._stopWork();
+                this._cancelWork();
             }
         }
         this._mySelectedShape = object;

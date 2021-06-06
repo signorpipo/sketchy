@@ -5,25 +5,20 @@ class CreateTool {
         this._mySceneObject = sceneObject;
         this._myIsEnabled = false;
 
-        this._myShapeScale = [0.075, 0.075, 0.075];
-        this._myShapeColor = [140 / 255, 55 / 255, 230 / 255, 1];
-
         this._myShapeCreatedCallbacks = new Map();
         this._myShapeDeletedCallbacks = new Map();
 
-        this._myLeftTimer = 0;
-        this._myRightTimer = 0;
-
-        this._myIsClone = false;
-        this._myHasCloned = false;
-
+        this._myCurrentAction = null;
         this._mySelectedShape = null;
-
-        //Setup
-        this._myDeleteDelay = 0.4;
     }
 
     setSelectedShape(object) {
+        if (this._mySelectedShape != object) {
+            if (this._myIsWorking) {
+                this._cancelWork();
+            }
+        }
+
         this._mySelectedShape = object;
     }
 
@@ -61,69 +56,107 @@ class CreateTool {
         }
 
         if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressStart()) {
-            this._myLeftTimer = 0;
+            if (!this._myIsWorking) {
+                this._startWork();
+            } else if (this._myIsWorking) {
+                this._cancelWork();
+            }
         }
         if (PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressStart()) {
-            this._myRightTimer = 0;
-        }
-
-        if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed) {
-            this._myLeftTimer += dt;
-        }
-        else if (PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed) {
-            this._myRightTimer += dt;
-        }
-
-        if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed && PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed) {
-            this._myIsClone = true;
-            this._myHasCloned = false;
+            if (!this._myIsWorking) {
+                this._startWork();
+            } else if (this._myIsWorking) {
+                this._cancelWork();
+            }
         }
 
         if (PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressEnd()) {
-            if (!this._myHasCloned && (this._myLeftTimer < this._myDeleteDelay || this._myIsClone)) {
-                this._createShape(PlayerPose.myLeftHandPosition);
-            } else if (!this._myHasCloned) {
-                this._deleteSelectedShape();
+            if (this._myIsWorking) {
+                this._stopWork(PlayerPose.myLeftHandPosition);
             }
         }
         if (PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).isPressEnd()) {
-            if (!this._myHasCloned && (this._myRightTimer < this._myDeleteDelay || this._myIsClone)) {
-                this._createShape(PlayerPose.myRightHandPosition);
-            } else if (!this._myHasCloned) {
-                this._deleteSelectedShape();
+            if (this._myIsWorking) {
+                this._stopWork(PlayerPose.myRightHandPosition);
             }
         }
 
-        if (!PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed && !PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed) {
-            this._myIsClone = false;
-            this._myHasCloned = false;
+        if (PP.RightGamepad.getButtonInfo(PP.ButtonType.TOP_BUTTON).isPressEnd()) {
+            let axisLockType = this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.CREATE];
+            switch (axisLockType) {
+                case AxisLockType.FREE: // CREATE
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.CREATE] = AxisLockType.LOCAL;
+                    break;
+                case AxisLockType.LOCAL: // CLONE
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.CREATE] = AxisLockType.GLOBAL;
+                    break;
+                case AxisLockType.GLOBAL: // DELETE
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.CREATE] = AxisLockType.FREE;
+                    break;
+                default:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.CREATE] = AxisLockType.FREE;
+                    break;
+            }
         }
     }
 
+    _updateWork(dt) {
+    }
+
+    _startWork() {
+        if (this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.CREATE] != AxisLockType.FREE &&
+            (this._mySelectedShape == null || this._mySelectedShape.getType() == ShapeType.WALL)) {
+            return;
+        }
+
+        this._myCurrentAction = this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.CREATE];
+        this._myIsWorking = true;
+    }
+
+    _stopWork(position) {
+        let axisLockType = this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.CREATE];
+        switch (axisLockType) {
+            case AxisLockType.FREE: // CREATE
+                this._createShape(position);
+                break;
+            case AxisLockType.LOCAL: // CLONE
+                this._cloneShape(position);
+                break;
+            case AxisLockType.GLOBAL: // DELETE
+                this._deleteSelectedShape();
+                break;
+            default:
+                break;
+        }
+
+        this._myIsWorking = false;
+    }
+
+    _cancelWork() {
+        this._myIsWorking = false;
+    }
+
     _createShape(position) {
-        if (this._myIsClone && this._mySelectedShape) {
-            let newShape = this._mySelectedShape.clone();
-            if (newShape) {
-                newShape.setPosition(position);
-                newShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
+        let newShape = new SketchBox(this._mySceneObject);
+        newShape.setPosition(position);
+        newShape.setScale(this._myToolSettings.myCreateSettings.myScale);
+        newShape.setColor(this._myToolSettings.myCreateSettings.myColor);
 
-                for (let value of this._myShapeCreatedCallbacks.values()) {
-                    value(newShape);
-                }
-            }
+        newShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
+        newShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
+        newShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
+        newShape.snapInsideRoom(this._myWallSettings, this._myToolSettings);
 
-            this._myIsClone = false;
-            this._myHasCloned = true;
-        } else {
-            let newShape = new SketchBox(this._mySceneObject);
+        for (let value of this._myShapeCreatedCallbacks.values()) {
+            value(newShape);
+        }
+    }
+
+    _cloneShape(position) {
+        let newShape = this._mySelectedShape.clone();
+        if (newShape) {
             newShape.setPosition(position);
-            newShape.setScale(this._myToolSettings.myCreateSettings.myScale);
-            newShape.setColor(this._myToolSettings.myCreateSettings.myColor);
-
             newShape.snapPosition(this._myToolSettings.mySnapSettings.myPositionSnap);
-            newShape.snapRotation(this._myToolSettings.mySnapSettings.myRotationSnap);
-            newShape.snapScale(this._myToolSettings.mySnapSettings.myScaleSnap);
-            newShape.snapInsideRoom(this._myWallSettings, this._myToolSettings);
 
             for (let value of this._myShapeCreatedCallbacks.values()) {
                 value(newShape);

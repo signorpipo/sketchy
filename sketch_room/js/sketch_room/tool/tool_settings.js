@@ -59,6 +59,7 @@ class AxisLockSettings {
         this.myAxisLockType[ToolType.TRANSLATE] = AxisLockType.FREE;
         this.myAxisLockType[ToolType.ROTATE] = AxisLockType.FREE;
         this.myAxisLockType[ToolType.SCALE] = AxisLockType.LOCAL;
+        this.myAxisLockType[ToolType.CREATE] = AxisLockType.FREE;
     }
 }
 
