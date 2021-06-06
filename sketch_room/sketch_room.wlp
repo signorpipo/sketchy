@@ -281,7 +281,8 @@
                         "_myPlaneMaterial": "66",
                         "_myTextMaterial": "DefaultFontMaterial",
                         "_myLightObject": "131",
-                        "_myWallMaterial": "156"
+                        "_myWallMaterial": "156",
+                        "_myShapeOutlineObject": "160"
                     }
                 },
                 {
@@ -761,7 +762,7 @@
                 0.0,
                 0.019999999552965165,
                 0.0,
-                0.0,
+                -6.258487701416016e-7,
                 0.0,
                 0.0,
                 1.0
@@ -2089,10 +2090,10 @@
                 -2.980232238769531e-7,
                 0.0,
                 -7.318590178329032e-13,
-                5.960464477539064e-8,
+                5.960464477539065e-8,
                 0.9999999403953552,
                 0.0,
-                2.980232238769532e-8,
+                2.9802322387695329e-8,
                 0.02036961168050766,
                 -0.012106917798519137,
                 1.0
@@ -2547,7 +2548,7 @@
                 -3.560781478881836,
                 -1.2940999269485474,
                 0.0,
-                1.1922484636306763,
+                1.1922484636306766,
                 -0.6560753583908081,
                 4.811278820037842,
                 0.0,
@@ -2555,7 +2556,7 @@
                 -3.448272705078125,
                 0.4209311008453369,
                 0.0,
-                14.999996185302735,
+                14.999996185302737,
                 30.00000762939453,
                 -40.00001525878906,
                 1.0
@@ -2679,6 +2680,62 @@
                     }
                 }
             ],
+            "deleted": true
+        },
+        "157": {
+            "name": "Shape Outline",
+            "parent": "32"
+        },
+        "158": {
+            "name": "Empty.016",
+            "parent": "157",
+            "deleted": true
+        },
+        "160": {
+            "link": {
+                "name": "Outline",
+                "file": "assets\\models\\box_outline.glb"
+            },
+            "parent": "157",
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "components": [
+                {
+                    "mesh": {
+                        "material": "71",
+                        "mesh": "161"
+                    }
+                }
+            ]
+        },
+        "162": {
+            "link": {
+                "name": "Outline 5 cm",
+                "file": "assets\\models\\box_outline.glb"
+            },
+            "deleted": true
+        },
+        "163": {
+            "link": {
+                "name": "Outline 10 cm",
+                "file": "assets\\models\\box_outline.glb"
+            },
             "deleted": true
         }
     },
@@ -2825,6 +2882,18 @@
             "link": {
                 "name": "Circle.2",
                 "file": "assets\\models\\watermelon.glb"
+            }
+        },
+        "159": {
+            "link": {
+                "name": "Cube.014",
+                "file": "assets\\models\\box_outline.glb"
+            }
+        },
+        "161": {
+            "link": {
+                "name": "Cube.004",
+                "file": "assets\\models\\box_outline.glb"
             }
         }
     },
@@ -2987,15 +3056,15 @@
             "name": "SketchObject",
             "Phong": {
                 "ambientColor": [
-                    0.9999942183494568,
+                    0.9999942779541016,
                     1.0,
-                    0.9999899864196776,
+                    0.9999899864196777,
                     1.0
                 ],
                 "diffuseColor": [
                     0.9999917149543762,
                     1.0,
-                    0.9999899864196776,
+                    0.9999899864196777,
                     1.0
                 ],
                 "specularColor": [
@@ -3267,6 +3336,7 @@
     "skins": {},
     "files": [
         "assets/models/quest_controllers_credits_Jezza3D.glb",
-        "assets/models/watermelon.glb"
+        "assets/models/watermelon.glb",
+        "assets/models/box_outline.glb"
     ]
 }

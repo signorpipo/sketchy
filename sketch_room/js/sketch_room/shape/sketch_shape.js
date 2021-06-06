@@ -170,7 +170,7 @@ class SketchShape {
 
 
     getColor() {
-        return this._myColor;
+        return this._myColor.slice(0);
     }
 
     setTransform(value) {
@@ -218,7 +218,7 @@ class SketchShape {
 
     update(dt) {
         if (this._mySelected) {
-            this._selectedUpdate(dt);
+            //this._selectedUpdate(dt);
         }
     }
 

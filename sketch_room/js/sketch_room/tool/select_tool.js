@@ -1,5 +1,7 @@
 class SelectTool {
-    constructor() {
+    constructor(shapeOutlineObject) {
+        this._myShapeOutlineObject = shapeOutlineObject;
+
         this._myIsEnabled = false;
         this._myCursorStartCounter = 1; //let the cursor perform the first update
 
@@ -13,12 +15,24 @@ class SelectTool {
         this._myDoubleClickDeselectTimer = 0;
         this._myDeselectShape = false;
 
+        this._myIsOutlineVisible = false;
+        this._myOutlineTimer = 0;
+
         //Setup
-        this._myDoubleClickDeselectMaxDelay = 0.5;
+        this._myDoubleClickDeselectMaxDelay = 0.3;
+        this._myOutlineShadeFactor = 0.6;
+        this._myOutlineSpeedFactor = 2.5;
     }
 
     setSelectedShape(shape) {
-        this._mySelectedShape = shape;
+        if (this._mySelectedShape != shape) {
+            this._mySelectedShape = shape;
+            if (shape) {
+                this._myIsOutlineVisible = true;
+            } else {
+                this._hideOutline();
+            }
+        }
     }
 
     isEnabled() {
@@ -38,6 +52,9 @@ class SelectTool {
     }
 
     start() {
+        this._myShapeOutlineMaterial = this._myShapeOutlineObject.getComponent("mesh").material.clone();
+        this._myShapeOutlineObject.getComponent("mesh").material = this._myShapeOutlineMaterial;
+        this._hideOutline();
     }
 
     update(dt) {
@@ -90,6 +107,34 @@ class SelectTool {
             this._myRightCursorDeactivate = true;
             this._myDoubleClickDeselectTimer = 0;
         }
+
+        if (this._myIsOutlineVisible) {
+            let shapeScale = this._mySelectedShape.getScale();
+            this._myShapeOutlineObject.resetScaling();
+            this._myShapeOutlineObject.scale(shapeScale);
+            this._myShapeOutlineObject.setTranslationWorld(this._mySelectedShape.getPosition());
+            this._myShapeOutlineObject.resetRotation();
+            this._myShapeOutlineObject.rotateObject(this._mySelectedShape.getRotation());
+
+            this._myOutlineTimer += dt;
+            let currentShadeFactor = Math.sin(this._myOutlineTimer * this._myOutlineSpeedFactor) * this._myOutlineShadeFactor;
+            let diffuseColor = this._mySelectedShape.getColor();
+            if (currentShadeFactor >= 0) {
+                //Darker
+                for (let i = 0; i < 3; ++i) {
+                    diffuseColor[i] = diffuseColor[i] * (1 - currentShadeFactor);
+                }
+            } else {
+                //Lighter
+                for (let i = 0; i < 3; ++i) {
+                    diffuseColor[i] = Math.min(1, diffuseColor[i] + (1 - diffuseColor[i]) * (-currentShadeFactor));
+                }
+            }
+            let ambientColor = diffuseColor.slice(0);
+            glMatrix.vec3.scale(ambientColor, ambientColor, 0.5);
+            this._myShapeOutlineMaterial.diffuseColor = diffuseColor;
+            this._myShapeOutlineMaterial.ambientColor = ambientColor;
+        }
     }
 
     _firstUpdatesStuff(dt) {
@@ -128,5 +173,12 @@ class SelectTool {
                 }
             }
         }
+    }
+
+    _hideOutline() {
+        this._myOutlineTimer = 0;
+        this._myIsOutlineVisible = false;
+        this._myShapeOutlineObject.scale([0, 0, 0]);
+        this._myShapeOutlineObject.setTranslationLocal([0, -7777, 0]);
     }
 }
