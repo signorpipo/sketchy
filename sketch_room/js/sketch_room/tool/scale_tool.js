@@ -76,6 +76,9 @@ class ScaleTool {
                     this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.SCALE] = AxisLockType.LOCAL;
                     break;
                 case AxisLockType.LOCAL:
+                    this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.SCALE] = AxisLockType.GLOBAL;
+                    break;
+                case AxisLockType.GLOBAL:
                     this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.SCALE] = AxisLockType.FREE;
                     break;
                 default:
@@ -97,29 +100,58 @@ class ScaleTool {
             handPosition = PlayerPose.myRightHandPosition.slice(0);
         }
 
-        this._updateAxisLock(handPosition);
-        let localClosestAxis = null;
-        if (this._myClosestAxis) {
-            this._myScaleReferenceAxis = PP.MathUtils.getComponentAlongAxis(this._myScaleReferenceAxis, this._myClosestAxis);
-            if (glMatrix.vec3.length(this._myScaleReferenceAxis) < 0.001) {
-                this._myScaleReferenceAxis = this._myClosestAxis.slice(0);
+        let scaleToApply = [0, 0, 0];
+        let handDirection = [];
+        glMatrix.vec3.subtract(handDirection, handPosition, this._myStartHandPosition);
+
+        if (this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.SCALE] != AxisLockType.FREE) {
+            this._updateAxisLock(handPosition);
+            let localClosestAxis = null;
+            if (this._myClosestAxis) {
+                this._myScaleReferenceAxis = PP.MathUtils.getComponentAlongAxis(this._myScaleReferenceAxis, this._myClosestAxis);
+                if (glMatrix.vec3.length(this._myScaleReferenceAxis) < 0.001) {
+                    this._myScaleReferenceAxis = this._myClosestAxis.slice(0);
+                }
+                glMatrix.vec3.normalize(this._myScaleReferenceAxis, this._myScaleReferenceAxis);
+
+                localClosestAxis = this._getLocalClosestAxis();
+            } else {
+                glMatrix.vec3.subtract(this._myScaleReferenceAxis, this._myStartHandPosition, this._myStartShapePosition);
+                glMatrix.vec3.normalize(this._myScaleReferenceAxis, this._myScaleReferenceAxis);
             }
-            glMatrix.vec3.normalize(this._myScaleReferenceAxis, this._myScaleReferenceAxis);
 
-            localClosestAxis = this._getLocalClosestAxis();
+            let rawScale = PP.MathUtils.getComponentAlongAxis(handDirection, this._myScaleReferenceAxis);
+            let scaleAmount = glMatrix.vec3.length(rawScale) * (PP.MathUtils.isConcordant(rawScale, this._myScaleReferenceAxis) ? 1 : -1);
+
+            scaleToApply = [scaleAmount, scaleAmount, scaleAmount];
+            if (localClosestAxis) {
+                scaleToApply = PP.MathUtils.getComponentAlongAxis(scaleToApply, localClosestAxis);
+            }
         } else {
-            glMatrix.vec3.subtract(this._myScaleReferenceAxis, this._myStartHandPosition, this._myStartShapePosition);
-            glMatrix.vec3.normalize(this._myScaleReferenceAxis, this._myScaleReferenceAxis);
-        }
+            let shapeAxes = PP.MathUtils.getAxes(this._myStartShapeTransform);
 
-        let translation = [];
-        glMatrix.vec3.subtract(translation, handPosition, this._myStartHandPosition);
-        let rawScale = PP.MathUtils.getComponentAlongAxis(translation, this._myScaleReferenceAxis);
-        let scaleAmount = glMatrix.vec3.length(rawScale) * (PP.MathUtils.isConcordant(rawScale, this._myScaleReferenceAxis) ? 1 : -1);
+            let xComponent = PP.MathUtils.getComponentAlongAxis(handDirection, shapeAxes[0]);
+            let xScaleReference = PP.MathUtils.getComponentAlongAxis(this._myScaleReferenceAxis, shapeAxes[0]);
+            let xAmount = glMatrix.vec3.length(xComponent);
+            if (!PP.MathUtils.isConcordant(xComponent, xScaleReference)) {
+                xAmount = -xAmount;
+            }
 
-        let scaleToApply = [scaleAmount, scaleAmount, scaleAmount];
-        if (localClosestAxis) {
-            scaleToApply = PP.MathUtils.getComponentAlongAxis(scaleToApply, localClosestAxis);
+            let yComponent = PP.MathUtils.getComponentAlongAxis(handDirection, shapeAxes[1]);
+            let yScaleReference = PP.MathUtils.getComponentAlongAxis(this._myScaleReferenceAxis, shapeAxes[1]);
+            let yAmount = glMatrix.vec3.length(yComponent);
+            if (!PP.MathUtils.isConcordant(yComponent, yScaleReference)) {
+                yAmount = -yAmount;
+            }
+
+            let zComponent = PP.MathUtils.getComponentAlongAxis(handDirection, shapeAxes[2]);
+            let zScaleReference = PP.MathUtils.getComponentAlongAxis(this._myScaleReferenceAxis, shapeAxes[2]);
+            let zAmount = glMatrix.vec3.length(zComponent);
+            if (!PP.MathUtils.isConcordant(zComponent, zScaleReference)) {
+                zAmount = -zAmount;
+            }
+
+            scaleToApply = [xAmount, yAmount, zAmount];
         }
 
         glMatrix.vec3.add(scaleToApply, scaleToApply, this._myStartShapeScale);
@@ -172,7 +204,7 @@ class ScaleTool {
 
         this._myClosestAxis = null;
 
-        if (axisLockType != AxisLockType.FREE) {
+        if (axisLockType == AxisLockType.LOCAL) {
             let direction = [];
             glMatrix.vec3.subtract(direction, currentHandPosition, this._myStartHandPosition);
             let difference = glMatrix.vec3.length(direction);
