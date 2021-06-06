@@ -15,19 +15,19 @@ WL.registerComponent('sketch_tool_type_controller_color', {
 
             switch (this._myToolType) {
                 case ToolType.GRAB:
-                    color = Colors[8];
+                    color = Colors[10];
                     break;
                 case ToolType.TRANSLATE:
-                    color = Colors[4];
+                    color = Colors[5];
                     break;
                 case ToolType.ROTATE:
-                    color = Colors[3];
+                    color = Colors[4];
                     break;
                 case ToolType.SCALE:
-                    color = Colors[13];
+                    color = Colors[15];
                     break;
                 case ToolType.CREATE:
-                    color = Colors[9];
+                    color = Colors[11];
                     break;
                 default:
                     color = Colors[0];

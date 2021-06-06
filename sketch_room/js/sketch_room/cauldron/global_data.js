@@ -5,6 +5,12 @@ var SketchShapeData = {
     myCollisionGroup: 0
 };
 
+var WidgetData = {
+    myPlaneMesh: null,
+    myPlaneMaterial: null,
+    myTextMaterial: null
+};
+
 var PlayerPose = {
     myHeadTransform: [0, 0, 0.1, 0, 0, 0, 1],
     myHeadPosition: [0, 0, 0],
@@ -25,9 +31,3 @@ var HandCursor = {
 };
 
 var CurrentToolType = null;
-
-var WidgetData = {
-    myPlaneMesh: null,
-    myPlaneMaterial: null,
-    myTextMaterial: null
-};

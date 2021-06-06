@@ -70,7 +70,7 @@ var AxisLockType = {
 
 class CreateSettings {
     constructor() {
-        this.myColor = Colors[9];
+        this.myColor = Colors[11];
         this.myScale = [0.075, 0.075, 0.075];
     }
 }

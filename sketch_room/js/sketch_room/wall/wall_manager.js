@@ -62,7 +62,7 @@ class WallManager {
     }
 
     _createWalls() {
-        let color = Colors[7];
+        let color = Colors[8];
 
         {
             let wall = new SketchWall(this._mySceneObject, WallType.FLOOR);

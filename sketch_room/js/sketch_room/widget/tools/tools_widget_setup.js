@@ -63,11 +63,11 @@ class ToolsWidgetSetup extends SketchWidgetSetup {
 
         this.myColorButtonsPanelPosition = [0.016, -0.04, 0];
 
-        this.myColorButtonScale = [0.0125, 0.0125, 1];
+        this.myColorButtonScale = [0.012, 0.012, 1];
 
         this.myColors = Colors;
 
-        let colorsPerRow = 7;
+        let colorsPerRow = 8;
         let spaceBetweenColors = (((this.myMainPanelBackgroundScale[0] * 2) - ((0.015 + this.myColorButtonsPanelPosition[0]) * 2)) - (this.myColorButtonScale[0] * 2 * colorsPerRow)) / (colorsPerRow - 1);
 
         this.myColorsButtonPositions = [];
