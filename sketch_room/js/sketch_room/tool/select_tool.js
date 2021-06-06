@@ -110,6 +110,7 @@ class SelectTool {
 
         if (this._myIsOutlineVisible) {
             let shapeScale = this._mySelectedShape.getScale();
+            glMatrix.vec3.scale(shapeScale, shapeScale, 1.01);
             this._myShapeOutlineObject.resetScaling();
             this._myShapeOutlineObject.scale(shapeScale);
             this._myShapeOutlineObject.setTranslationWorld(this._mySelectedShape.getPosition());
