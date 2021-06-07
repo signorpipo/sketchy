@@ -78,12 +78,10 @@ class SelectTool {
         if (this._myLeftCursorDeactivate) {
             this._myLeftCursorDeactivate = false;
             HandCursor.myLeftCursor.active = false;
-            HandCursor.myLeftCursor._setCursorVisibility(false);
         }
         if (this._myRightCursorDeactivate) {
             this._myRightCursorDeactivate = false;
             HandCursor.myRightCursor.active = false;
-            HandCursor.myRightCursor._setCursorVisibility(false);
         }
 
         let squeezePressed = PP.LeftGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed || PP.RightGamepad.getButtonInfo(PP.ButtonType.SQUEEZE).myIsPressed;

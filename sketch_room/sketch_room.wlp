@@ -96,7 +96,7 @@
         },
         "17": {
             "name": "Non Vr Camera",
-            "parent": "14",
+            "parent": "189",
             "components": [
                 {
                     "type": "view"
@@ -104,11 +104,29 @@
                 {
                     "type": "mouse-look"
                 }
+            ],
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
             ]
         },
         "18": {
             "name": "Eye Left",
-            "parent": "14",
+            "parent": "189",
             "components": [
                 {
                     "type": "view"
@@ -119,11 +137,29 @@
                         "type": "eye left"
                     }
                 }
+            ],
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
             ]
         },
         "19": {
             "name": "Eye Right",
-            "parent": "14",
+            "parent": "189",
             "components": [
                 {
                     "type": "view"
@@ -134,6 +170,24 @@
                         "type": "eye right"
                     }
                 }
+            ],
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
             ]
         },
         "21": {
@@ -296,9 +350,6 @@
                     }
                 },
                 {
-                    "type": "set-local-floor"
-                },
-                {
                     "type": "set-global-head-pose",
                     "set-global-head-pose": {
                         "eyeLeft": "18",
@@ -314,7 +365,7 @@
                 "name": "Left_Quest_Controller",
                 "file": "assets\\models\\quest_controllers_credits_Jezza3D.glb"
             },
-            "parent": "14",
+            "parent": "189",
             "components": [
                 {
                     "type": "input",
@@ -339,7 +390,7 @@
                         "_myTextMaterial": "DefaultFontMaterial",
                         "_myHandedness": "left"
                     },
-                    "active": false
+                    "active": true
                 },
                 {
                     "type": "easy-tune",
@@ -370,7 +421,25 @@
                     }
                 }
             ],
-            "name": "Hand Left"
+            "name": "Hand Left",
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                -0.10000000149011612,
+                0.0,
+                0.0,
+                1.0
+            ]
         },
         "51": {
             "link": {
@@ -465,7 +534,7 @@
                 "name": "Right_Quest_Controller",
                 "file": "assets\\models\\quest_controllers_credits_Jezza3D.glb"
             },
-            "parent": "14",
+            "parent": "189",
             "components": [
                 {
                     "type": "input",
@@ -509,7 +578,25 @@
                     }
                 }
             ],
-            "name": "Hand Right"
+            "name": "Hand Right",
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.10000000149011612,
+                0.0,
+                0.0,
+                1.0
+            ]
         },
         "59": {
             "link": {
@@ -697,7 +784,9 @@
                     "type": "fixed-cursor",
                     "fixed-cursor": {
                         "cursorObject": "76",
-                        "handedness": "left"
+                        "handedness": "left",
+                        "cursorRayObject": "192",
+                        "cursorRayScalingAxis": "y"
                     }
                 }
             ]
@@ -735,7 +824,8 @@
                     "fixed-cursor": {
                         "cursorObject": "78",
                         "handedness": "right",
-                        "cursorRayObject": null
+                        "cursorRayObject": "191",
+                        "cursorRayScalingAxis": "y"
                     }
                 }
             ]
@@ -2886,6 +2976,153 @@
                 }
             ],
             "name": "Outline 5 cm"
+        },
+        "189": {
+            "name": "Tracked Space",
+            "parent": "14",
+            "components": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                {
+                    "type": "player-height",
+                    "player-height": {
+                        "height": 1.600000023841858
+                    }
+                }
+            ]
+        },
+        "190": {
+            "name": "Right Cursor Ray",
+            "parent": "191",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "10",
+                        "material": "77"
+                    }
+                }
+            ],
+            "transformation": [
+                0.004999999888241291,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                -4.1723652088876409e-8,
+                0.3500033915042877,
+                0.0,
+                0.0,
+                -0.005000052507966757,
+                -5.960526516801679e-10,
+                0.0,
+                -7.450580596923828e-9,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        "191": {
+            "name": "Right Cursor Ray",
+            "parent": "75",
+            "transformation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                7.450580596923828e-9,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        "192": {
+            "name": "Left Cursor Ray",
+            "parent": "74"
+        },
+        "193": {
+            "name": "Left Cursor Ray",
+            "parent": "192",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "10",
+                        "material": "77"
+                    }
+                }
+            ],
+            "transformation": [
+                0.004999999888241291,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                -4.1723655641590088e-8,
+                0.35000336170196535,
+                0.0,
+                0.0,
+                -0.005000051576644182,
+                -5.960526516801679e-10,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
         }
     },
     "meshes": {
@@ -3102,7 +3339,6 @@
         },
         "20": {
             "name": "White",
-            "shader": "Phong",
             "Phong": {
                 "specularColor": [
                     9.999899930335233e-7,
@@ -3111,7 +3347,8 @@
                     1.0
                 ],
                 "shininess": 1
-            }
+            },
+            "pipeline": "187"
         },
         "22": {
             "name": "Pink",
@@ -3205,7 +3442,6 @@
         },
         "66": {
             "name": "Flat",
-            "shader": "Flat",
             "Flat": {
                 "color": [
                     0.384313702583313,
@@ -3213,7 +3449,8 @@
                     0.384309858083725,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "180"
         },
         "71": {
             "link": {
@@ -3250,7 +3487,6 @@
         },
         "77": {
             "name": "Cursor",
-            "shader": "Flat",
             "Flat": {
                 "color": [
                     0.10388311743736269,
@@ -3258,11 +3494,11 @@
                     0.7568627595901489,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "180"
         },
         "135": {
             "name": "Teleport Mesh",
-            "shader": "Flat",
             "Flat": {
                 "color": [
                     0.9529411792755128,
@@ -3270,11 +3506,11 @@
                     0.12705881893634797,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "180"
         },
         "141": {
             "name": "Ray Mesh",
-            "shader": "Flat",
             "Flat": {
                 "color": [
                     0.9999899864196776,
@@ -3282,7 +3518,8 @@
                     1.0,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "180"
         },
         "143": {
             "link": {
@@ -3389,61 +3626,49 @@
         }
     },
     "shaders": {
-        "1": {
+        "176": {
             "link": {
-                "name": "DistanceFieldVector Textured",
+                "name": "DistanceFieldVector",
                 "file": "default"
             }
         },
-        "2": {
-            "link": {
-                "name": "Flat",
-                "file": "default"
-            }
-        },
-        "3": {
-            "link": {
-                "name": "Flat Textured",
-                "file": "default"
-            }
-        },
-        "4": {
-            "link": {
-                "name": "MeshVisualizer",
-                "file": "default"
-            }
-        },
-        "5": {
-            "link": {
-                "name": "Phong",
-                "file": "default"
-            }
-        },
-        "6": {
-            "link": {
-                "name": "Phong Textured",
-                "file": "default"
-            }
-        },
-        "28": {
+        "178": {
             "link": {
                 "name": "Dynamic",
                 "file": "default"
             }
         },
-        "29": {
+        "179": {
             "link": {
-                "name": "Particle Textured",
+                "name": "Flat",
                 "file": "default"
             }
         },
-        "30": {
+        "182": {
+            "link": {
+                "name": "MeshVisualizer",
+                "file": "default"
+            }
+        },
+        "184": {
+            "link": {
+                "name": "Particle",
+                "file": "default"
+            }
+        },
+        "186": {
+            "link": {
+                "name": "Phong",
+                "file": "default"
+            }
+        },
+        "189": {
             "link": {
                 "name": "Skinning",
                 "file": "default"
             }
         },
-        "31": {
+        "190": {
             "link": {
                 "name": "Static",
                 "file": "default"
@@ -3456,7 +3681,7 @@
             "version": [
                 0,
                 8,
-                4
+                5
             ]
         },
         "vr": {
@@ -3465,7 +3690,7 @@
         },
         "scripting": {
             "sourcePaths": [
-                "/js/components/",
+                "/js/editor-components-bundle.js",
                 "js/pp",
                 "js/pp/cauldron",
                 "js/pp/tool/cauldron",
@@ -3510,7 +3735,8 @@
                 "requiredFeatures": {
                     "local-floor": true
                 }
-            }
+            },
+            "xrButtonColor": "black"
         }
     },
     "animations": {},
@@ -3520,5 +3746,55 @@
         "assets/models/watermelon.glb",
         "assets/models/box_outline.glb",
         "assets/models/inverted_cube.glb"
-    ]
+    ],
+    "pipelines": {
+        "177": {
+            "link": {
+                "name": "DistanceFieldVector",
+                "file": "default"
+            }
+        },
+        "180": {
+            "link": {
+                "name": "Flat Opaque",
+                "file": "default"
+            }
+        },
+        "181": {
+            "link": {
+                "name": "Flat Opaque Textured",
+                "file": "default"
+            }
+        },
+        "183": {
+            "link": {
+                "name": "MeshVisualizer",
+                "file": "default"
+            }
+        },
+        "185": {
+            "link": {
+                "name": "Particle",
+                "file": "default"
+            }
+        },
+        "187": {
+            "link": {
+                "name": "Phong Opaque",
+                "file": "default"
+            }
+        },
+        "188": {
+            "link": {
+                "name": "Phong Opaque Textured",
+                "file": "default"
+            }
+        },
+        "191": {
+            "link": {
+                "name": "Foliage",
+                "file": "default"
+            }
+        }
+    }
 }

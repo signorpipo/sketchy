@@ -1,8 +1,12 @@
+/**
+Cursor from wle with collision block
+ */
 WL.registerComponent('fixed-cursor', {
     /** Collision group for the ray cast. Only objects in this group will be affected by this cursor. */
     collisionGroup: { type: WL.Type.Int, default: 1 },
     /** (optional) Object that visualizes the cursor's ray. */
     cursorRayObject: { type: WL.Type.Object, default: null },
+    cursorRayScalingAxis: { type: WL.Type.Enum, values: ['x', 'y', 'z', 'none'], default: 'z' },
     /** (optional) Object that visualizes the cursor's hit location. */
     cursorObject: { type: WL.Type.Object, default: null },
     /** Handedness for VR cursors to accept trigger events only from respective controller. */
@@ -55,6 +59,18 @@ WL.registerComponent('fixed-cursor', {
         this.hoveringObject = null;
 
         WL.onXRSessionStart.push(this.setupVREvents.bind(this));
+
+        if (this.cursorRayObject && this.visible) {
+            /* Set ray to a good default distance of the cursor of 1m */
+            this.object.getTranslationWorld(this.origin);
+            this.object.getForward(this.direction);
+            this._setCursorRayTransform([
+                this.origin[0] + this.direction[0],
+                this.origin[1] + this.direction[1],
+                this.origin[2] + this.direction[2]]);
+        } else if (this.cursorRayObject) {
+            this.cursorRayObject.scale([0, 0, 0]);
+        }
     },
     onViewportResize: function () {
         if (!this.viewComponent) return;
@@ -78,17 +94,32 @@ WL.registerComponent('fixed-cursor', {
         this.globalTarget.onClick(o, this);
     },
 
+    _setCursorRayTransform: function (hitPosition) {
+        if (!this.cursorRayObject) return;
+        let dist = glMatrix.vec3.dist(this.origin, hitPosition);
+        this.cursorRayObject.setTranslationLocal([0.0, 0.0, -dist / 2]);
+        if (this.cursorRayScalingAxis != 4) {
+            this.cursorRayObject.resetScaling();
+            const scaling = [1.0, 1.0, 1.0];
+            scaling[this.cursorRayScalingAxis] = dist / 2;
+            this.cursorRayObject.scale(scaling);
+        }
+    },
+
     _setCursorVisibility: function (visible) {
         if (this.visible == visible) return;
+        this.visible = visible;
+        if (!this.cursorObject) return;
+
         if (visible) {
             this.cursorObject.resetScaling();
             this.cursorObject.scale(this.cursorObjScale);
         } else {
             this.cursorObjScale.set(this.cursorObject.scalingLocal);
             this.cursorObject.scale([0, 0, 0]);
+            if (this.cursorRayObject) this.cursorRayObject.scale([0, 0, 0]);
         }
 
-        this.visible = visible;
     },
 
     update: function () {
@@ -121,6 +152,7 @@ WL.registerComponent('fixed-cursor', {
                 (!isNaN(this.cursorPos[0]) && !isNaN(this.cursorPos[1]) && !isNaN(this.cursorPos[2]))) {
                 this._setCursorVisibility(true);
                 this.cursorObject.setTranslationWorld(this.cursorPos);
+                this._setCursorRayTransform(this.cursorPos);
             } else {
                 this._setCursorVisibility(false);
             }
@@ -138,18 +170,18 @@ WL.registerComponent('fixed-cursor', {
         }
 
         if (isHitValid) {
-            if (!this.hoveringObject) {
+            if (!this.hoveringObject || !this.hoveringObject.equals(rayHit.objects[0])) {
+                /* Unhover previous, if exists */
+                if (this.hoveringObject) {
+                    let cursorTarget = this.hoveringObject.getComponent("cursor-target");
+                    if (cursorTarget) cursorTarget.onUnhover(this.hoveringObject, this);
+                    this.globalTarget.onUnhover(this.hoveringObject, this);
+                }
+
+                /* Hover new object */
                 this.hoveringObject = rayHit.objects[0];
                 WL.canvas.style.cursor = "pointer";
                 let cursorTarget = this.hoveringObject.getComponent("cursor-target");
-                if (cursorTarget) cursorTarget.onHover(this);
-                this.globalTarget.onHover(this.hoveringObject, this);
-            } else if (!this.hoveringObject.equals(rayHit.objects[0])) {
-                let cursorTarget = this.hoveringObject.getComponent("cursor-target");
-                if (cursorTarget) cursorTarget.onUnhover(this.hoveringObject, this);
-                this.globalTarget.onUnhover(this.hoveringObject, this);
-                this.hoveringObject = rayHit.objects[0];
-                cursorTarget = this.hoveringObject.getComponent("cursor-target");
                 if (cursorTarget) cursorTarget.onHover(this.hoveringObject, this);
                 this.globalTarget.onHover(this.hoveringObject, this);
             }
@@ -188,7 +220,6 @@ WL.registerComponent('fixed-cursor', {
         s.addEventListener('selectend', this.onTouchEnd.bind(this));
     },
     onTouchStart: function (e) {
-        console.log(e);
         this.arTouchDown = true;
         /* After AR session was entered, the projection matrix changed */
         this.onViewportResize();
@@ -236,5 +267,19 @@ WL.registerComponent('fixed-cursor', {
         }
 
         return rayHit;
+    },
+
+    onDeactivate: function () {
+        this._setCursorVisibility(false);
+        if (this.hoveringObject) {
+            const target = this.hoveringObject.getComponent('cursor-target');
+            if (target) target.onUnhover(this.hoveringObject, this);
+            this.globalTarget.onUnhover(this.hoveringObject, this);
+        }
+        if (this.cursorRayObject) this.cursorRayObject.scale([0, 0, 0]);
+    },
+
+    onActivate: function () {
+        this._setCursorVisibility(true);
     }
 });
