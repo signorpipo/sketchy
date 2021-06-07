@@ -63,7 +63,7 @@ class ToolsWidget {
             if (this._myPositionHover) {
                 let amountToAdd = intensity * this._mySetup.myModifyPositionThumbstickStepPerSecond * dt;
 
-                this._myTempPositionSnap = Math.max(0.005, this._myTempPositionSnap + amountToAdd);
+                this._myTempPositionSnap = Math.max(0, this._myTempPositionSnap + amountToAdd);
                 let positionSnap = Math.round(this._myTempPositionSnap / 0.005) * 0.005;
 
                 this._myToolSettings.mySnapSettings.myPositionSnap[0] = positionSnap;
@@ -78,7 +78,7 @@ class ToolsWidget {
             if (this._myRotationHover) {
                 let amountToAdd = intensity * this._mySetup.myModifyRotationThumbstickStepPerSecond * dt;
 
-                this._myTempRotationSnap = PP.MathUtils.clamp(this._myTempRotationSnap + amountToAdd, 1, 90);
+                this._myTempRotationSnap = PP.MathUtils.clamp(this._myTempRotationSnap + amountToAdd, 0, 90);
                 let rotationSnap = PP.MathUtils.toRadians(Math.round(this._myTempRotationSnap));
                 this._myToolSettings.mySnapSettings.myRotationSnap[0] = rotationSnap;
                 this._myToolSettings.mySnapSettings.myRotationSnap[1] = rotationSnap;

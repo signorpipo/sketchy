@@ -1,8 +1,5 @@
 class SelectTool {
-    constructor(shapeOutlineObject, invertedCubeObject) {
-        this._myShapeOutlineObject = shapeOutlineObject;
-        this._myInvertedCubeObject = invertedCubeObject;
-
+    constructor() {
         this._myIsEnabled = false;
         this._myCursorStartCounter = 1; //let the cursor perform the first update
 
@@ -52,11 +49,14 @@ class SelectTool {
     }
 
     start() {
-        this._myShapeOutlineMaterial = this._myShapeOutlineObject.getComponent("mesh").material.clone();
-        this._myShapeOutlineObject.getComponent("mesh").material = this._myShapeOutlineMaterial;
+        this._myShapeOutlineMaterial10CM = OutlineData.myShapeOutlineObject10CM.getComponent("mesh").material.clone();
+        OutlineData.myShapeOutlineObject10CM.getComponent("mesh").material = this._myShapeOutlineMaterial10CM;
 
-        this._myInvertedCubeMaterial = this._myInvertedCubeObject.getComponent("mesh").material.clone();
-        this._myInvertedCubeObject.getComponent("mesh").material = this._myInvertedCubeMaterial;
+        this._myShapeOutlineMaterial5CM = OutlineData.myShapeOutlineObject5CM.getComponent("mesh").material.clone();
+        OutlineData.myShapeOutlineObject5CM.getComponent("mesh").material = this._myShapeOutlineMaterial5CM;
+
+        this._myInvertedCubeMaterial = OutlineData.myInvertedCubeObject.getComponent("mesh").material.clone();
+        OutlineData.myInvertedCubeObject.getComponent("mesh").material = this._myInvertedCubeMaterial;
 
         this._hideOutline();
     }
@@ -117,17 +117,21 @@ class SelectTool {
 
     _updateSelectVisual(dt) {
         if (this._myIsOutlineVisible) {
-
-            let outlineObject = this._myShapeOutlineObject;
-            let outlineMaterial = this._myShapeOutlineMaterial;
+            let outlineObject = OutlineData.myShapeOutlineObject10CM;
+            let outlineMaterial = this._myShapeOutlineMaterial10CM;
 
             let shapeScale = this._mySelectedShape.getScale();
 
             if (this._mySelectedShape.getType() == ShapeType.BOX) {
-                outlineObject = this._myInvertedCubeObject;
+                outlineObject = OutlineData.myInvertedCubeObject;
                 outlineMaterial = this._myInvertedCubeMaterial;
 
                 glMatrix.vec3.add(shapeScale, shapeScale, [0.005, 0.005, 0.005]);
+            } else if (this._mySelectedShape.getType() == ShapeType.WALL) {
+                outlineObject = OutlineData.myShapeOutlineObject5CM;
+                outlineMaterial = this._myShapeOutlineMaterial5CM;
+
+                glMatrix.vec3.add(shapeScale, shapeScale, [0.001, 0.001, 0.001]);
             } else {
                 glMatrix.vec3.add(shapeScale, shapeScale, [0.001, 0.001, 0.001]);
             }
@@ -138,8 +142,22 @@ class SelectTool {
             outlineObject.resetRotation();
             outlineObject.rotateObject(this._mySelectedShape.getRotation());
 
-            outlineMaterial.diffuseColor = [0, 0, 0, 1];
-            outlineMaterial.ambientColor = [0, 0, 0, 1];
+            this._myOutlineTimer += dt;
+            let currentShadeFactor = Math.sin(this._myOutlineTimer * this._myOutlineSpeedFactor) * this._myOutlineShadeFactor;
+            let color = this._mySelectedShape.getColor();
+            if (currentShadeFactor >= 0) {
+                //Darker 
+                for (let i = 0; i < 3; ++i) {
+                    color[i] = color[i] * (1 - currentShadeFactor);
+                }
+            } else {
+                //Lighter 
+                for (let i = 0; i < 3; ++i) {
+                    color[i] = Math.min(1, color[i] + (1 - color[i]) * (-currentShadeFactor));
+                }
+            }
+
+            outlineMaterial.color = color;
         }
     }
 
@@ -185,10 +203,13 @@ class SelectTool {
         this._myOutlineTimer = 0;
         this._myIsOutlineVisible = false;
 
-        this._myShapeOutlineObject.scale([0, 0, 0]);
-        this._myShapeOutlineObject.setTranslationLocal([0, -7777, 0]);
+        OutlineData.myShapeOutlineObject10CM.scale([0, 0, 0]);
+        OutlineData.myShapeOutlineObject10CM.setTranslationLocal([0, -7777, 0]);
 
-        this._myInvertedCubeObject.scale([0, 0, 0]);
-        this._myInvertedCubeObject.setTranslationLocal([0, -7777, 0]);
+        OutlineData.myShapeOutlineObject5CM.scale([0, 0, 0]);
+        OutlineData.myShapeOutlineObject5CM.setTranslationLocal([0, -7777, 0]);
+
+        OutlineData.myInvertedCubeObject.scale([0, 0, 0]);
+        OutlineData.myInvertedCubeObject.setTranslationLocal([0, -7777, 0]);
     }
 }

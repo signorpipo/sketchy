@@ -11,6 +11,12 @@ var WidgetData = {
     myTextMaterial: null
 };
 
+var OutlineData = {
+    myShapeOutlineObject10CM: null,
+    myShapeOutlineObject5CM: null,
+    myInvertedCubeObject: null,
+};
+
 var PlayerPose = {
     myHeadTransform: [0, 0, 0.1, 0, 0, 0, 1],
     myHeadPosition: [0, 0, 0],
