@@ -2,8 +2,6 @@
 class SketchWidgetFrameUI {
 
     constructor() {
-        this._myIsWidgetVisible = true;
-
         this._myParentObject = null;
         this._myIsPinned = false;
     }
@@ -20,17 +18,7 @@ class SketchWidgetFrameUI {
     }
 
     setWidgetVisible(visible) {
-        this._myIsWidgetVisible = visible;
-        if (this._myIsWidgetVisible) {
-            this.myWidgetObject.resetTransform();
-            this.myButtonsPanel.resetTransform();
-        } else {
-            this.myWidgetObject.scale([0, 0, 0]);
-            this.myWidgetObject.setTranslationLocal([0, -7777, 0]);
-
-            this.myButtonsPanel.scale([0, 0, 0]);
-            this.myButtonsPanel.setTranslationLocal([0, -7777, 0]);
-        }
+        PP.ObjectUtils.setHierarchyActive(this.myButtonsPanel, visible);
     }
 
     setVisibilityButtonVisible(visible) {

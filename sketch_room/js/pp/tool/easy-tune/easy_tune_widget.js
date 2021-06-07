@@ -132,16 +132,16 @@ PP.EasyTuneWidget = class EasyTuneWidget {
         this._myWidgetFrame.toggleVisibility();
     }
 
-    _widgetVisibleChanged() {
+    _widgetVisibleChanged(visible) {
         if (this._myCurrentWidget) {
             if (this._myEasyTuneVariables.size > 0) {
-                this._myCurrentWidget.setVisible(this._myWidgetFrame.myIsWidgetVisible);
+                this._myCurrentWidget.setVisible(visible);
             } else {
                 this._myCurrentWidget.setVisible(false);
             }
         }
 
-        if (this._myWidgetFrame.myIsWidgetVisible) {
+        if (visible) {
             this._refreshEasyTuneVariables();
         }
     }

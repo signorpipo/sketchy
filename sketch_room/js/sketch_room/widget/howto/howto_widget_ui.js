@@ -13,13 +13,7 @@ class HowToWidgetUI {
     }
 
     setVisible(visible) {
-        if (visible) {
-            this.myPivotObject.resetTransform();
-            this.myPivotObject.setTranslationLocal(this._mySetup.myPivotObjectPosition);
-        } else {
-            this.myPivotObject.scale([0, 0, 0]);
-            this.myPivotObject.setTranslationLocal([0, -7777, 0]);
-        }
+        PP.ObjectUtils.setHierarchyActive(this.myPivotObject, visible);
     }
 
     //Skeleton

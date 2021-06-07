@@ -121,8 +121,10 @@ class SketchRoomWidget {
         this._myWidgets[this._myCurrentWidgetType].setVisible(true);
     }
 
-    _widgetVisibleChanged() {
-
+    _widgetVisibleChanged(visible) {
+        if (this._myWidgets[this._myCurrentWidgetType]) {
+            this._myWidgets[this._myCurrentWidgetType].setVisible(visible);
+        }
     }
 
     _initializeWidgets(widgetsParentObject, currentToolWidgetParentObject) {

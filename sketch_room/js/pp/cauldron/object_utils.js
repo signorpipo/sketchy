@@ -20,5 +20,11 @@ PP.ObjectUtils = {
         object.parent = newParent;
 
         object.setDirty();
+    },
+    setHierarchyActive(object, active) {
+        object.active = active;
+        for (let child of object.children) {
+            PP.ObjectUtils.setHierarchyActive(child, active);
+        }
     }
 };
