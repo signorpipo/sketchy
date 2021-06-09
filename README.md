@@ -1,6 +1,6 @@
 ## Sketchy
 Have you ever wanted to test if the new sofa will have enough place in the living room? Well, Sketchy is here to help you!<br />
-Create, grab, scale, rotate, move, whatever! You can also export the room so that your best friend can approve the new arrangement
+Create, grab, scale, rotate, move, whatever! You can also share the room so that your best friend can approve the new arrangement
 
 Well, some use this to create whatever they want so, you can do that too! Just look at the gif, not a room at all from my point of view
 
