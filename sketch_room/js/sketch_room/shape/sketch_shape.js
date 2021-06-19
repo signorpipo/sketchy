@@ -209,7 +209,9 @@ class SketchShape {
     }
 
     delete() {
-        this._myObject.destroy();
+        //this._myObject.destroy();
+        this.setPosition([0, -7000, 0]);
+        this.setScale([0, 0, 0]);
     }
 
     clone() {

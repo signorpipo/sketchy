@@ -6,6 +6,7 @@ WL.registerComponent('fixed-cursor', {
     collisionGroup: { type: WL.Type.Int, default: 1 },
     /** (optional) Object that visualizes the cursor's ray. */
     cursorRayObject: { type: WL.Type.Object, default: null },
+    /** Axis along which to scale the `cursorRayObject`. */
     cursorRayScalingAxis: { type: WL.Type.Enum, values: ['x', 'y', 'z', 'none'], default: 'z' },
     /** (optional) Object that visualizes the cursor's hit location. */
     cursorObject: { type: WL.Type.Object, default: null },
@@ -61,6 +62,8 @@ WL.registerComponent('fixed-cursor', {
         WL.onXRSessionStart.push(this.setupVREvents.bind(this));
 
         if (this.cursorRayObject && this.visible) {
+            this.cursorRayScale = new Float32Array(3);
+            this.cursorRayScale.set(this.cursorRayObject.scalingLocal);
             /* Set ray to a good default distance of the cursor of 1m */
             this.object.getTranslationWorld(this.origin);
             this.object.getForward(this.direction);
@@ -100,9 +103,8 @@ WL.registerComponent('fixed-cursor', {
         this.cursorRayObject.setTranslationLocal([0.0, 0.0, -dist / 2]);
         if (this.cursorRayScalingAxis != 4) {
             this.cursorRayObject.resetScaling();
-            const scaling = [1.0, 1.0, 1.0];
-            scaling[this.cursorRayScalingAxis] = dist / 2;
-            this.cursorRayObject.scale(scaling);
+            this.cursorRayScale[this.cursorRayScalingAxis] = dist / 2;
+            this.cursorRayObject.scale(this.cursorRayScale);
         }
     },
 
