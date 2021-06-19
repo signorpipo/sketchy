@@ -59,8 +59,10 @@ class SketchShape {
             let farthest = this._getFarthestOnAxis(vertices, [1, 0, 0]);
             let distance = farthest[0] - (wallSettings.myWidth / 2);
             if (distance > 0.0001) {
-                let snapToMove = Math.ceil((distance - 0.0001) / positionSnap[0]);
-                distance = snapToMove * positionSnap[0];
+                if (positionSnap[0] > 0.0001) {
+                    let snapToMove = Math.ceil((distance - 0.0001) / positionSnap[0]);
+                    distance = snapToMove * positionSnap[0];
+                }
                 glMatrix.vec3.add(position, position, [-distance, 0, 0]);
             }
         }
@@ -70,8 +72,10 @@ class SketchShape {
             let farthest = this._getFarthestOnAxis(vertices, [-1, 0, 0]);
             let distance = farthest[0] + (wallSettings.myWidth / 2);
             if (distance < -0.0001) {
-                let snapToMove = Math.ceil((-distance - 0.0001) / positionSnap[0]);
-                distance = -snapToMove * positionSnap[0];
+                if (positionSnap[0] > 0.0001) {
+                    let snapToMove = Math.ceil((-distance - 0.0001) / positionSnap[0]);
+                    distance = -snapToMove * positionSnap[0];
+                }
                 glMatrix.vec3.add(position, position, [-distance, 0, 0]);
             }
         }
@@ -80,9 +84,11 @@ class SketchShape {
         {
             let farthest = this._getFarthestOnAxis(vertices, [0, 1, 0]);
             let distance = farthest[1] - wallSettings.myHeight;
-            if (distance > 0) {
-                let snapToMove = Math.ceil((distance - 0.0001) / positionSnap[1]);
-                distance = snapToMove * positionSnap[1];
+            if (distance > 0.0001) {
+                if (positionSnap[1] > 0.0001) {
+                    let snapToMove = Math.ceil((distance - 0.0001) / positionSnap[1]);
+                    distance = snapToMove * positionSnap[1];
+                }
                 glMatrix.vec3.add(position, position, [0, -distance, 0]);
             }
         }
@@ -91,9 +97,11 @@ class SketchShape {
         {
             let farthest = this._getFarthestOnAxis(vertices, [0, -1, 0]);
             let distance = farthest[1];
-            if (distance < 0) {
-                let snapToMove = Math.ceil((-distance - 0.0001) / positionSnap[1]);
-                distance = -snapToMove * positionSnap[1];
+            if (distance < -0.0001) {
+                if (positionSnap[1] > 0.0001) {
+                    let snapToMove = Math.ceil((-distance - 0.0001) / positionSnap[1]);
+                    distance = -snapToMove * positionSnap[1];
+                }
                 glMatrix.vec3.add(position, position, [0, -distance, 0]);
             }
         }
@@ -102,9 +110,11 @@ class SketchShape {
         {
             let farthest = this._getFarthestOnAxis(vertices, [0, 0, 1]);
             let distance = farthest[2] - (wallSettings.myDepth / 2);
-            if (distance > 0) {
-                let snapToMove = Math.ceil((distance - 0.0001) / positionSnap[2]);
-                distance = snapToMove * positionSnap[2];
+            if (distance > 0.0001) {
+                if (positionSnap[2] > 0.0001) {
+                    let snapToMove = Math.ceil((distance - 0.0001) / positionSnap[2]);
+                    distance = snapToMove * positionSnap[2];
+                }
                 glMatrix.vec3.add(position, position, [0, 0, -distance]);
             }
         }
@@ -113,9 +123,11 @@ class SketchShape {
         {
             let farthest = this._getFarthestOnAxis(vertices, [0, 0, -1]);
             let distance = farthest[2] + (wallSettings.myDepth / 2);
-            if (distance < 0) {
-                let snapToMove = Math.ceil((-distance - 0.0001) / positionSnap[2]);
-                distance = -snapToMove * positionSnap[2];
+            if (distance < -0.0001) {
+                if (positionSnap[2] > 0.0001) {
+                    let snapToMove = Math.ceil((-distance - 0.0001) / positionSnap[2]);
+                    distance = -snapToMove * positionSnap[2];
+                }
                 glMatrix.vec3.add(position, position, [0, 0, -distance]);
             }
         }
