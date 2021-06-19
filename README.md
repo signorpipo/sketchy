@@ -1,3 +1,8 @@
+<p align="center">
+<br>
+<img src="https://github.com/SignorPipo/sketchy/blob/main/extra/showdonttell.gif">
+</p>
+
 ## Sketchy
 Have you ever wanted to test if the new sofa will have enough place in the living room? Well, Sketchy is here to help you!<br />
 Create, grab, scale, rotate, move, whatever! You can also share the room so that your best friend can approve the new arrangement
