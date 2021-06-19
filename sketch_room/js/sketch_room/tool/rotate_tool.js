@@ -197,7 +197,7 @@ class RotateTool {
                     }
                 }
 
-                if (rotationAngle > PP.MathUtils.toRadians(10)) {
+                if (rotationAngle > PP.MathUtils.toRadians(5)) {
                     this._myKeepCurrentClosestAxis = true;
                 }
             }

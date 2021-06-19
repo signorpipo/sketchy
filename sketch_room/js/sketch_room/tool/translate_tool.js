@@ -175,7 +175,7 @@ class TranslateTool {
                     }
                 }
 
-                if (difference > 0.05) {
+                if (difference > 0.025) {
                     this._myKeepCurrentClosestAxis = true;
                 }
             }

@@ -356,34 +356,25 @@ class SketchShape {
         let scale = [];
         let color = [];
 
-        position[0] = this._shiftNaNCheck(data);
-        position[1] = this._shiftNaNCheck(data);
-        position[2] = this._shiftNaNCheck(data);
+        position[0] = data.shift();
+        position[1] = data.shift();
+        position[2] = data.shift();
 
-        rotation[0] = this._shiftNaNCheck(data);
-        rotation[1] = this._shiftNaNCheck(data);
-        rotation[2] = this._shiftNaNCheck(data);
+        rotation[0] = data.shift();
+        rotation[1] = data.shift();
+        rotation[2] = data.shift();
 
-        scale[0] = this._shiftNaNCheck(data);
-        scale[1] = this._shiftNaNCheck(data);
-        scale[2] = this._shiftNaNCheck(data);
+        scale[0] = data.shift();
+        scale[1] = data.shift();
+        scale[2] = data.shift();
 
-        color[0] = this._shiftNaNCheck(data);
-        color[1] = this._shiftNaNCheck(data);
-        color[2] = this._shiftNaNCheck(data);
+        color[0] = data.shift();
+        color[1] = data.shift();
+        color[2] = data.shift();
 
         this.setPosition(position);
         this.setEulerRotation(rotation);
         this.setScale(scale);
         this.setColor(color);
-    }
-
-    _shiftNaNCheck(data) {
-        let number = data.shift();
-        if (isNaN(number)) {
-            number = 0;
-        }
-
-        return number;
     }
 }

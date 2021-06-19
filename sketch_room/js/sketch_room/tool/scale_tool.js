@@ -107,21 +107,19 @@ class ScaleTool {
         if (this._myToolSettings.myAxisLockSettings.myAxisLockType[ToolType.SCALE] != AxisLockType.FREE) {
             this._updateAxisLock(handPosition);
             let localClosestAxis = null;
+            let currentScaleReferenceAxis = this._myScaleReferenceAxis;
             if (this._myClosestAxis) {
-                this._myScaleReferenceAxis = PP.MathUtils.getComponentAlongAxis(this._myScaleReferenceAxis, this._myClosestAxis);
-                if (glMatrix.vec3.length(this._myScaleReferenceAxis) < 0.001) {
-                    this._myScaleReferenceAxis = this._myClosestAxis.slice(0);
+                currentScaleReferenceAxis = PP.MathUtils.getComponentAlongAxis(currentScaleReferenceAxis, this._myClosestAxis);
+                if (glMatrix.vec3.length(currentScaleReferenceAxis) < 0.001) {
+                    currentScaleReferenceAxis = this._myClosestAxis.slice(0);
                 }
-                glMatrix.vec3.normalize(this._myScaleReferenceAxis, this._myScaleReferenceAxis);
+                glMatrix.vec3.normalize(currentScaleReferenceAxis, currentScaleReferenceAxis);
 
                 localClosestAxis = this._getLocalClosestAxis();
-            } else {
-                glMatrix.vec3.subtract(this._myScaleReferenceAxis, this._myStartHandPosition, this._myStartShapePosition);
-                glMatrix.vec3.normalize(this._myScaleReferenceAxis, this._myScaleReferenceAxis);
             }
 
-            let rawScale = PP.MathUtils.getComponentAlongAxis(handDirection, this._myScaleReferenceAxis);
-            let scaleAmount = glMatrix.vec3.length(rawScale) * (PP.MathUtils.isConcordant(rawScale, this._myScaleReferenceAxis) ? 1 : -1);
+            let rawScale = PP.MathUtils.getComponentAlongAxis(handDirection, currentScaleReferenceAxis);
+            let scaleAmount = glMatrix.vec3.length(rawScale) * (PP.MathUtils.isConcordant(rawScale, currentScaleReferenceAxis) ? 1 : -1);
 
             scaleToApply = [scaleAmount, scaleAmount, scaleAmount];
             if (localClosestAxis) {
@@ -229,7 +227,7 @@ class ScaleTool {
                     }
                 }
 
-                if (difference > 0.05) {
+                if (difference > 0.025) {
                     this._myKeepCurrentClosestAxis = true;
                 }
             }
