@@ -9,7 +9,7 @@ Create, grab, scale, rotate, move, whatever! You can also share the room so that
 
 Well, some use this to create whatever they want so, you can do that too! Just look at the gif, not a room at all from my point of view
 
-You can find a live version of Sketchy [here](https://playkloud.com/yinch/webxr/sketch02/)!
+You can find a live version of Sketchy [here](https://playkloud.com/yinch/webxr/sketchy/)!
 
 ## License
 You are free to use this in your projects, just remember to credit me and [Yinch](https://twitter.com/yinch) somewhere
